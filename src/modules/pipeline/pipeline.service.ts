@@ -5,7 +5,6 @@ import { CredentialSvcService } from 'src/services/credential-svc/credential-svc
 import { CustomHeaders } from 'src/common/dto/custom-headers.dto';
 import { PushWorkflowDto } from 'src/services/credential-svc/dtos/push-workflow.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { logger } from '@skyu-io/skyu-utils';
 
 @Injectable()
 export class PipelineService {
@@ -22,7 +21,6 @@ export class PipelineService {
       await this.pipelineRepository.save(pipeline);
       return res.data.data;
     } catch (err) {
-      logger.error('CREATE WORKFLOW ERROR :: ', err);
       throw err;
     }
   }

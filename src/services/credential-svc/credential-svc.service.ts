@@ -6,7 +6,6 @@ import { CustomHeaders } from 'src/common/dto/custom-headers.dto';
 import { PushWorkflowDto } from './dtos/push-workflow.dto';
 import * as jsYaml from 'js-yaml';
 import { StepsAndTriggersFactory } from './steps-and-triggers/steps-and-triggers';
-import { logger } from '@skyu-io/skyu-utils';
 
 @Injectable()
 export class CredentialSvcService {
@@ -64,13 +63,11 @@ export class CredentialSvcService {
         )
         .pipe(
           catchError((err) => {
-            logger.error('OBSERVABLE PIPE ERROR :: ', err);
             throw err;
           }),
         );
       return firstValueFrom(observable);
     } catch (err) {
-      logger.error('CREDENTIAL-SVC ERROR :: ', err);
       throw err;
     }
   }
