@@ -17,9 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Build With Docker
-        run: >-
-          docker images && docker build -t pipeline-svc:$IMAGE_NAME . && docker
-          images
+        run: docker images && docker build -t $IMAGE_NAME . && docker images
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
