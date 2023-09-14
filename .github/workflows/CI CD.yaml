@@ -6,9 +6,26 @@ name: My Test Workflow (Skyu Generated)
   pull_request:
     branches:
       - master
+env:
+  IMAGE_NAME: test-service-img
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Start
         run: echo " Starting GitHub Action!"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build With Docker
+        run: >-
+          docker images && docker build -t pipeline-svc:$IMAGE_NAME . && docker
+          images
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: $IMAGE_NAME
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL
