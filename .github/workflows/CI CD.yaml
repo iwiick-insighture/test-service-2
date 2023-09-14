@@ -12,9 +12,3 @@ jobs:
     steps:
       - name: Start
         run: echo " Starting GitHub Action!"
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Build With Docker
-        run: >-
-          docker images && docker build -t pipeline-svc:${{ github.sha }} . &&
-          docker images
