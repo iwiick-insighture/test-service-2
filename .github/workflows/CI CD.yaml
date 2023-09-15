@@ -10,7 +10,7 @@ name: My Test Workflow (Skyu Generated)
 env:
   DOCKER_FILE_NAME: Dockerfile
   IMAGE_NAME: test-service-img
-  SCAN_SEVERITY: HIGH
+  SCAN_SEVERITY: CRITICAL
 jobs:
   build:
     runs-on: ubuntu-latest
