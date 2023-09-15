@@ -8,7 +8,7 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
 env:
-  DOCKER_FILE_NAME: Dockerfile
+  DOCKER_FILE_NAME: sample.Dockerfile
   IMAGE_NAME: test-service-img
 jobs:
   build:
