@@ -6,7 +6,6 @@ name: My Test Workflow (Skyu Generated)
   pull_request:
     branches:
       - master
-  workflow_dispatch: null
 env:
   IMAGE_NAME: test-service-img
 jobs:
