@@ -20,8 +20,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Build With Docker
         run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f Dockerfile .
-          && docker images
+          docker images && docker build -t ${{ env.IMAGE_NAME }} -f Dockerfile
+          ${{env.DOCKER_FILE_PATH}} && docker images
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
