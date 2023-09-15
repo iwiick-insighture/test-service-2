@@ -9,7 +9,7 @@ name: My Test Workflow (Skyu Generated)
   workflow_dispatch: {}
 env:
   IMAGE_NAME: test-service-img
-  DOCKER_FILE_PATH: /
+  DOCKER_FILE_PATH: /src
 jobs:
   build:
     runs-on: ubuntu-latest
