@@ -1,0 +1,30 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: skyu_pipeline_service
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  nestjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skyu_pipeline_service_container
+    ports:
+      - '4001:4001'
+    environment:
+      POSTGRES_HOST: postgres_container
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
+    driver: local
