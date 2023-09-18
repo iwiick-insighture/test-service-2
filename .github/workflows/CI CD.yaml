@@ -1,5 +1,8 @@
 name: My Test Workflow (Skyu Generated)
 'on':
+  push:
+    branches:
+      - master
   workflow_dispatch: {}
 env:
   DOCKER_FILE_NAME: Dockerfile
