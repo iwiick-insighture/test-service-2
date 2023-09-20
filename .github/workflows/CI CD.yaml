@@ -11,4 +11,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps: []
+    steps:
+      - name: Start
+        run: echo " Starting GitHub Action!"
