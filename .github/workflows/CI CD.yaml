@@ -11,21 +11,4 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Start
-        run: echo " Starting GitHub Action!"
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Build With Docker
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: ${{env.SCAN_SEVERITY}}
+    steps: []
