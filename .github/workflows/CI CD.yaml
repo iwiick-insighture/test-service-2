@@ -1,4 +1,4 @@
-name: My Test Workflow (Skyu Generated)
+name: My Test Workflow (Heshan) (Skyu Generated)
 'on':
   push:
     branches:
