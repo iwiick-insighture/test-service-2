@@ -9,5 +9,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Start
-        run: echo " Starting GitHub Action!"
+      - name: Checkout repository
+        uses: actions/checkout@v2
