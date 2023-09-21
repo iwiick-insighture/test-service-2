@@ -5,9 +5,9 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
 env:
-  IMAGE_NAME: iwiick-image
   DOCKER_FILE_NAME: Dockerfile
   DOCKER_FILE_PATH: ''
+  SCAN_SEVERITY: HIGH
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,3 +20,12 @@ jobs:
         run: >-
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
           ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: ${{env.SCAN_SEVERITY}}
