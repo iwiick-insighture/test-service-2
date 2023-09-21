@@ -8,4 +8,8 @@ env: {}
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps: []
+    steps:
+      - name: Build With Docker
+        run: >-
+          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
+          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
