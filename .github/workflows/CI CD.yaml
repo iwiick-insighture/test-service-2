@@ -7,7 +7,7 @@ name: My Test Workflow (Skyu Generated)
 env:
   IMAGE_NAME: iwiick-image
   DOCKER_FILE_NAME: Dockerfile
-  DOCKER_FILE_PATH: ''
+  DOCKER_FILE_PATH: .
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,4 +15,4 @@ jobs:
       - name: Build With Docker
         run: >-
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
+          ${{env.DOCKER_FILE_NAME}} ${{env.DOCKER_FILE_PATH}} && docker images
