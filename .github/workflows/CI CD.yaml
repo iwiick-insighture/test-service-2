@@ -9,7 +9,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Build With Docker
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
+      - name: Start
+        run: echo " Starting GitHub Action!"
