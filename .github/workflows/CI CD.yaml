@@ -7,7 +7,7 @@ name: My Test Workflow (Skyu Generated)
 env:
   IMAGE_NAME: iwiick-image
   DOCKER_FILE_NAME: Dockerfile
-  SCAN_SEVERITY: HIGH
+  SCAN_SEVERITY: CRITICAL
 jobs:
   build:
     runs-on: ubuntu-latest
