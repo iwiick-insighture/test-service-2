@@ -4,8 +4,7 @@ name: My Test Workflow (Heshan) (Skyu Generated)
     branches:
       - master
   workflow_dispatch: {}
-env:
-  DOCKER_FILE_NAME: HELLO
+env: {}
 jobs:
   build:
     runs-on: ubuntu-latest
