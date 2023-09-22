@@ -5,6 +5,7 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
 env:
+  IMAGE_NAME: iwiick-image
   DOCKER_FILE_NAME: Dockerfile
 jobs:
   build:
@@ -18,5 +19,3 @@ jobs:
         run: >-
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
           ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
-      - name: My Custom Step
-        run: echo " Pipeline service works yall!"
