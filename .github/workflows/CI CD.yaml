@@ -5,6 +5,7 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
 env:
+  IMAGE_NAME: iwiick-image
   DOCKER_FILE_NAME: Dockerfile
 jobs:
   build:
