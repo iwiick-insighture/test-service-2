@@ -7,6 +7,8 @@ name: My Test Workflow (Skyu Generated)
 env:
   IMAGE_NAME: ${{secrets.DOCKER_IMAGE_NAME}}
   DOCKER_FILE_NAME: Dockerfile
+  RANDOM_ENV_VALUE: HAHAHAHAHA
+  TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,6 +24,10 @@ jobs:
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
-          $\{\{secrets.DOCKER_IMAGE_NAME\}\}"
+          $\{\{secrets.DOCKER_IMAGE_NAME\}\} and $\{\{env.RANDOM_ENV_VALUE\}\}"
         config:
-          varsAndSecrets: test
+          varsAndSecrets:
+            - key: RANDOM_ENV_VALUE
+              value: HAHAHAHAHA
+            - key: TEST_ENV_WITH_SECRET_VAL
+              value: ':secrets.DOCKER_IMAGE_NAME'
