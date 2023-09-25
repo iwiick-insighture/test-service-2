@@ -5,7 +5,7 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
 env:
-  IMAGE_NAME: ${{secrets.DOCKER_IMAGE_NAME}}
+  IMAGE_NAME: ${{secrests.DOCKER_IMAGE_NAME.undefined}}
   DOCKER_FILE_NAME: Dockerfile
 jobs:
   build:
