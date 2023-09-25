@@ -21,13 +21,4 @@ jobs:
         run: >-
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
           ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
-      - name: My Custom Step
-        run: >-
-          echo " Pipeline service works yall!.
-          $\{\{secrets.DOCKER_IMAGE_NAME\}\} and $\{\{env.RANDOM_ENV_VALUE\}\}"
-        config:
-          varsAndSecrets:
-            - key: RANDOM_ENV_VALUE
-              value: HAHAHAHAHA
-            - key: TEST_ENV_WITH_SECRET_VAL
-              value: ':secrets.DOCKER_IMAGE_NAME'
+      - null
