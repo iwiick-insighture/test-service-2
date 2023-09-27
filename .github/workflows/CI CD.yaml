@@ -4,11 +4,7 @@ name: My Test Workflow (Skyu Generated)
     branches:
       - master
   workflow_dispatch: {}
-env:
-  IMAGE_NAME: ${{secrets.DOCKER_IMAGE_NAME}}
-  DOCKER_FILE_NAME: Dockerfile
-  RANDOM_ENV_VALUE: HAHAHAHAHA
-  TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
+env: {}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,11 +13,3 @@ jobs:
         run: echo " Starting GitHub Action!"
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Build With Docker
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
-      - name: My Custom Step
-        run: >-
-          echo " Pipeline service works yall!.
-          $\{\{secrets.DOCKER_IMAGE_NAME\}\} and $\{\{env.RANDOM_ENV_VALUE\}\}"
