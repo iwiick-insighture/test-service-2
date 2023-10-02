@@ -3,11 +3,10 @@ name: My Test Workflow (Skyu Generated)
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
   workflow_dispatch: {}
-env: {}
+env:
+  IMAGE_NAME: ${{secrets.DOCKER_IMAGE_NAME}}
+  DOCKER_FILE_NAME: Dockerfile
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,3 +15,7 @@ jobs:
         run: echo " Starting GitHub Action!"
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Build With Docker
+        run: >-
+          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
+          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
