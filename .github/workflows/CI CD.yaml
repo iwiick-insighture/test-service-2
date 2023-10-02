@@ -3,6 +3,9 @@ name: My Test Workflow (Skyu Generated)
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
   workflow_dispatch: {}
 env: {}
 jobs:
