@@ -28,25 +28,6 @@ jobs:
           $MY_SECRET_BASE64 | base64 --decode) && echo Decoded JSON:
           $MY_SECRET_JSON && echo ::set-output
           name=MY_SECRET_JSON::$MY_SECRET_JSON
-      - name: 'Run :: Configure AWS credentials'
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ env.UUID.AWS_ASSUME_ROLE }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ap-south-1
-      - name: 'Run :: Login to Amazon ECR'
-        id: skyu-aws-login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: 'Run :: Create Repository'
-        run: >-
-          aws ecr create-repository --repository-name ${{ env.IMAGE_NAME }} ||
-          true
-      - name: 'Run :: Build, tag, and push image to Amazon ECR'
-        id: skyu-aws-login-ecr
-        run: >-
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/${{
-          env.IMAGE_NAME }} . && docker push ${{
-          steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
