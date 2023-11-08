@@ -20,10 +20,11 @@ jobs:
       - name: 'Run :: Decoding Secrets'
         id: skyu_parse_secrets
         run: >-
-          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq  -r  'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          "to_entries|map(\"(.key)=\\\"(.value|tostring)\\\"\")|.[]" >> .env &&
+          cat .env
       - name: 'Run :: TESTING Secrets'
-        run: >-
-          env && echo ROLE ARN :: ${{env.roleARN}}
+        run: 'echo ROLE ARN :: ${{env.roleARN}}'
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
