@@ -26,8 +26,8 @@ jobs:
       - name: 'Run :: TESTING Secrets'
         run: >-
           echo PIPELINE SECRETS ${{env.PIPELINE_SECRETS}} && ROLE_ARN=$(echo
-          ${{toJSON(env.PIPELINE_SECRETS)}} | jq -r '.roleARN') && echo ROLE
-          ARNNNNN :: ${{env.ROLE_ARN}}
+          ${{toJSON(${{env.PIPELINE_SECRETS}})}} | jq -r '.roleARN') && echo
+          ROLE ARNNNNN :: ${{env.ROLE_ARN}}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
