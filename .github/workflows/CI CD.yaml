@@ -5,6 +5,8 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
 env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.test-service-2_env_4f51caf0-c865-4a53-929b-37f388f62acd_app_7d7eea94-aec1-4337-8bf0-01e10b98622c}}
   RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
 jobs:
@@ -18,9 +20,9 @@ jobs:
       - name: 'Run :: Decoding Secrets'
         id: skyu_parse_secrets
         run: >-
-          MY_SECRET_BASE64=${{ env.MY_SECRET }} && MY_SECRET_JSON=$(echo
-          $MY_SECRET_BASE64 | base64 --decode) && echo Decoded JSON:
-          $MY_SECRET_JSON && echo ::set-output
+          MY_SECRET_BASE64=${{ env.ENCODED_PIPELINE_SECRET }} &&
+          MY_SECRET_JSON=$(echo $MY_SECRET_BASE64 | base64 --decode) && echo
+          Decoded JSON: $MY_SECRET_JSON && echo ::set-output
           name=MY_SECRET_JSON::$MY_SECRET_JSON
       - name: My Custom Step
         run: >-
