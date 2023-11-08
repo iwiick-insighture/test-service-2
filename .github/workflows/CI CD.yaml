@@ -24,7 +24,9 @@ jobs:
           MY_SECRET_JSON=$(echo $MY_SECRET_BASE64 | base64 --decode) && echo
           PIPELINE_SECRETS=$MY_SECRET_JSON >> $GITHUB_ENV
       - name: 'Run :: TESTING Secrets'
-        run: 'echo ROLE ARNNNNN :: ${{env.PIPELINE_SECRETS}}'
+        run: >-
+          ROLE_ARN=$(echo ${{env.PIPELINE_SECRETS}} | jq -r '.roleARN') && echo
+          ROLE ARNNNNN :: ${{env.ROLE_ARN}}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
