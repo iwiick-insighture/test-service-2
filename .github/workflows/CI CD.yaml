@@ -20,7 +20,7 @@ jobs:
       - name: 'Run :: Decoding Secrets'
         id: skyu_parse_secrets
         run: >-
-          eval "export $(echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries | map("\(.key)=\(.value)")| @sh')"
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries | map("\(.key)=\(.value)")| @sh'  >> $GITHUB_ENV
       - name: 'Run :: TESTING Secrets'
         run: >-
           env && echo PIPELINE SECRETS :: ${{env.roleARN}}
