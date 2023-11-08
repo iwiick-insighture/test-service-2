@@ -23,7 +23,7 @@ jobs:
           eval "export $(echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries | map("\(.key)=\(.value)")| @sh')"
       - name: 'Run :: TESTING Secrets'
         run: >-
-          echo PIPELINE SECRETS :: ${{env.roleARN}}
+          env && echo PIPELINE SECRETS :: ${{env.roleARN}}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
