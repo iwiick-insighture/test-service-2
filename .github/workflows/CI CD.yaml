@@ -20,9 +20,9 @@ jobs:
       - name: 'Run :: Decoding Secrets'
         id: skyu_parse_secrets
         run: >-
-          MY_SECRET_BASE64=${{ env.ENCODED_PIPELINE_SECRET }} &&
-          MY_SECRET_JSON=$(echo $MY_SECRET_BASE64 | base64 --decode) && echo
-          PIPELINE_SECRETS=$MY_SECRET_JSON >> $GITHUB_ENV
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          "to_entries|map("(.key)=\"(.value|tostring)\"")|.[]" >> .env && cat
+          .env
       - name: 'Run :: TESTING Secrets'
         run: >-
           echo PIPELINE SECRETS :: ${{env.PIPELINE_SECRETS}} && ROLE_ARN=$(echo
