@@ -5,8 +5,6 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
 env:
-  IMAGE_NAME: ${{secrets.DOCKER_IMAGE_NAME}}
-  DOCKER_FILE_NAME: Dockerfile
   RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
 jobs:
@@ -17,10 +15,6 @@ jobs:
         run: echo " Starting GitHub Action!"
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
-      - name: 'Run :: Build With Docker'
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
       - name: 'Run :: Decoding Secrets'
         id: skyu_parse_secrets
         run: >-
@@ -28,6 +22,12 @@ jobs:
           $MY_SECRET_BASE64 | base64 --decode) && echo Decoded JSON:
           $MY_SECRET_JSON && echo ::set-output
           name=MY_SECRET_JSON::$MY_SECRET_JSON
+      - name: 'Run :: Build, tag, and push image to Amazon ECR'
+        id: skyu-aws-login-ecr
+        run: >-
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/${{
+          env.IMAGE_NAME }} . && docker push ${{
+          steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
