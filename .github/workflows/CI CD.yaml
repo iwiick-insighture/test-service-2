@@ -25,8 +25,8 @@ jobs:
           PIPELINE_SECRETS=$MY_SECRET_JSON >> $GITHUB_ENV
       - name: 'Run :: TESTING Secrets'
         run: >-
-          echo PIPELINE SECRETS ${{env.PIPELINE_SECRETS}} && ROLE_ARN=$(echo ${{
-          toJSON(${{env.PIPELINE_SECRETS}}) }} | jq -r '.roleARN') && echo ROLE
+          echo PIPELINE SECRETS ${{env.PIPELINE_SECRETS}} && ROLE_ARN=$(echo
+          ${{toJSON(env.PIPELINE_SECRETS)}} | jq -r '.roleARN') && echo ROLE
           ARNNNNN :: ${{env.ROLE_ARN}}
       - name: My Custom Step
         run: >-
