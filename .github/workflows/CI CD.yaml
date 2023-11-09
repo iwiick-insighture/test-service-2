@@ -11,6 +11,7 @@ env:
   TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
 jobs:
   build:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Start
