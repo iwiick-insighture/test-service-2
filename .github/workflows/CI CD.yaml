@@ -18,10 +18,10 @@ jobs:
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
       - name: 'Run :: Decoding Secrets'
-        id: skyu_parse_secrets
         run: >-
-          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
-          'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
+          decoded_secret=$(echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64
+          --decode | jq -r 'keys[] as $k | "\($k)=\(.[$k])"') && echo
+          $decoded_secret >> $GITHUB_ENV && echo ::add-mask::$decoded_secret
       - name: 'Run :: TESTING Secrets'
         run: 'env && echo ROLE ARN :: ${{env.roleARN}}'
       - name: My Custom Step
