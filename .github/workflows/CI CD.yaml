@@ -19,11 +19,10 @@ jobs:
         uses: actions/checkout@v2
       - name: 'Run :: Decoding Secrets'
         run: >-
-          decoded_secret=$(echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64
-          --decode | jq -r 'keys[] as $k | "\($k)=\(.[$k])"') && echo
-          $decoded_secret >> $GITHUB_ENV && echo ::add-mask::$decoded_secret
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
       - name: 'Run :: TESTING Secrets'
-        run: 'env && echo ROLE ARN :: ${{env.roleARN}}'
+        run: echo ROLE ARN ::add-mask::${{env.roleARN}}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
