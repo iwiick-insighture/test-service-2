@@ -22,7 +22,7 @@ jobs:
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
       - name: 'Run :: Configure AWS credentials'
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
           role-session-name: skyu-pipeline-assume-role-session
