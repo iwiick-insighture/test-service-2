@@ -22,7 +22,7 @@ jobs:
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
       - name: 'Run :: TESTING Secrets'
-        run: echo ROLE ARN=${{ env.roleARN }}::add-mask::${{ env.roleARN }}
+        run: env
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
