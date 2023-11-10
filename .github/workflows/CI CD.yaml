@@ -44,9 +44,10 @@ jobs:
           || true
       - name: 'Run :: Build, tag, and push image to Amazon ECR'
         run: >-
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/${{
-          env.IMAGE_NAME }} . && docker push ${{
-          steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}
+          docker build -t ${{ steps.login-ecr.outputs.registry
+          }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME }} . && docker push ${{
+          steps.login-ecr.outputs.registry }}/${{env.REPOSITORY_NAME}}:${{
+          env.IMAGE_NAME }}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
