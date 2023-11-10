@@ -42,6 +42,12 @@ jobs:
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
           || true
+      - name: 'Run :: Build, tag, and push image to Amazon ECR'
+        id: skyu-aws-login-ecr
+        run: >-
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/${{
+          env.IMAGE_NAME }} . && docker push ${{
+          steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
