@@ -23,7 +23,9 @@ jobs:
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV && env
       - name: 'Run :: Depoloy and Notify Resource Service'
-        run: echo "Hello :) ${{env.SERVICE_ACC_ACCESS_TOKEN}}"
+        run: >-
+          echo "Hello :) ${{env.SERVICE_ACC_ACCESS_TOKEN}} andddddddddd ${{
+          github.event }}"
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
