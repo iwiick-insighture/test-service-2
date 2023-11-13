@@ -7,7 +7,6 @@ name: My Test Workflow (Skyu Generated)
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_4F51CAF0C8654A53929B37F388F62ACD_APP_7D7EEA94AEC143378BF001E10B98622C_CICD}}
-  REPOSITORY_NAME: iwiick
   RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
 jobs:
@@ -22,13 +21,7 @@ jobs:
       - name: 'Run :: Decoding Secrets'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
-          'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
-      - name: 'Run :: Configure AWS credentials'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.roleARN }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ${{ env.region }}
+          'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV && env
       - name: 'Run :: Depoloy and Notify Resource Service'
         run: echo "Hello :)"
       - name: My Custom Step
