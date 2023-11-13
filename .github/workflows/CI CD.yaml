@@ -24,8 +24,11 @@ jobs:
           'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV && env
       - name: 'Run :: Depoloy and Notify Resource Service'
         run: >-
-          echo "Hello :) ${{env.SERVICE_ACC_ACCESS_TOKEN}} andddddddddd ${{
-          github.event }}"
+          echo "Hello :) ${{env.SERVICE_ACC_ACCESS_TOKEN}} :: Commit ID - ${{
+          github.event }} :: Commit Date - ${{
+          github.event.head_commit.timestamp }} :: Commit Message - ${{
+          github.event.head_commit.message }} :: Commit Author - ${{
+          github.event.head_commit.author.name }}"
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
