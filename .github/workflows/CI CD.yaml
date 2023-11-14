@@ -53,6 +53,7 @@ jobs:
           env.DEPLOYMENT_APPLICATION_ID }}' -H 'Content-Type:
           application/x-www-form-urlencoded'
           'https://api.dev.skyu.io/resource-service/applications/deploy'
+        if: ${{ failure() }}
       - name: My Custom Step
         run: >-
           echo " Pipeline service works yall!.
