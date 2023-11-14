@@ -34,14 +34,23 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
       - name: 'Run :: Deploy and Notify Resource Service'
         run: >-
-          curl -d
-          'imageRegistryURL=272133924862.dkr.ecr.us-east-1.amazonaws.com&appVersionId=version_24be1c28-41d5-41fc-881a-3b7de90b69e7&tag=&containerName=mist-main&commitDetails[commitHash]=723be592c5ab0a35a93ead08c1964b5fcd226830&commitDetails[commitAvatar]=https://github.com/iwiick.png&commitDetails[commitTime]=2023-11-14T17:17:37+05:30&commitDetails[commitMessage]=CI
-          CD workflow file created&commitDetails[commitUser]=iwiick' -X PATCH -H
-          'Authorization: ' -H 'x-organization-id:
-          org_51f9f009-7930-486b-a047-1ce7d6ef103b' -H 'x-project-id:
-          project_ac1e5bc9-dd50-4c3f-8a21-89e0a6e64063' -H 'x-environment-id:
-          env_d257af4e-9409-415f-974c-fdd70a2a25df' -H 'x-application-id:
-          app_7d7eea94-aec1-4337-8bf0-01e10b98622c' -H 'Content-Type:
+          curl -d "imageRegistryURL=${{ steps.login-ecr.outputs.registry
+          }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{
+          env.IMAGE_NAME_TO_PUSH }}&containerName=${{
+          env.DEPLOYMENT_CONTAINER_NAME }}&commitDetails[commitHash]=${{
+          github.event.after
+          }}&commitDetails[commitAvatar]=https://github.com/${{
+          github.event.head_commit.author.name
+          }}.png&commitDetails[commitTime]=${{
+          github.event.head_commit.timestamp
+          }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message
+          }}\"&commitDetails[commitUser]=${{
+          github.event.head_commit.author.name }}" -X PATCH -H 'Authorization:
+          ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{
+          env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{
+          env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{
+          env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{
+          env.DEPLOYMENT_APPLICATION_ID }}' -H 'Content-Type:
           application/x-www-form-urlencoded'
           'https://api.dev.skyu.io/resource-service/applications/deploy'
       - name: My Custom Step
