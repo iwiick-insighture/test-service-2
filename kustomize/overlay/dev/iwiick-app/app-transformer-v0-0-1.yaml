@@ -8,7 +8,7 @@ metadata:
         path: skyu-app-transformer
 spec:
   applicationContainers:
-    - imageTag: latest
+    - imageTag: sdadasd
       cpuRequestMili: 100
       cpuLimitMili: 200
       memoryRequestMb: 100
@@ -19,6 +19,13 @@ spec:
       applicationPorts: []
       healthChecks: []
       name: mist-main
+      imageRegistry: dasdasd
+      commitDetails:
+        commitHash: hash
+        commitAvatar: avatar
+        commitTime: time
+        commitMessage: message
+        commitUser: user
   minReplicas: 1
   maxReplicas: 5
   terminationGracePeriodSeconds: 30
