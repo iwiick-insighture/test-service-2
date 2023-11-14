@@ -1,0 +1,49 @@
+apiVersion: transformers.customplugin.co/v1
+kind: SkyUAppTransformer
+metadata:
+  name: skyu-deployment
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: skyu-app-transformer
+spec:
+  applicationContainers:
+    - imageTag: latest
+      cpuRequestMili: 100
+      cpuLimitMili: 200
+      memoryRequestMb: 100
+      memoryLimitMb: 200
+      args: []
+      command: []
+      configMounts: []
+      applicationPorts: []
+      healthChecks: []
+      name: mist-main
+  minReplicas: 1
+  maxReplicas: 5
+  terminationGracePeriodSeconds: 30
+  nodeSelector:
+    kubernetes.io/hostname: my-node-name
+  suspend: false
+  ttlSecondsAfterFinished: 0
+  labels:
+    app: iwiick-app
+    env: production
+    version: v0.0.1
+    applicationId: app_0666fac5-91e2-4b38-a5c3-176884514379
+    projectId: project_ac1e5bc9-dd50-4c3f-8a21-89e0a6e64063
+    organizationId: org_51f9f009-7930-486b-a047-1ce7d6ef103b
+    environmentId: env_d257af4e-9409-415f-974c-fdd70a2a25df
+    environmentName: dev
+  horizontalAutoScalingRules:
+    - ruleType: cpu
+      percentage: 80
+  volumes:
+    - name: my-volume
+      type: PersistentVolumeClaim
+      pvc:
+        claimName: my-claim
+  type: service
+  serviceType: LoadBalancer
+  name: mist
+  namespace: iwick-proj-dev

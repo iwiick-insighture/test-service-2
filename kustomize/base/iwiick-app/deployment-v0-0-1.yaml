@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iwiick-app
+  labels:
+    app: iwiick-app
+    applicationId: app_0666fac5-91e2-4b38-a5c3-176884514379
+    version: v0.0.1
+spec:
+  selector:
+    matchLabels:
+      app: iwiick-app
+  template:
+    metadata:
+      labels:
+        app: iwiick-app
