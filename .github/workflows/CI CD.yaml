@@ -40,7 +40,7 @@ jobs:
            containerName :: ${{ env.DEPLOYMENT_CONTAINER_NAME }}
            Access Token :: ${{env.SERVICE_ACC_ACCESS_TOKEN}}
             Commit Hash :: ${{ github.event.after }}
-           Commit Avatar :: ${{ github.event.actor.avatar_url }}
+           Commit Avatar :: https://github.com/${{ github.event.head_commit.author.name }}.png
            Commit Time :: ${{ github.event.head_commit.timestamp }}
            Commit Message :: ${{ github.event.head_commit.message }}
            Commit Author :: ${{ github.event.head_commit.author.name }}
