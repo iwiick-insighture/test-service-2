@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: iwick-proj-staging
+  labels:
+    environment-id: env_eca9543c-b520-43a1-9915-026ae42fc4e7
+    project-id: project_ac1e5bc9-dd50-4c3f-8a21-89e0a6e64063
+    project-name: iwick-proj
+    environment-name: staging
+    organization-id: org_51f9f009-7930-486b-a047-1ce7d6ef103b
