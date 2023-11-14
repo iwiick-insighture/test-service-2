@@ -7,9 +7,6 @@ name: My Test Workflow (Skyu Generated)
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_4F51CAF0C8654A53929B37F388F62ACD_APP_7D7EEA94AEC143378BF001E10B98622C_CICD}}
-  IMAGE_NAME: iwiick-test-image:latest
-  IMAGE_NAME_TO_PUSH: iwiick-test-image.latest
-  DOCKER_FILE_NAME: Dockerfile
   REPOSITORY_NAME: iwiick
   RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
@@ -26,10 +23,6 @@ jobs:
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV && env
-      - name: 'Run :: Build With Docker'
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -39,16 +32,6 @@ jobs:
       - name: 'Run :: Login to Amazon ECR'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - name: 'Run :: Create Repository'
-        run: >-
-          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
-          || true
-      - name: 'Run :: Build, tag, and push image to Amazon ECR'
-        run: >-
-          docker build -t ${{ steps.login-ecr.outputs.registry
-          }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} . && docker
-          push ${{ steps.login-ecr.outputs.registry
-          }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: >-
           echo "imageRegistryURL :: ${{ steps.login-ecr.outputs.registry }}
@@ -57,7 +40,7 @@ jobs:
            containerName :: ${{ env.DEPLOYMENT_CONTAINER_NAME }}
            Access Token :: ${{env.SERVICE_ACC_ACCESS_TOKEN}}
             Commit Hash :: ${{ github.event.after }}
-           Commit Avatar :: ${{ github.event.head_commit.author.avatar_url }}
+           Commit Avatar :: ${{ github.event.actor.avatar_url }}
            Commit Time :: ${{ github.event.head_commit.timestamp }}
            Commit Message :: ${{ github.event.head_commit.message }}
            Commit Author :: ${{ github.event.head_commit.author.name }}
