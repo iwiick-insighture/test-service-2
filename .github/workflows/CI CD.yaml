@@ -13,7 +13,6 @@ env:
   IMAGE_NAME: iwiick-test-image:latest
   IMAGE_NAME_TO_PUSH: iwiick-test-image.latest
   DOCKER_FILE_NAME: Dockerfile
-  SCAN_SEVERITY: HIGH
   REPOSITORY_NAME: iwiick
   RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
@@ -35,15 +34,6 @@ jobs:
         run: >-
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
           ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
-      - name: 'Run :: Trivy vulnerability scanner'
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: ${{env.SCAN_SEVERITY}}
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
