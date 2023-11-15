@@ -8,7 +8,7 @@ metadata:
         path: skyu-app-transformer
 spec:
   applicationContainers:
-    - imageTag: sdadasd
+    - imageTag: iwiick-test-image.latest
       cpuRequestMili: 100
       cpuLimitMili: 200
       memoryRequestMb: 100
@@ -19,13 +19,13 @@ spec:
       applicationPorts: []
       healthChecks: []
       name: mist-main
-      imageRegistry: dasdasd
+      imageRegistry: test
       commitDetails:
-        commitHash: hash
-        commitAvatar: avatar
-        commitTime: time
-        commitMessage: message
-        commitUser: user
+        commitHash: a219327175440dfdba5f609d1aacee305f1d881c
+        commitAvatar: https://github.com/iwiick.png
+        commitTime: 2023-11-15T12:15:50 05:30
+        commitMessage: '"CI CD workflow file created''"'
+        commitUser: iwiick
   minReplicas: 1
   maxReplicas: 5
   terminationGracePeriodSeconds: 30
