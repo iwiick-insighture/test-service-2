@@ -47,7 +47,12 @@ jobs:
               status_code=$?
 
               if [ $status_code -eq 0 ]; then
-                echo "SUCCESS :: Response: $response"
+                if echo "$response" | grep -q '"message":"Unauthorized"'; then
+                  echo "Failed to deploy. Unauthorized access."
+                  exit 1
+                else
+                  echo "Deployment successful. Response: $response"
+                fi
               else
                 echo "Failed to deploy. HTTP status code: $status_code"
                 exit 1
