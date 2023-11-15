@@ -10,6 +10,9 @@ name: My Test Workflow (Skyu Generated)
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_D257AF4E9409415F974CFDD70A2A25DF_APP_0666FAC591E24B38A5C3176884514379_CICD}}
+  IMAGE_NAME: iwiick-test-image:latest
+  IMAGE_NAME_TO_PUSH: iwiick-test-image.latest
+  DOCKER_FILE_NAME: Dockerfile
   REPOSITORY_NAME: iwiick
   RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_WITH_SECRET_VAL: ${{secrets.DOCKER_IMAGE_NAME}}
@@ -27,10 +30,6 @@ jobs:
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Build With Docker'
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
