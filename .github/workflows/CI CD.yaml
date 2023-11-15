@@ -22,9 +22,9 @@ jobs:
       - name: 'Run :: Decoding Secrets'
         run: >-
           decoded_secret=$(echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64
-          --decode | jq -r 'keys[] as $k | "\($k)=\(.[$k])"') && echo
-          "::add-mask::$decoded_secret" && echo "$decoded_secret" >> $GITHUB_ENV
-          && env
+          --decode) && masked_secret=$(echo "$decoded_secret" | jq -r 'keys[] as
+          $k | "\($k)=\(.[$k])"' | sed 's/./*/g') && echo "$masked_secret" >>
+          $GITHUB_ENV && env
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
