@@ -35,7 +35,7 @@ jobs:
           aws-region: ${{ env.region }}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: >-
-          curl -d "imageRegistryURL=test&appVersionId=${{
+          curl -d "imageRegistryURL=${{ env.ECR_URL }}&appVersionId=${{
           env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_NAME_TO_PUSH
           }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME
           }}&commitDetails[commitHash]=${{ github.event.after
