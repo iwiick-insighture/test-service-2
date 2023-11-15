@@ -25,13 +25,10 @@ jobs:
           'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
-        env:
-          ROLE_TO_ASSUME: ${{ env.roleARN }}
-          AWS_REGION: ${{ env.region }}
         with:
-          role-to-assume: '::add-mask::${{env.ROLE_TO_ASSUME}}'
+          role-to-assume: ${{ env.roleARN }}
           role-session-name: skyu-pipeline-assume-role-session
-          aws-region: '::add-mask::${{env.AWS_REGION}}'
+          aws-region: ${{ env.region }}
       - name: 'Run :: Login to Amazon ECR'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
