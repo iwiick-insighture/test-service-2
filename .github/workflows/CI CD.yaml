@@ -21,15 +21,14 @@ jobs:
         uses: actions/checkout@v2
       - name: 'Run :: Decoding Secrets'
         run: >-
-          decoded_secret=$(echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64
-          --decode | jq -r 'keys[] as $k | "\($k)=\(.[$k])"') && echo
-          "::add-mask::$decoded_secret" >> $GITHUB_ENV && env
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'keys[] as $k | "\($k)=\(.[$k])"' >> $GITHUB_ENV
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.roleARN }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ${{ env.region }}
+          role-to-assume: '::add-mask::${{ env.roleARN }}'
+          role-session-name: '::add-mask::skyu-pipeline-assume-role-session'
+          aws-region: '::add-mask::${{ env.region }}'
       - name: 'Run :: Login to Amazon ECR'
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
