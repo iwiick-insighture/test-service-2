@@ -54,7 +54,7 @@ jobs:
           env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{
           env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{
           env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{
-          env.DEPLOYMENT_APPLICATION_ID }}' -H 'Content-Type:
+          env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type:
           application/x-www-form-urlencoded'
           'https://api.dev.skyu.io/resource-service/applications/deploy'
       - name: My Custom Step
