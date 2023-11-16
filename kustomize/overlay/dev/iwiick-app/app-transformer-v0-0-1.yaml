@@ -21,11 +21,11 @@ spec:
       name: mist-main
       imageRegistry: 272133924862.dkr.ecr.us-east-1.amazonaws.com
       commitDetails:
-        commitHash: 659c270989793dc145e2a27461565570ca5d3173
-        commitAvatar: https://github.com/iwiick.png
-        commitTime: 2023-11-16T15:58:29 05:30
-        commitMessage: '"CI CD workflow file created''"'
-        commitUser: iwiick
+        commitHash: d1997f9f87eb43a53b799dba86ed88bffe35fa77
+        commitAvatar: https://github.com/skyu-v2-dev[bot].png
+        commitTime: '2023-11-16T10:29:57Z'
+        commitMessage: '"Deploy iwiick-app to dev"'
+        commitUser: skyu-v2-dev[bot]
   minReplicas: 1
   maxReplicas: 5
   terminationGracePeriodSeconds: 30
