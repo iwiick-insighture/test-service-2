@@ -9,11 +9,6 @@ name: >-
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_D257AF4E9409415F974CFDD70A2A25DF_APP_0666FAC591E24B38A5C3176884514379_ENV_D257AF4E9409415F974CFDD70A2A25DF_APP_0666FAC591E24B38A5C3176884514379}}
-  IMAGE_NAME: iwiick-img:latest
-  IMAGE_NAME_TO_PUSH: iwiick-img.latest
-  DOCKER_FILE_NAME: Dockerfile
-  SCAN_SEVERITY: CRITICAL
-  REPOSITORY_NAME: iwiick
 jobs:
   build:
     permissions: write-all
@@ -28,40 +23,6 @@ jobs:
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - &ref_0
-        name: 'Run :: Build With Docker'
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
-      - name: 'Run :: Trivy vulnerability scanner'
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: ${{env.SCAN_SEVERITY}}
-      - *ref_0
-      - name: 'Run :: Configure AWS credentials'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.roleARN }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ${{ env.region }}
-      - name: 'Run :: Login to Amazon ECR'
-        id: skyu-login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: 'Run :: Create Repository'
-        run: >-
-          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
-          || true
-      - name: 'Run :: Build, tag, and push image to Amazon ECR'
-        run: >-
-          docker build -t ${{ steps.skyu-login-ecr.outputs.registry
-          }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} . && docker
-          push ${{ steps.skyu-login-ecr.outputs.registry
-          }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
