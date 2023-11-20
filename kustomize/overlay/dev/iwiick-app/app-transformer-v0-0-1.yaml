@@ -21,11 +21,11 @@ spec:
       name: mist-main
       imageRegistry: 272133924862.dkr.ecr.us-east-1.amazonaws.com
       commitDetails:
-        commitHash: 3a0c92da8654fa81af405d8605cc35dc292c9250
+        commitHash: b42be7a4cfef22890766b7a25a2cb9f7b4c1c375
         commitAvatar: https://github.com/iwiick.png
-        commitTime: 2023-11-20T11:48:54 05:30
+        commitTime: 2023-11-20T11:49:45 05:30
         commitMessage: >-
-          "dev_env_d257af4e-9409-415f-974c-fdd70a2a25df_app_0666fac5-91e2-4b38-a5c3-176884514379
+          "qa_env_d257af4e-9409-415f-974c-fdd70a2a25df_app_0666fac5-91e2-4b38-a5c3-176884514379
           workflow file created'"
         commitUser: iwiick
   minReplicas: 1
