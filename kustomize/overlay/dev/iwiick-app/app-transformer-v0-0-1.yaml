@@ -21,9 +21,9 @@ spec:
       name: mist-main
       imageRegistry: 272133924862.dkr.ecr.us-east-1.amazonaws.com
       commitDetails:
-        commitHash: a37b859f9546a95946f25e7c77a3fe33bce894e7
+        commitHash: d06bad871e3c138e3e6f49aac5bb35875ee8aeb1
         commitAvatar: https://github.com/skyu-v2-dev[bot].png
-        commitTime: '2023-11-20T07:29:37Z'
+        commitTime: '2023-11-20T07:31:22Z'
         commitMessage: '"Deploy iwiick-app to dev"'
         commitUser: skyu-v2-dev[bot]
   minReplicas: 1
