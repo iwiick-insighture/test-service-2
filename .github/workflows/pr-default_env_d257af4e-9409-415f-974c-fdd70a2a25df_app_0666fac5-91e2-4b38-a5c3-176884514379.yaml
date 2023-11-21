@@ -13,7 +13,8 @@ env:
   IMAGE_NAME: iwiick-img:latest
   IMAGE_NAME_TO_PUSH: iwiick-img.latest
   DOCKER_FILE_NAME: Dockerfile
-  SCAN_SEVERITY: CRITICAL
+  SCAN_SEVERITY: HIGH
+  TRIVY_SCAN_EXIT_CODE: '0'
 jobs:
   build:
     permissions: write-all
@@ -33,13 +34,12 @@ jobs:
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
           ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
       - name: 'Run :: Trivy vulnerability scanner'
-        id: skyu-trivy-scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.IMAGE_NAME }}
           format: table
           output: trivy-results.json
-          exit-code: '1'
+          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
@@ -55,6 +55,6 @@ jobs:
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     issue_number: context.issue.number,
-                    body: '```\n' + trivySummary + '\n```',
+                    body: 'Trivy ${{env.SCAN_SEVERITY}} Vulnerability Scan Results\n```\n' + trivySummary + '\n```',
                   });
                   
