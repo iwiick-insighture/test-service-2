@@ -45,16 +45,16 @@ jobs:
       - name: 'Run :: Debug :: Print Trivy Scan Output'
         run: | 
           cat trivy-results.json
-          TRIVY_SUMMARY=$(cat trivy-results.json | base64)
-          echo "TRIVY_SUMMARY=$TRIVY_SUMMARY" >> $GITHUB_ENV
       - name: 'Run :: Comment on PR with Trivy Summary'
         uses: actions/github-script@v6
         with:
           script: |2-
+                  const fs = require('fs');
+                  const trivySummary = fs.readFileSync('trivy-results.json', 'utf-8');
                   github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: context.issue.number,
-                    body: ${{env.TRIVY_SUMMARY}},
-                  });
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: trivySummary,
+              });
                   
