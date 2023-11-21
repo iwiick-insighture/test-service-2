@@ -45,8 +45,8 @@ jobs:
       - name: 'Run :: Comment on PR with Trivy Summary'
         uses: actions/github-script@v6
         with:
-          script: |-
-            |
+          script: |2-
+
                   const trivySummary = ${{ steps.skyu-trivy-scan.outputs.stdout }};
                   context.github.issues.createComment({
                     owner: context.repo.owner,
