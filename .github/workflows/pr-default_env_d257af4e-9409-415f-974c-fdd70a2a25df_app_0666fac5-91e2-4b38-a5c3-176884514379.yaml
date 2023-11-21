@@ -45,7 +45,7 @@ jobs:
       - name: 'Run :: Debug :: Print Trivy Scan Output'
         run: | 
           cat trivy-results.json
-          TRIVY_SUMMARY=$(cat trivy-results.json)
+          TRIVY_SUMMARY=$(cat trivy-results.json | base64)
           echo "TRIVY_SUMMARY=$TRIVY_SUMMARY" >> $GITHUB_ENV
       - name: 'Run :: Comment on PR with Trivy Summary'
         uses: actions/github-script@v6
