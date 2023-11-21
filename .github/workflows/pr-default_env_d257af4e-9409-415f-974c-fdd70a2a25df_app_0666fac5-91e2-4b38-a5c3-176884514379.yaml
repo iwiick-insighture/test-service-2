@@ -49,7 +49,7 @@ jobs:
           script: |2-
 
                   const fs = require('fs');
-                  const trivySummary = fs.readFileSync(trivy-results.json, 'utf-8');
+                  const trivySummary = fs.readFileSync('trivy-results.json', 'utf-8');
 
                   github.rest.issues.createComment({
                   owner: context.repo.owner,
