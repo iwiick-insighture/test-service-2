@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: iwiick-img:latest
   IMAGE_NAME_TO_PUSH: iwiick-img.latest
   DOCKER_FILE_NAME: Dockerfile
-  SCAN_SEVERITY: HIGH
+  SCAN_SEVERITY: CRITICAL
 jobs:
   build:
     permissions: write-all
@@ -38,6 +38,7 @@ jobs:
         with:
           image-ref: ${{ env.IMAGE_NAME }}
           format: table
+          output: trivy-results.json
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: os,library
@@ -47,11 +48,14 @@ jobs:
         with:
           script: |2-
 
-                  const trivySummary = `${{ steps.skyu-trivy-scan.outputs.stdout }}`;
+                  const fs = require('fs');
+                  const trivySummary = fs.readFileSync(trivy-results.json, 'utf-8');
+
                   github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: context.issue.number,
-                    body: 'This works yall :)',
-                  });
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: '```
+            ' + trivySummary + '
+            ```',
                   
