@@ -47,7 +47,7 @@ jobs:
         with:
           script: |2-
 
-                  const trivySummary = `${{ steps.skyu-trivy-scan.outputs.stdout }}`;
+                  const trivySummary = ${{ steps.skyu-trivy-scan.outputs.stdout }};
                   console.log("OUTPUT", trivySummary);
                   // github.rest.issues.createComment({
                   //   owner: context.repo.owner,
