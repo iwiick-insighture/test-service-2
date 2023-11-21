@@ -42,8 +42,8 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
-      - name: 'Debug :: Print Trivy Scan Output'
-        run: echo "${{ toJSON(steps.skyu-trivy-scan.outputs) }}"
+      - name: 'Run :: Debug :: Print Trivy Scan Output'
+        run: cat trivy-results.json
       - name: 'Run :: Comment on PR with Trivy Summary'
         uses: actions/github-script@v6
         with:
