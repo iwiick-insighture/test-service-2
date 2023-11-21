@@ -5,6 +5,7 @@ name: >-
   pull_request:
     types:
       - opened
+      - synchronize
   workflow_dispatch: {}
 env:
   ENCODED_PIPELINE_SECRET: >-
@@ -44,9 +45,9 @@ jobs:
       - name: 'Run :: Comment on PR with Trivy Summary'
         uses: actions/github-script@v6
         with:
-          script: |2-
-
-                  const trivySummary = ${steps.skyu-trivy-scan.outputs.stdout};
+          script: |-
+            |
+                  const trivySummary = ${{ steps.skyu-trivy-scan.outputs.stdout }};
                   context.github.issues.createComment({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
