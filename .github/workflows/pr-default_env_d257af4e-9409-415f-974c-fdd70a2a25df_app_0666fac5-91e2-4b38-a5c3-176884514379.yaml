@@ -1,0 +1,57 @@
+name: >-
+  pr-default_env_d257af4e-9409-415f-974c-fdd70a2a25df_app_0666fac5-91e2-4b38-a5c3-176884514379
+  Pipeline (Skyu Generated) (Skyu Generated)
+'on':
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  workflow_dispatch: {}
+env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.TESTSERVICE2_ENV_D257AF4E9409415F974CFDD70A2A25DF_APP_0666FAC591E24B38A5C3176884514379_PRDEFAULT_ENV_D257AF4E9409415F974CFDD70A2A25DF_APP_0666FAC591E24B38A5C3176884514379}}
+  IMAGE_NAME: iwiick-img:latest
+  IMAGE_NAME_TO_PUSH: iwiick-img.latest
+  DOCKER_FILE_NAME: Dockerfile
+  SCAN_SEVERITY: CRITICAL
+jobs:
+  build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start
+        run: echo " Starting GitHub Action!"
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v2
+      - name: 'Run :: Decoding Secrets'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+      - name: 'Run :: Build With Docker'
+        run: >-
+          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
+          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
+      - name: 'Run :: Trivy vulnerability scanner'
+        id: skyu-trivy-scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: ${{env.SCAN_SEVERITY}}
+      - name: 'Run :: Comment on PR with Trivy Summary'
+        uses: actions/github-script@v6
+        with:
+          script: |2-
+
+                  const trivySummary = ${steps.skyu-trivy-scan.outputs.stdout};
+                  context.github.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    body: trivySummary,
+                  });
+                  
