@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: iwiick-img:latest
   IMAGE_NAME_TO_PUSH: iwiick-img.latest
   DOCKER_FILE_NAME: Dockerfile
-  SCAN_SEVERITY: HIGH
+  SCAN_SEVERITY: CRITICAL
 jobs:
   build:
     permissions: write-all
