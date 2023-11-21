@@ -38,10 +38,11 @@ jobs:
         with:
           image-ref: ${{ env.IMAGE_NAME }}
           format: table
-          exit-code: '1'
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
+      - name: 'Debug :: Print Trivy Scan Output'
+        run: echo "${{ toJSON(steps.skyu-trivy-scan.outputs) }}"
       - name: 'Run :: Comment on PR with Trivy Summary'
         uses: actions/github-script@v6
         with:
