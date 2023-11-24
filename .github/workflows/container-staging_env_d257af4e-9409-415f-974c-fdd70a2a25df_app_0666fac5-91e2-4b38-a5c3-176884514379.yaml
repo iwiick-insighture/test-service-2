@@ -4,10 +4,10 @@ name: >-
 'on':
   push:
     branches:
-      - master
+      - staging
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_88ac0cb5-57b3-497d-b7a5-38c71fcc1530
+    types: pipeline_d9f416d8-bfdc-431b-87e9-57a8617a07a0
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_D257AF4E9409415F974CFDD70A2A25DF_APP_0666FAC591E24B38A5C3176884514379_CONTAINERSTAGING_ENV_D257AF4E9409415F974CFDD70A2A25DF_APP_0666FAC591E24B38A5C3176884514379}}
