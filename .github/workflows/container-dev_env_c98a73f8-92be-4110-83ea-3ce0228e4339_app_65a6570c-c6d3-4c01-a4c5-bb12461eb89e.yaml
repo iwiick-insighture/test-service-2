@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_56fbd0f6-f5c8-4b72-b912-06c2aa861511
+    types: pipeline_ddf0f608-c5ae-48c6-a68c-988251e440c3
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -44,7 +44,7 @@ jobs:
         id: check-image-exists-in-aws-ecr
         run: |2-
 
-              image_exists=$(aws ecr describe-images --repository-name ${{ env.REPOSITORY_NAME }} --image-ids imageTag=${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} --output json | jq -r '.images | length > 0')
+              image_exists=$(aws ecr describe-images --repository-name ${{ env.REPOSITORY_NAME }} --image-ids imageTag=${{ env.IMAGE_NAME_TO_PUSH }} --output json | jq -r '.images | length > 0')
               echo "Image exists in registry: $image_exists"
               
       - name: 'Run :: Build With Docker'
