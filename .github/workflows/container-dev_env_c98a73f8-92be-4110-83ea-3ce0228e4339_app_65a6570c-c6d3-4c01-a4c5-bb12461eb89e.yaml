@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_707b053a-9771-43dd-84c1-be2d48e48a05
+    types: pipeline_711bb4cf-92d6-4d18-8ac5-d73fc31e8304
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -54,12 +54,13 @@ jobs:
               
       - name: 'Run :: Build With Docker'
         run: >-
-          docker build -t ${{env.IMAGE_NAME}}:${{ env.IMAGE_TAG }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}}
+          docker build -t ${{ env.registryURL }}/${{env.IMAGE_NAME}}:${{
+          env.IMAGE_TAG }} -f ${{env.DOCKER_FILE_NAME}}
+          .${{env.DOCKER_FILE_PATH}}
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{env.IMAGE_NAME}}:${{ env.IMAGE_TAG }}
+          image-ref: ${{ env.registryURL }}/${{env.IMAGE_NAME}}:${{ env.IMAGE_TAG }}
           format: table
           output: trivy-results.json
           exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
