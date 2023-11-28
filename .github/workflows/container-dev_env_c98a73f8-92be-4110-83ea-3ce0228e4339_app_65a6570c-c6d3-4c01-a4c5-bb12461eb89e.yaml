@@ -7,10 +7,11 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_aa0382af-2338-413e-93f9-96ca28ccdfc2
+    types: pipeline_e9ed9b68-98e1-4c1c-9346-1d0ff925bce5
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
+  CHECK_IMAGE_EXISTENCE: 'true'
   IMAGE_NAME: iwiick-img:latest
   IMAGE_NAME_TO_PUSH: iwiick-img.latest
   DOCKER_FILE_NAME: Dockerfile
@@ -62,16 +63,28 @@ jobs:
         run: >-
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
           ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
+        if: >-
+          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'false'
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
           || true
+        if: >-
+          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'false'
       - name: 'Run :: Build, tag, and push image to Amazon ECR'
         run: >-
           docker build -t ${{ steps.skyu-login-ecr.outputs.registry
           }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} . && docker
           push ${{ steps.skyu-login-ecr.outputs.registry
           }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }}
+        if: >-
+          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'false'
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
@@ -82,6 +95,10 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
+        if: >-
+          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
+          env.CHECK_IMAGE_EXISTENCE }} == 'false'
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
