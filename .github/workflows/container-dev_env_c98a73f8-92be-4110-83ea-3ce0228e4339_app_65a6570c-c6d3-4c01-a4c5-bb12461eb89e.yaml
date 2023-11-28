@@ -44,8 +44,22 @@ jobs:
         id: check-image-exists-in-aws-ecr
         run: |2-
 
-              image_exists=$(aws ecr describe-images --repository-name ${{ env.REPOSITORY_NAME }} --image-ids imageTag=${{ env.IMAGE_NAME_TO_PUSH }} --output json | jq -r '.images | length > 0')
-              echo "Image exists in registry: $image_exists"
+              set -e
+              repositoryName=${{ env.REPOSITORY_NAME }}
+              tag=${{ env.IMAGE_NAME_TO_PUSH }}
+    
+              image_exists=$(aws ecr describe-images --repository-name "$repositoryName" --image-ids imageTag="$tag" --output json)
+    
+              echo "AWS CLI Output:"
+            echo "$image_exists"
+    
+            if [ "$(echo "$image_exists" | jq -r '.images | length > 0')" = "true" ]; then
+              echo "Image exists in registry."
+              echo "::set-output name=image_exists::true"
+            else
+              echo "Image does not exist in registry."
+              echo "::set-output name=image_exists::false"
+            fi
               
       - name: 'Run :: Build With Docker'
         run: >-
