@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ddf0f608-c5ae-48c6-a68c-988251e440c3
+    types: pipeline_4eb3d2fd-0097-4497-9945-c473dc26ed30
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -44,22 +44,19 @@ jobs:
         id: check-image-exists-in-aws-ecr
         run: |2-
 
-              set -e
-              repositoryName=${{ env.REPOSITORY_NAME }}
-              tag=${{ env.IMAGE_NAME_TO_PUSH }}
-    
-              image_exists=$(aws ecr describe-images --repository-name "$repositoryName" --image-ids imageTag="$tag" --output json)
-    
+              set -e   
+              IMAGE_EXISTS_IN_ECR=$(aws ecr describe-images --repository-name "${{ env.REPOSITORY_NAME }}" --image-ids imageTag="${{ env.IMAGE_NAME_TO_PUSH }}" --output json)
+              
               echo "AWS CLI Output:"
-            echo "$image_exists"
-    
-            if [ "$(echo "$image_exists" | jq -r '.images | length > 0')" = "true" ]; then
-              echo "Image exists in registry."
-              echo "::set-output name=image_exists::true"
-            else
-              echo "Image does not exist in registry."
-              echo "::set-output name=image_exists::false"
-            fi
+              echo "IMAGE_EXISTS_IN_ECR"
+              
+              if echo "IMAGE_EXISTS_IN_ECR" | jq -e '.imageDetails' > /dev/null; then
+                echo "Image exists in registry."
+                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
+              else
+                echo "Image does not exist in registry."
+                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
+              fi
               
       - name: 'Run :: Build With Docker'
         run: >-
