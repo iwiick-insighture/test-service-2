@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_58652d0c-e048-4ee1-80af-e7b9155e5d03
+    types: pipeline_2eb3b850-4543-4a2b-8a1d-805f062aab07
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -54,6 +54,13 @@ jobs:
       - name: 'Run :: Login to Amazon ECR'
         id: skyu-login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      - name: 'Run :: Check if image already exists in AWS Ecr'
+        id: check-image-exists-in-aws-ecr
+        run: |2-
+
+              image_exists=$(aws ecr describe-images --repository-name ${{ env.REPOSITORY_NAME }} --image-ids imageTag=${{ env.IMAGE_NAME_TO_PUSH }} --output json | jq -r '.images | length > 0')
+              echo "Image exists in registry: $image_exists"
+              
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
