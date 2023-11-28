@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4eb3d2fd-0097-4497-9945-c473dc26ed30
+    types: pipeline_aa0382af-2338-413e-93f9-96ca28ccdfc2
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -45,12 +45,12 @@ jobs:
         run: |2-
 
               set -e   
-              IMAGE_EXISTS_IN_ECR=$(aws ecr describe-images --repository-name "${{ env.REPOSITORY_NAME }}" --image-ids imageTag="${{ env.IMAGE_NAME_TO_PUSH }}" --output json)
+              image_exists=$(aws ecr describe-images --repository-name "${{ env.REPOSITORY_NAME }}" --image-ids imageTag="${{ env.IMAGE_NAME_TO_PUSH }}" --output json)
               
               echo "AWS CLI Output:"
-              echo "IMAGE_EXISTS_IN_ECR"
+              echo "$image_exists"
               
-              if echo "IMAGE_EXISTS_IN_ECR" | jq -e '.imageDetails' > /dev/null; then
+              if echo "$image_exists" | jq -e '.imageDetails' > /dev/null; then
                 echo "Image exists in registry."
                 echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
               else
