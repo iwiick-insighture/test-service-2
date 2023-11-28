@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_711bb4cf-92d6-4d18-8ac5-d73fc31e8304
+    types: pipeline_8c3b2d09-be0a-40bb-b4c1-681e38c33376
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -71,9 +71,9 @@ jobs:
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
           || true
-      - name: 'Run :: Build, tag, and push image to Amazon ECR'
+      - name: 'Run :: Build, tag, and push image'
         run: >-
-          docker push ${{ env.registryURL }}/${{env.IMAGE_NAME}}:${{
+          docker push ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
