@@ -7,16 +7,16 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_2eb3b850-4543-4a2b-8a1d-805f062aab07
+    types: pipeline_58993d23-834d-41f7-a353-70f74165c795
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
   IMAGE_NAME: iwiick-img:latest
   IMAGE_NAME_TO_PUSH: iwiick-img.latest
   DOCKER_FILE_NAME: Dockerfile
+  REPOSITORY_NAME: iwiick
   SCAN_SEVERITY: CRITICAL
   TRIVY_SCAN_EXIT_CODE: '1'
-  REPOSITORY_NAME: iwiick
 jobs:
   build:
     permissions: write-all
@@ -31,20 +31,6 @@ jobs:
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Build With Docker'
-        run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
-      - name: 'Run :: Trivy vulnerability scanner'
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}
-          format: table
-          output: trivy-results.json
-          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: ${{env.SCAN_SEVERITY}}
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -58,9 +44,14 @@ jobs:
         id: check-image-exists-in-aws-ecr
         run: |2-
 
-              image_exists=$(aws ecr describe-images --repository-name ${{ env.REPOSITORY_NAME }} --image-ids imageTag=${{ env.IMAGE_NAME_TO_PUSH }} --output json | jq -r '.images | length > 0')
+              image_exists=$(aws ecr describe-images --repository-name ${{ env.REPOSITORY_NAME }} --image-ids imageTag=${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} --output json | jq -r '.images | length > 0')
               echo "Image exists in registry: $image_exists"
               
+      - &ref_0
+        name: 'Run :: Build With Docker'
+        run: >-
+          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
+          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
@@ -71,6 +62,17 @@ jobs:
           }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} . && docker
           push ${{ steps.skyu-login-ecr.outputs.registry
           }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }}
+      - *ref_0
+      - name: 'Run :: Trivy vulnerability scanner'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: table
+          output: trivy-results.json
+          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: ${{env.SCAN_SEVERITY}}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
