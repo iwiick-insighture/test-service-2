@@ -7,7 +7,7 @@ name: >-
       - qa/*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5de97cf4-eb82-4143-bf36-d067b1b49643
+    types: pipeline_ed4ae86b-54c3-4661-9c76-26186453c748
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERQA_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -26,6 +26,9 @@ jobs:
         run: echo " Starting GitHub Action!"
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
+      - name: 'Run :: Checkout Specific Commit'
+        if: ${{ github.event.client_payload.commitId != null }}
+        run: git checkout ${{ github.event.client_payload.commitId }}
       - name: 'Run :: Decoding Secrets'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
