@@ -12,8 +12,9 @@ env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
   CHECK_IMAGE_EXISTENCE: 'true'
-  IMAGE_NAME: iwiick-img:latest
-  IMAGE_NAME_TO_PUSH: iwiick-img.latest
+  IMG_URL: '272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick'
+  # Support Http trigger
+  IMG_TAG: ${{ github.sha }}
   DOCKER_FILE_NAME: Dockerfile
   REPOSITORY_NAME: iwiick
   SCAN_SEVERITY: CRITICAL
@@ -44,25 +45,17 @@ jobs:
       - name: 'Run :: Check if image already exists in AWS Ecr'
         id: check-image-exists-in-aws-ecr
         run: |2-
-
-              set -e   
-              image_exists=$(aws ecr describe-images --repository-name "${{ env.REPOSITORY_NAME }}" --image-ids imageTag="${{ env.IMAGE_NAME_TO_PUSH }}" --output json)
-              
-              echo "AWS CLI Output:"
-              echo "$image_exists"
-              
-              if echo "$image_exists" | jq -e '.imageDetails' > /dev/null; then
-                echo "Image exists in registry."
-                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
-              else
-                echo "Image does not exist in registry."
-                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
-              fi
-              
+            if docker pull ${{ env.IMG_URL }}:${{env.IMG_TAG}} >/dev/null 2>&1; then
+              echo "Image exists in registry."
+              echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
+            else
+              echo "Image does not exist in registry."
+              echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
+            fi
       - name: 'Run :: Build With Docker'
         run: >-
-          docker images && docker build -t ${{ env.IMAGE_NAME }} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
+          docker build -t ${{ env.IMG_URL }}:${{env.IMG_TAG}} -f
+          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}}
         if: >-
           ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
           env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
@@ -77,10 +70,7 @@ jobs:
           env.CHECK_IMAGE_EXISTENCE }} == 'false'
       - name: 'Run :: Build, tag, and push image to Amazon ECR'
         run: >-
-          docker build -t ${{ steps.skyu-login-ecr.outputs.registry
-          }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} . && docker
-          push ${{ steps.skyu-login-ecr.outputs.registry
-          }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }}
+          docker push ${{ env.IMG_URL }}:${{env.IMG_TAG}}
         if: >-
           ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
           env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
@@ -88,7 +78,7 @@ jobs:
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_NAME }}
+          image-ref: ${{ env.IMG_URL }}:${{env.IMG_TAG}}
           format: table
           output: trivy-results.json
           exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
@@ -102,7 +92,7 @@ jobs:
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
-              response=$(curl -d "imageRegistryURL=${{ steps.skyu-login-ecr.outputs.registry }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_NAME_TO_PUSH }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&commitDetails[commitHash]=${{ github.event.after }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
+              response=$(curl -d "imageRegistryURL=${{ steps.skyu-login-ecr.outputs.registry }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMG_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&commitDetails[commitHash]=${{ github.event.after }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
 
               status_code=$?
 
