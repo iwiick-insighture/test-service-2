@@ -8,49 +8,39 @@ metadata:
         path: skyu-app-transformer
 spec:
   applicationContainers:
-    - imageTag: iwiick-img.latest
+    - imageTag: latest
       cpuRequestMili: 100
-      cpuLimitMili: 200
-      memoryRequestMb: 100
-      memoryLimitMb: 200
+      cpuLimitMili: 150
+      memoryRequestMb: 350
+      memoryLimitMb: 450
       args: []
       command: []
       configMounts: []
-      applicationPorts: []
+      applicationPorts:
+        - port: 233
+          targetPort: 123231
+          protocol: UDP
       healthChecks: []
-      name: mist-main
-      imageRegistry: 272133924862.dkr.ecr.us-east-1.amazonaws.com
-      commitDetails:
-        commitHash: 4eb890143f4c53cea51683341d67445f378ec182
-        commitAvatar: https://github.com/skyu-v2-dev[bot].png
-        commitTime: '2023-11-22T06:04:23Z'
-        commitMessage: '"Deploy iwiick-app to dev"'
-        commitUser: skyu-v2-dev[bot]
+      name: iwiick-app-main
+      imagePullPolicy: Always
   minReplicas: 1
-  maxReplicas: 5
-  terminationGracePeriodSeconds: 30
-  nodeSelector:
-    kubernetes.io/hostname: my-node-name
+  maxReplicas: 1
+  terminationGracePeriodSeconds: 60
+  nodeSelector: {}
   suspend: false
   ttlSecondsAfterFinished: 0
   labels:
     app: iwiick-app
-    env: production
     version: v0.0.1
-    applicationId: app_0666fac5-91e2-4b38-a5c3-176884514379
-    projectId: project_ac1e5bc9-dd50-4c3f-8a21-89e0a6e64063
-    organizationId: org_51f9f009-7930-486b-a047-1ce7d6ef103b
-    environmentId: env_d257af4e-9409-415f-974c-fdd70a2a25df
+    applicationId: app_65a6570c-c6d3-4c01-a4c5-bb12461eb89e
+    projectId: project_3b037a6f-2614-4ea4-b15e-9dc41a5bfa60
+    organizationId: org_1f902008-1f74-4040-8d55-a285aa0d7507
+    environmentId: env_c98a73f8-92be-4110-83ea-3ce0228e4339
     environmentName: dev
-  horizontalAutoScalingRules:
-    - ruleType: cpu
-      percentage: 80
-  volumes:
-    - name: my-volume
-      type: PersistentVolumeClaim
-      pvc:
-        claimName: my-claim
-  type: service
-  serviceType: LoadBalancer
-  name: mist
-  namespace: iwick-proj-dev
+  horizontalAutoScalingRules: []
+  volumes: []
+  type: Deployment
+  name: iwiick-app
+  cronTab: ''
+  serviceType: ClusterIP
+  namespace: iwiick-proj-dev

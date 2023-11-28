@@ -4,7 +4,7 @@ metadata:
   name: iwiick-app
   labels:
     app: iwiick-app
-    applicationId: app_0666fac5-91e2-4b38-a5c3-176884514379
+    applicationId: app_65a6570c-c6d3-4c01-a4c5-bb12461eb89e
     version: v0.0.1
 spec:
   selector:
