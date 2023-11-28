@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_8f81229f-01a8-40be-99e3-68fc827e7405
+    types: pipeline_56fbd0f6-f5c8-4b72-b912-06c2aa861511
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -47,8 +47,7 @@ jobs:
               image_exists=$(aws ecr describe-images --repository-name ${{ env.REPOSITORY_NAME }} --image-ids imageTag=${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} --output json | jq -r '.images | length > 0')
               echo "Image exists in registry: $image_exists"
               
-      - &ref_0
-        name: 'Run :: Build With Docker'
+      - name: 'Run :: Build With Docker'
         run: >-
           docker images && docker build -t ${{ env.IMAGE_NAME }} -f
           ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}} && docker images
@@ -62,7 +61,6 @@ jobs:
           }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }} . && docker
           push ${{ steps.skyu-login-ecr.outputs.registry
           }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_NAME_TO_PUSH }}
-      - *ref_0
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
