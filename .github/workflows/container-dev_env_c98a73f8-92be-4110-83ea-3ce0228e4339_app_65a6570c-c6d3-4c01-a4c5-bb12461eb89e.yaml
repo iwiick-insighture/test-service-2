@@ -7,18 +7,16 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e9ed9b68-98e1-4c1c-9346-1d0ff925bce5
+    types: pipeline_14d6a701-53c1-48f3-a5c4-228d71f42540
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
-  CHECK_IMAGE_EXISTENCE: 'true'
-  IMG_URL: '272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick'
-  # Support Http trigger
-  IMG_TAG: ${{ github.sha }}
+  IMAGE_NAME: iwiick-img
+  IMAGE_TAG: ${{github.sha}}
   DOCKER_FILE_NAME: Dockerfile
-  REPOSITORY_NAME: iwiick
   SCAN_SEVERITY: CRITICAL
   TRIVY_SCAN_EXIT_CODE: '1'
+  REPOSITORY_NAME: iwiick-img
 jobs:
   build:
     permissions: write-all
@@ -42,57 +40,44 @@ jobs:
       - name: 'Run :: Login to Amazon ECR'
         id: skyu-login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      - name: 'Run :: Check if image already exists in AWS Ecr'
-        id: check-image-exists-in-aws-ecr
+      - name: 'Run :: Check if image already exists'
         run: |2-
-            if docker pull ${{ env.IMG_URL }}:${{env.IMG_TAG}} >/dev/null 2>&1; then
-              echo "Image exists in registry."
-              echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
-            else
-              echo "Image does not exist in registry."
-              echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
-            fi
+
+              if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
+              then
+                echo "Image exists in registry."
+                echo "IMAGE_EXISTS_IN_ECR='true'" >> $GITHUB_ENV
+              else
+                echo "Image does not exist in registry."
+                echo "IMAGE_EXISTS_IN_ECR='false'" >> $GITHUB_ENV
+              fi
+              
       - name: 'Run :: Build With Docker'
         run: >-
-          docker build -t ${{ env.IMG_URL }}:${{env.IMG_TAG}} -f
-          ${{env.DOCKER_FILE_NAME}} .${{env.DOCKER_FILE_PATH}}
-        if: >-
-          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'false'
-      - name: 'Run :: Create Repository'
-        run: >-
-          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
-          || true
-        if: >-
-          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'false'
-      - name: 'Run :: Build, tag, and push image to Amazon ECR'
-        run: >-
-          docker push ${{ env.IMG_URL }}:${{env.IMG_TAG}}
-        if: >-
-          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'false'
+          docker build -t ${{ env.IMAGE_NAME }} -f ${{env.DOCKER_FILE_NAME}}
+          .${{env.DOCKER_FILE_PATH}}
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMG_URL }}:${{env.IMG_TAG}}
+          image-ref: ${{ env.IMAGE_NAME }}
           format: table
           output: trivy-results.json
           exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
-        if: >-
-          ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false' && ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'true' || ${{
-          env.CHECK_IMAGE_EXISTENCE }} == 'false'
+      - name: 'Run :: Create Repository'
+        run: >-
+          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
+          || true
+      - name: 'Run :: Build, tag, and push image to Amazon ECR'
+        run: >-
+          docker push ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
+          env.IMAGE_TAG }}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
-              response=$(curl -d "imageRegistryURL=${{ steps.skyu-login-ecr.outputs.registry }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMG_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&commitDetails[commitHash]=${{ github.event.after }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
+              response=$(curl -d "imageRegistryURL=${{ steps.skyu-login-ecr.outputs.registry }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&commitDetails[commitHash]=${{ github.event.after }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
 
               status_code=$?
 
