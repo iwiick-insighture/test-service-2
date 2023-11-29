@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0884601b-5a8b-4630-99c1-3e586bbecc4c
+    types: pipeline_338e7d8f-7f89-416d-ad1d-3ad8144b5717
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -24,8 +24,8 @@ jobs:
     steps:
       - name: Start
         run: >-
-          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR='false'"
-          >> $GITHUB_ENV
+          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR=false" >>
+          $GITHUB_ENV
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
       - name: 'Run :: Checkout Specific Commit'
@@ -52,10 +52,10 @@ jobs:
               if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
               then
                 echo "Image exists in registry."
-                echo "IMAGE_EXISTS_IN_ECR='true'" >> $GITHUB_ENV
+                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
               else
                 echo "Image does not exist in registry."
-                echo "IMAGE_EXISTS_IN_ECR='false'" >> $GITHUB_ENV
+                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
               fi
               
       - name: 'Run :: Build With Docker'
