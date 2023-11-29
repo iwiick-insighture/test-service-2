@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_dab5ec98-da03-4adc-860b-2636f6fe61f5
+    types: pipeline_38c7ffb7-bd90-4a49-9a3c-6cdf53c66f4f
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -56,6 +56,7 @@ jobs:
                 echo "Image does not exist in registry."
                 echo "IMAGE_EXISTS_IN_ECR='false'" >> $GITHUB_ENV
               fi
+              echo "RUN ID :: ${{github.run_id}}"
               
       - name: 'Run :: Build With Docker'
         run: >-
