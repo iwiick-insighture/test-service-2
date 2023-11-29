@@ -63,7 +63,7 @@ jobs:
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }} -f ${{env.DOCKER_FILE_NAME}}
           .${{env.DOCKER_FILE_PATH}}
-        if: '[ "${{ env.IMAGE_EXISTS_IN_ECR }}" == "false" ]'
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == "false" }}
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
@@ -74,17 +74,17 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
-        if: '[ "${{ env.IMAGE_EXISTS_IN_ECR }}" == "false" ]'
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == "false" }}
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
           || true
-        if: '[ "${{ env.IMAGE_EXISTS_IN_ECR }}" == "false" ]'
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == "false" }}
       - name: 'Run :: Build, tag, and push image'
         run: >-
           docker push ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }}
-        if: '[ "${{ env.IMAGE_EXISTS_IN_ECR }}" == "false" ]'
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == "false" }}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
