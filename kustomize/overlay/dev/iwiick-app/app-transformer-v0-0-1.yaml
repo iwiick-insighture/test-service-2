@@ -8,7 +8,7 @@ metadata:
         path: skyu-app-transformer
 spec:
   applicationContainers:
-    - imageTag: b08ddd606e073afd0c9177bef260878e2ab2eb8e
+    - imageTag: 0f9b114e08282ba95f8a1917ae542fefaf7cb491
       cpuRequestMili: 100
       cpuLimitMili: 150
       memoryRequestMb: 350
@@ -25,9 +25,9 @@ spec:
       imagePullPolicy: Always
       imageRegistry: 272133924862.dkr.ecr.us-east-1.amazonaws.com
       commitDetails:
-        commitHash: b08ddd606e073afd0c9177bef260878e2ab2eb8e
+        commitHash: 0f9b114e08282ba95f8a1917ae542fefaf7cb491
         commitAvatar: https://github.com/skyu-v2-dev[bot].png
-        commitTime: '2023-11-29T07:36:20Z'
+        commitTime: '2023-11-29T07:36:21Z'
         commitMessage: '"Deploy iwiick-app to dev"'
         commitUser: skyu-v2-dev[bot]
   minReplicas: 1
