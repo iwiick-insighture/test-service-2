@@ -92,7 +92,7 @@ jobs:
 
               status_code=$?
 
-              echo "HEREEEEEEEEEEE :: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'"
+              echo "HEREEEEEEEEEEE :: ${{ if eq(env.IMAGE_EXISTS_IN_ECR, 'true') }}false{{ else }}true{{ end }}"
               if [ $status_code -eq 0 ]; then
                 if echo "$response" | grep -q '"message":"Unauthorized"'; then
                   echo "FAILED :: Unauthorized access."
