@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_51c2d670-2842-47b2-a03d-5b0eaa5f286e
+    types: pipeline_c4541926-0c50-4d8d-a474-17bdafc8bfd3
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -92,7 +92,12 @@ jobs:
 
               status_code=$?
 
-              echo "HEREEEEEEEEEEE :: ${{ env.IMAGE_EXISTS_IN_ECR }}"
+              if [ "${{ env.IMAGE_EXISTS_IN_ECR }}" == "false" ]; then
+                echo "HEREEEEEEEEEEE :: true"
+              else
+                echo "HEREEEEEEEEEEE :: false"
+              fi
+
               if [ $status_code -eq 0 ]; then
                 if echo "$response" | grep -q '"message":"Unauthorized"'; then
                   echo "FAILED :: Unauthorized access."
