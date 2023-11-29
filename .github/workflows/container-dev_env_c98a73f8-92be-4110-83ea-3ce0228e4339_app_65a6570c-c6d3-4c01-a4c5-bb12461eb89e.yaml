@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1f71cda9-825e-4704-b3f8-8a62b2cc6c06
+    types: pipeline_d94358f6-8b7e-4f25-8d4c-aea0d5607ad0
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -63,7 +63,7 @@ jobs:
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }} -f ${{env.DOCKER_FILE_NAME}}
           .${{env.DOCKER_FILE_PATH}}
-        if: steps.check-image-existence-step-id.outputs.result != 'false'
+        if: steps.check-image-existence-step-id.outputs.result == 'false'
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
@@ -74,17 +74,17 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
-        if: steps.check-image-existence-step-id.outputs.result != 'false'
+        if: steps.check-image-existence-step-id.outputs.result == 'false'
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
           || true
-        if: steps.check-image-existence-step-id.outputs.result != 'false'
+        if: steps.check-image-existence-step-id.outputs.result == 'false'
       - name: 'Run :: Build, tag, and push image'
         run: >-
           docker push ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }}
-        if: steps.check-image-existence-step-id.outputs.result != 'false'
+        if: steps.check-image-existence-step-id.outputs.result == 'false'
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
