@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_38c7ffb7-bd90-4a49-9a3c-6cdf53c66f4f
+    types: pipeline_1f71cda9-825e-4704-b3f8-8a62b2cc6c06
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -46,6 +46,7 @@ jobs:
         id: skyu-login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - name: 'Run :: Check if image already exists'
+        id: check-image-existence-step-id
         run: |2-
 
               if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
@@ -56,14 +57,13 @@ jobs:
                 echo "Image does not exist in registry."
                 echo "IMAGE_EXISTS_IN_ECR='false'" >> $GITHUB_ENV
               fi
-              echo "RUN ID :: ${{github.run_id}}"
               
       - name: 'Run :: Build With Docker'
         run: >-
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }} -f ${{env.DOCKER_FILE_NAME}}
           .${{env.DOCKER_FILE_PATH}}
-        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
+        if: steps.check-image-existence-step-id.outputs.result != 'false'
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
@@ -74,17 +74,17 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
-        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
+        if: steps.check-image-existence-step-id.outputs.result != 'false'
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
           || true
-        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
+        if: steps.check-image-existence-step-id.outputs.result != 'false'
       - name: 'Run :: Build, tag, and push image'
         run: >-
           docker push ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }}
-        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
+        if: steps.check-image-existence-step-id.outputs.result != 'false'
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
