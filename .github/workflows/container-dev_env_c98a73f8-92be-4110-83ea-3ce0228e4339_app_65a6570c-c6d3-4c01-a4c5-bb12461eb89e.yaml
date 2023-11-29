@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_d94358f6-8b7e-4f25-8d4c-aea0d5607ad0
+    types: pipeline_201b7b78-e989-4928-9061-44b70ff45685
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -95,6 +95,9 @@ jobs:
               if [ $status_code -eq 0 ]; then
                 if echo "$response" | grep -q '"message":"Unauthorized"'; then
                   echo "FAILED :: Unauthorized access."
+                  exit 1
+                elif echo "$response" | grep -q '"statusCode":404'; then
+                  echo "Response: $response"
                   exit 1
                 else
                   echo "SUCCESS :: Response: $response"
