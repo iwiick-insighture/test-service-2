@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_918b4b17-be5d-4097-9d28-b3908da2b2d4
+    types: pipeline_dab5ec98-da03-4adc-860b-2636f6fe61f5
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E_CONTAINERDEV_ENV_C98A73F892BE411083EA3CE0228E4339_APP_65A6570CC6D34C01A4C5BB12461EB89E}}
@@ -23,7 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Start
-        run: echo " Starting GitHub Action!"
+        run: >-
+          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR='false'"
+          >> $GITHUB_ENV
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
       - name: 'Run :: Checkout Specific Commit'
@@ -60,6 +62,7 @@ jobs:
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }} -f ${{env.DOCKER_FILE_NAME}}
           .${{env.DOCKER_FILE_PATH}}
+        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
         with:
@@ -70,14 +73,17 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
+        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
           || true
+        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
       - name: 'Run :: Build, tag, and push image'
         run: >-
           docker push ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }}
+        if: ${{ env.IMAGE_EXISTS_IN_ECR }} == 'false'
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
