@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7680ebd3-3554-47e8-97fb-1ffeeb0d03cc
+    types: pipeline_80bfac94-f41c-44c8-8e7a-1e7e41f0db49
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E_CONTAINERDEV_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E}}
@@ -38,8 +38,8 @@ jobs:
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: 'Run :: Login to Dockerhub'
         run: >-
-          docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD
-          }} --password-stdin
+          docker login -u ${{ env.DOCKER_USERNAME }} --password-stdin ${{
+          env.DOCKER_PASSWORD }}
       - name: 'Run :: Build With Docker'
         run: >-
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
