@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5ea5cb06-3a44-4954-8a36-ff2abbb269e2
+    types: pipeline_9d9a8203-d77e-4fa2-a7d8-5e265a67aecb
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E_CONTAINERDEV_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E}}
@@ -36,28 +36,10 @@ jobs:
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Configure AWS credentials'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.roleARN }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ${{ env.region }}
-      - name: 'Run :: Login to Amazon ECR'
-        id: skyu-login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: 'Run :: Check if image already exists'
-        id: check-image-existence-step-id
-        run: |2-
-
-              if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
-              then
-                echo "Image exists in registry."
-                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
-              else
-                echo "Image does not exist in registry."
-                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
-              fi
-              
+      - name: 'Run :: Login to Dockerhub'
+        run: >-
+          docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD
+          }}
       - name: 'Run :: Build With Docker'
         run: >-
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
@@ -74,11 +56,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
-        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-      - name: 'Run :: Create Repository'
-        run: >-
-          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
-          || true
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
       - name: 'Run :: Build, tag, and push image'
         run: >-
