@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_c5b5a0de-0a6f-4b26-b5d2-981d6509f431
+    types: pipeline_8f6de9e0-0e99-4bf2-aac2-e535a0c4cce2
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E_CONTAINERDEV_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E}}
@@ -40,6 +40,19 @@ jobs:
         run: >-
           echo "${{ env.DOCKER_PASSWORD }}" | docker login -u "${{
           env.DOCKER_USERNAME }}" --password-stdin docker.io
+      - name: 'Run :: Check if image already exists'
+        id: check-image-existence-step-id
+        run: |2-
+
+              if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
+              then
+                echo "Image exists in registry."
+                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
+              else
+                echo "Image does not exist in registry."
+                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
+              fi
+              
       - name: 'Run :: Build With Docker'
         run: >-
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
