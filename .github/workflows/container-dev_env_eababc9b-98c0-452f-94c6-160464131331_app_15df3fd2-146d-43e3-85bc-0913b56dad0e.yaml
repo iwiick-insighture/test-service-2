@@ -1,0 +1,108 @@
+name: >-
+  container-dev_env_eababc9b-98c0-452f-94c6-160464131331_app_15df3fd2-146d-43e3-85bc-0913b56dad0e
+  Pipeline (Skyu Generated) (Skyu Generated)
+'on':
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: pipeline_5ea5cb06-3a44-4954-8a36-ff2abbb269e2
+env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.TESTSERVICE2_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E_CONTAINERDEV_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E}}
+  IMAGE_NAME: skyu-gen-img
+  IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
+  DOCKER_FILE_NAME: Dockerfile
+  SCAN_SEVERITY: CRITICAL
+  TRIVY_SCAN_EXIT_CODE: '1'
+  REPOSITORY_NAME: iwiick
+jobs:
+  build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start
+        run: >-
+          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR=false" >>
+          $GITHUB_ENV
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v2
+      - name: 'Run :: Checkout Specific Commit'
+        if: ${{ github.event.client_payload.commitId != null }}
+        run: git checkout ${{ github.event.client_payload.commitId }}
+      - name: 'Run :: Decoding Secrets'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+      - name: 'Run :: Configure AWS credentials'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Login to Amazon ECR'
+        id: skyu-login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: 'Run :: Check if image already exists'
+        id: check-image-existence-step-id
+        run: |2-
+
+              if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
+              then
+                echo "Image exists in registry."
+                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
+              else
+                echo "Image does not exist in registry."
+                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
+              fi
+              
+      - name: 'Run :: Build With Docker'
+        run: >-
+          docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
+          env.IMAGE_TAG }} -f ${{env.DOCKER_FILE_NAME}}
+          .${{env.DOCKER_FILE_PATH}}
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+      - name: 'Run :: Trivy vulnerability scanner'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_TAG }}
+          format: table
+          output: trivy-results.json
+          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: ${{env.SCAN_SEVERITY}}
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+      - name: 'Run :: Create Repository'
+        run: >-
+          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
+          || true
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+      - name: 'Run :: Build, tag, and push image'
+        run: >-
+          docker push ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
+          env.IMAGE_TAG }}
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+      - name: 'Run :: Deploy and Notify Resource Service'
+        run: |2-
+
+              response=$(curl -d "imageRegistryURL=${{ steps.skyu-login-ecr.outputs.registry }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=true&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
+              status_code=$?
+
+              if [ $status_code -eq 0 ]; then
+                if echo "$response" | grep -q '"message":"Unauthorized"'; then
+                  echo "FAILED :: Unauthorized access."
+                  exit 1
+                elif echo "$response" | grep -q '"statusCode":404'; then
+                  echo "Response: $response"
+                  exit 1
+                else
+                  echo "SUCCESS :: Response: $response"
+                fi
+              else
+                echo "Failed to deploy. HTTP status code: $status_code"
+                exit 1
+              fi
+            
