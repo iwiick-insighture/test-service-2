@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_95403a28-a42f-4bb0-9a29-0a5d82cbf4b3
+    types: pipeline_f1b5f989-89bf-4e29-a9bb-b2d7f5f81ff6
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E_CONTAINERDEV_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E}}
@@ -45,6 +45,19 @@ jobs:
       - name: 'Run :: Login to Amazon ECR'
         id: skyu-login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      - name: 'Run :: Check if image already exists'
+        id: check-image-existence-step-id
+        run: |2-
+
+              if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
+              then
+                echo "Image exists in registry."
+                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
+              else
+                echo "Image does not exist in registry."
+                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
+              fi
+              
       - name: 'Run :: Build With Docker'
         run: >-
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
@@ -62,19 +75,6 @@ jobs:
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-      - name: 'Run :: Check if image already exists'
-        id: check-image-existence-step-id
-        run: |2-
-
-              if docker pull ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
-              then
-                echo "Image exists in registry."
-                echo "IMAGE_EXISTS_IN_ECR=true" >> $GITHUB_ENV
-              else
-                echo "Image does not exist in registry."
-                echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
-              fi
-              
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
