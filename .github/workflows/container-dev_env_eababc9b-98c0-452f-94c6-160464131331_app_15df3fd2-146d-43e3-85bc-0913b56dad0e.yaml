@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9d9a8203-d77e-4fa2-a7d8-5e265a67aecb
+    types: pipeline_7680ebd3-3554-47e8-97fb-1ffeeb0d03cc
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E_CONTAINERDEV_ENV_EABABC9B98C0452F94C6160464131331_APP_15DF3FD2146D43E385BC0913B56DAD0E}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Login to Dockerhub'
         run: >-
           docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD
-          }}
+          }} --password-stdin
       - name: 'Run :: Build With Docker'
         run: >-
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
