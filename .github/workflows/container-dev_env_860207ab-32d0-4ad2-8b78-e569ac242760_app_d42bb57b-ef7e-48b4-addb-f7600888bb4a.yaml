@@ -1,13 +1,13 @@
 name: >-
   container-dev_env_860207ab-32d0-4ad2-8b78-e569ac242760_app_d42bb57b-ef7e-48b4-addb-f7600888bb4a
-  Pipeline (Skyu Generated) (Skyu Generated)
+  Pipeline (Skyu Generated)
 'on':
   push:
     branches:
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_8399200e-7ecd-41a1-99e7-749a89f555f9
+    types: pipeline_8f665f23-64b4-418a-a3b0-3dccdd3cdc86
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_CONTAINERDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
