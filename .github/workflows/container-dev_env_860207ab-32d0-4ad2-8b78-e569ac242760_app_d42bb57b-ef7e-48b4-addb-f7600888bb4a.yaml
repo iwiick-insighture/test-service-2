@@ -7,13 +7,14 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0b9b56aa-809d-4643-bff1-e5b48e912ec5
+    types: pipeline_8399200e-7ecd-41a1-99e7-749a89f555f9
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_CONTAINERDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
   IMAGE_NAME: skyu-gen-img
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
   DOCKER_FILE_PATH: Dockerfile
+  DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: CRITICAL
   TRIVY_SCAN_EXIT_CODE: '1'
   REPOSITORY_NAME: iwiick
@@ -62,7 +63,7 @@ jobs:
         run: >-
           docker build -t ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{
           env.IMAGE_TAG }} -f ${{env.DOCKER_FILE_PATH}}
-          .${{env.DOCKER_BUILD_CONTEXT}}
+          ${{env.DOCKER_BUILD_CONTEXT}}
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
       - name: 'Run :: Trivy vulnerability scanner'
         uses: aquasecurity/trivy-action@master
