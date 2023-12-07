@@ -15,7 +15,7 @@ env:
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
-  SCAN_SEVERITY: CRITICAL
+  SCAN_SEVERITY: HIGH
   TRIVY_SCAN_EXIT_CODE: '1'
   REPOSITORY_NAME: iwiick
 jobs:
