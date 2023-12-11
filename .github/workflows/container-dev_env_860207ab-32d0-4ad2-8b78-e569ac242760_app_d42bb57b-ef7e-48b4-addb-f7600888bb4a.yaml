@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e664e70e-a421-46cc-9450-f8fee91d06e1
+    types: pipeline_b5bad613-8d6f-4474-9d15-6de924de144f
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_CONTAINERDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -17,6 +17,7 @@ env:
   DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: CRITICAL
   TRIVY_SCAN_EXIT_CODE: '1'
+  TRIVY_RESULT_FORMAT: json
   REPOSITORY_NAME: iwiick
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
@@ -70,7 +71,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.registryURL }}/${{env.REPOSITORY_NAME}}:${{ env.IMAGE_TAG }}
-          format: table
+          format: ${{env.TRIVY_RESULT_FORMAT}}
           output: trivy-results.json
           exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
           ignore-unfixed: true
