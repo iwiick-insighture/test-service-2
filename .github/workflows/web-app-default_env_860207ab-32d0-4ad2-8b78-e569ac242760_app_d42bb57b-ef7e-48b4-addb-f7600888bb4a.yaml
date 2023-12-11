@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7878e746-033b-4c93-a1a5-0624ef92372a
+    types: pipeline_7b9a422c-df90-457c-8085-635825645bfd
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEFAULT_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -46,9 +46,9 @@ jobs:
       - name: 'Run :: Install Web App Dependancies'
         run: ${{ env.WEB_APP_INSTALL_DEPS_COMMAND }}
       - name: 'Run :: Build Web App'
-        run: ${{ env.WEB_APP_BUILD_COMMAND }} && echo "ls -R"
+        run: ${{ env.WEB_APP_BUILD_COMMAND }} && ls -R
       - name: 'Run :: Sync Web App with S3 bucket'
-        run: aws s3 sync ${{ env.WEB_APP_S3_SYNC_URL }}
+        run: aws s3 sync ${{ env.WEB_APP_S3_SYNC_URL }} || true
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
