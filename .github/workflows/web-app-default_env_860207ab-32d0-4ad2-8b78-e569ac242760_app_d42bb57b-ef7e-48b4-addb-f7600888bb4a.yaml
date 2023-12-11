@@ -48,7 +48,7 @@ jobs:
       - name: 'Run :: Build Web App'
         run: ${{ env.WEB_APP_BUILD_COMMAND }}
       - name: 'Run :: Sync Web App with S3 bucket'
-        run: echo "HEREEEEEEEEEE"
+        run: ls -R
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
