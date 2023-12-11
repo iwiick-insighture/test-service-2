@@ -7,11 +7,12 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_32a16661-0373-435b-ab11-8871b199d7b3
+    types: pipeline_910bb45c-c8eb-4a04-8160-39a2a6faa204
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEFAULT_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
   NODE_JS_VERSION: latest
+  WEB_APP_S3_BUCKET_NAME: iwiick
   WEB_APP_INSTALL_DEPS_COMMAND: npm i
   WEB_APP_BUILD_COMMAND: npm run build
 jobs:
@@ -51,12 +52,12 @@ jobs:
         run: |2-
 
               # Check if the S3 bucket exists
-              if aws s3api head-bucket --bucket undefined 2>/dev/null; then
-                echo "Bucket exists."
+              if aws s3api head-bucket --bucket ${{ env.WEB_APP_S3_BUCKET_NAME }} 2>/dev/null; then
+                echo "Bucket ${{ env.WEB_APP_S3_BUCKET_NAME }} exists."
+              # Create the S3 bucket if it doesn't exist
               else
-                # Create the S3 bucket if it doesn't exist
-                echo "Creating bucket undefined..."
-                aws s3api create-bucket --bucket undefined --region <your-region>
+                echo "Creating bucket ${{ env.WEB_APP_S3_BUCKET_NAME }}..."
+                aws s3api create-bucket --bucket ${{ env.WEB_APP_S3_BUCKET_NAME }} --region ${{ env.region }}
               fi
 
               # Sync the web app with the S3 bucket
