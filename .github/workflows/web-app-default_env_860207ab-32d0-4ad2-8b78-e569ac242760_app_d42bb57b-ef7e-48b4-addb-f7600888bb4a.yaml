@@ -7,11 +7,10 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_99f96eeb-9245-4908-87c4-1506ff5d878e
+    types: pipeline_32c3c56a-64db-4653-a7ac-0aa19a502801
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEFAULT_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
-  NODE_JS_VERSION: latest
   WEB_APP_S3_BUCKET_NAME: iwiick
   WEB_APP_INSTALL_DEPS_COMMAND: npm i
   WEB_APP_BUILD_COMMAND: npm run build
@@ -45,7 +44,7 @@ jobs:
       - name: 'Run :: Set up Node.js'
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_JS_VERSION }}
+          node-version: ${{ env.BUILD_ENVIRONEMENT_VERSION }}
       - name: 'Run :: Install Web App Dependancies'
         run: ${{ env.WEB_APP_INSTALL_DEPS_COMMAND }}
       - name: 'Run :: Build Web App'
