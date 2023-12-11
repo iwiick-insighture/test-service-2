@@ -7,17 +7,18 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_15068811-420e-4384-94e1-b18b5df5b1ab
+    types: pipeline_75f14eb3-707d-4e40-9f68-b53c55c5794b
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_CONTAINERDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
-  IMAGE_NAME: skyu-gen-img
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
+  IMAGE_NAME: skyu-gen-img
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: CRITICAL
   TRIVY_SCAN_EXIT_CODE: '1'
   REPOSITORY_NAME: iwiick
+  DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   build:
     permissions: write-all
@@ -89,18 +90,15 @@ jobs:
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
-              response=$(curl -d "imageRegistryURL=${{ steps.skyu-login-ecr.outputs.registry }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=true&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
+              response=$(curl -d "imageRegistryURL=${{ env.registryURL }}/${{env.REPOSITORY_NAME}}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
               status_code=$?
 
               if [ $status_code -eq 0 ]; then
-                if echo "$response" | grep -q '"message":"Unauthorized"'; then
-                  echo "FAILED :: Unauthorized access."
-                  exit 1
-                elif echo "$response" | grep -q '"statusCode":404'; then
-                  echo "Response: $response"
-                  exit 1
+                if echo "$response" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $response"
                 else
-                  echo "SUCCESS :: Response: $response"
+                  echo "FAILED :: $response"
+                  exit 1
                 fi
               else
                 echo "Failed to deploy. HTTP status code: $status_code"
