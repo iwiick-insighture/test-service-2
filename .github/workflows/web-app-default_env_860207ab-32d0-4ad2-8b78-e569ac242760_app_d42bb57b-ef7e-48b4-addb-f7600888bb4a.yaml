@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_910bb45c-c8eb-4a04-8160-39a2a6faa204
+    types: pipeline_582b7e46-3adb-4163-81fa-806ab5f82dff
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEFAULT_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -15,6 +15,7 @@ env:
   WEB_APP_S3_BUCKET_NAME: iwiick
   WEB_APP_INSTALL_DEPS_COMMAND: npm i
   WEB_APP_BUILD_COMMAND: npm run build
+  DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   build:
     permissions: write-all
@@ -49,35 +50,19 @@ jobs:
       - name: 'Run :: Build Web App'
         run: ${{ env.WEB_APP_BUILD_COMMAND }} && ls -R
       - name: 'Run :: Sync Web App with S3 bucket'
-        run: |2-
-
-              # Check if the S3 bucket exists
-              if aws s3api head-bucket --bucket ${{ env.WEB_APP_S3_BUCKET_NAME }} 2>/dev/null; then
-                echo "Bucket ${{ env.WEB_APP_S3_BUCKET_NAME }} exists."
-              # Create the S3 bucket if it doesn't exist
-              else
-                echo "Creating bucket ${{ env.WEB_APP_S3_BUCKET_NAME }}..."
-                aws s3api create-bucket --bucket ${{ env.WEB_APP_S3_BUCKET_NAME }} --region ${{ env.region }}
-              fi
-
-              # Sync the web app with the S3 bucket
-              aws s3 sync ${{ env.WEB_APP_S3_SYNC_URL }}
-              
+        run: aws s3 sync ${{ env.WEB_APP_S3_SYNC_URL }}
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
-              response=$(curl -d "imageRegistryURL=${{ steps.skyu-login-ecr.outputs.registry }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=true&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
+              response=$(curl -d "imageRegistryURL=${{ env.registryURL }}/${{env.REPOSITORY_NAME}}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' 'https://api.dev.skyu.io/resource-service/applications/deploy')
               status_code=$?
 
               if [ $status_code -eq 0 ]; then
-                if echo "$response" | grep -q '"message":"Unauthorized"'; then
-                  echo "FAILED :: Unauthorized access."
-                  exit 1
-                elif echo "$response" | grep -q '"statusCode":404'; then
-                  echo "Response: $response"
-                  exit 1
+                if echo "$response" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $response"
                 else
-                  echo "SUCCESS :: Response: $response"
+                  echo "FAILED :: $response"
+                  exit 1
                 fi
               else
                 echo "Failed to deploy. HTTP status code: $status_code"
