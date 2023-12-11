@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_03cf26d9-bc27-4d7b-b633-9a104d4db38d
+    types: pipeline_99f96eeb-9245-4908-87c4-1506ff5d878e
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEFAULT_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -15,6 +15,7 @@ env:
   WEB_APP_S3_BUCKET_NAME: iwiick
   WEB_APP_INSTALL_DEPS_COMMAND: npm i
   WEB_APP_BUILD_COMMAND: npm run build
+  IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   build:
