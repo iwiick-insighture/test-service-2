@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_a1e5e80f-9818-44c7-9645-02d024a402d7
+    types: pipeline_bf75c76d-9df6-42b0-913d-f7426eae9a11
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_CONTAINERDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -78,24 +78,6 @@ jobs:
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-      - name: 'Run :: Upload Trivy Result To S3'
-        run: |2-
-
-              response=$(curl -X POST https://api.dev.skyu.io/file-service -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: trivy_${{ env.IMAGE_TAG }}" -H "Content-Type: multipart/form-data" -F "file=trivy-results.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/${{ env.IMAGE_TAG }}" -F "metadata={"scanServerity": "${{env.SCAN_SEVERITY}}"}")
-              status_code=$?
-
-              if [ $status_code -eq 0 ]; then
-                if echo "$response" | grep -q '"success":true'; then
-                  echo "SUCCESS :: $response"
-                else
-                  echo "FAILED :: $response"
-                  exit 1
-                fi
-              else
-                echo "Failed to upload Trivy Result to S3. HTTP status code: $status_code"
-                exit 1
-              fi
-              
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
