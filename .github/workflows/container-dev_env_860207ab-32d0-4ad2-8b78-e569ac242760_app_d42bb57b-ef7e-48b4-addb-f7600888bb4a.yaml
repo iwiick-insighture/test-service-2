@@ -81,7 +81,7 @@ jobs:
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
-              response=$(curl -X POST https://api.dev.skyu.io/file-service -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: trivy_${{ env.IMAGE_TAG }}" -H "Content-Type: multipart/form-data" -F "file=trivy-results.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/${{ env.IMAGE_TAG }}")
+              response=$(curl -X POST https://api.dev.skyu.io/file-service -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: trivy_${{ env.IMAGE_TAG }}" -H "Content-Type: multipart/form-data" -F "@file=trivy-results.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/${{ env.IMAGE_TAG }}")
               status_code=$?
 
               if [ $status_code -eq 0 ]; then
