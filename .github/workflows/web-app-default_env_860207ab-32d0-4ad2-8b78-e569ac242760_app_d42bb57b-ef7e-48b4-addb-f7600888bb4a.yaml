@@ -7,14 +7,14 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1f463238-91dd-47c4-a08d-7a76b990d284
+    types: pipeline_11f6ef5f-a454-4813-ab31-12aa71e3b3a4
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEFAULT_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
   BUILD_ENVIRONEMENT_VERSION: latest
   WEB_APP_S3_BUCKET_NAME: iwiick
-  WEB_APP_INSTALL_DEPS_COMMAND: npm i -g pnpm && pnpm i
-  WEB_APP_BUILD_COMMAND: pnpm run build
+  WEB_APP_INSTALL_DEPS_COMMAND: npm i -g yarn && yarn install
+  WEB_APP_BUILD_COMMAND: yarn build
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
