@@ -45,7 +45,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Testt
+## Test
 
 ```bash
 # unit tests
