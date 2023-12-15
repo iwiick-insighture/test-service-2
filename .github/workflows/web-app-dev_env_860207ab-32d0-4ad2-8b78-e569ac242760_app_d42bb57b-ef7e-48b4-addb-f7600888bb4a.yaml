@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_48b25409-0de0-43bc-b57e-c247d9796a70
+    types: pipeline_04a1e8d3-487d-4c40-9bba-95d1aed608ec
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -19,7 +19,7 @@ env:
   RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_VAL: BUHAHAHA
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
-  DEPLOY_STEP_SHOULD_DEPLOY: 'true'
+  DEPLOY_STEP_SHOULD_DEPLOY: 'false'
 jobs:
   build:
     permissions: write-all
