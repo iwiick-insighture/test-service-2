@@ -16,7 +16,7 @@ env:
   WEB_APP_S3_SYNC_URL: s3://iwiick/dev/iwiick-app
   WEB_APP_INSTALL_DEPS_COMMAND: npm i
   WEB_APP_BUILD_COMMAND: npm run build
-  RANDOM_ENV_VALUE: HAHAHAHAHA
+  RANDOM_ENV_VALUE: RANDOM_ENV_VALUE Updated
   TEST_ENV_VAL: BUHAHAHA
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
 jobs:
