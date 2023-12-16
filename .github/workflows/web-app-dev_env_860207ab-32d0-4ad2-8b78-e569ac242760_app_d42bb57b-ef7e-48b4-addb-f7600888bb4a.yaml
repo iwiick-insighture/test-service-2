@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_d5e41d54-3a98-4359-bd95-43bb8c2c9a6a
+    types: pipeline_72da086c-c85f-40cb-80e8-c43fd79f6b5b
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_WEBAPPDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -16,7 +16,7 @@ env:
   WEB_APP_S3_SYNC_URL: s3://iwiick/dev/iwiick-app
   WEB_APP_INSTALL_DEPS_COMMAND: npm i
   WEB_APP_BUILD_COMMAND: npm run build
-  RANDOM_ENV_VALUE: RANDOM_ENV_VALUE Updated
+  RANDOM_ENV_VALUE: HAHAHAHAHA
   TEST_ENV_VAL: BUHAHAHA
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
 jobs:
