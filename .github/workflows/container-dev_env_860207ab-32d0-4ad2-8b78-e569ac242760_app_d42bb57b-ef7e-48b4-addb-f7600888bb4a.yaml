@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_76a34619-2994-4c07-ae72-0e5e26432334
+    types: pipeline_3435c39a-8681-439a-aca7-b3358f9f4737
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A_CONTAINERDEV_ENV_860207AB32D04AD28B78E569AC242760_APP_D42BB57BEF7E48B4ADDBF7600888BB4A}}
@@ -81,7 +81,7 @@ jobs:
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
-              response=$(curl -X POST https://api.dev.skyu.io/file-service -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: trivy_${{ env.IMAGE_TAG }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/")
+              response=$(curl -X POST ${{ env.TRIVY_RESULT_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: trivy_${{ env.IMAGE_TAG }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/")
               status_code=$?
 
               if [ $status_code -eq 0 ]; then
