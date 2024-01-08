@@ -7,12 +7,12 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6c0db627-34c1-4019-a9b4-f806b6f1b44f
+    types: pipeline_ead346b4-039e-4c1d-8cef-a2088c64dd2c
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
-  IMAGE_NAME: ghcr.io/${{github.repository_owner}}/${{env.REPOSITORY_NAME}}
+  IMAGE_NAME: ghcr.io/${{github.repository_owner}}/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: CRITICAL
