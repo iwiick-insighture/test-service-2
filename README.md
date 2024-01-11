@@ -32,7 +32,7 @@
 $ npm install
 ```
 
-## Running the appppp
+## Running the apppp
 
 ```bash
 # development
