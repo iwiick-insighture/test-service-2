@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6080107e-4b5f-4825-96fa-7a4f6d2c4b1e
+    types: pipeline_ffa8f1f2-f91e-4fae-b504-3ba789763949
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
@@ -63,7 +63,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - *ref_0
+      - - *ref_0
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
@@ -82,7 +82,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - *ref_0
+      - - *ref_0
       - name: 'Run :: Login to Github Container Registry'
         run: >-
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{
@@ -109,7 +109,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - *ref_0
+      - - *ref_0
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
