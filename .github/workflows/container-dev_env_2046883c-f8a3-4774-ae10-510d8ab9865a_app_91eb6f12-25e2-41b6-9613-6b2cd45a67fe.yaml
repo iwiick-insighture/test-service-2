@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_fbfdd453-4897-4a9b-9e45-72738034ba88
+    types: pipeline_36e2699b-88ad-4c2c-af54-a4211b9a8eb9
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
@@ -22,6 +22,7 @@ env:
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   build:
+    name: Build
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -57,6 +58,7 @@ jobs:
           hide-progress: true
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
   upload-trivy-results:
+    name: Upload Trivy Results
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -74,6 +76,7 @@ jobs:
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
     needs: build
   push-to-container-registry:
+    name: Push To Container Registry
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -99,6 +102,7 @@ jobs:
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
     needs: upload-trivy-results
   deploy:
+    name: Deploy
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
