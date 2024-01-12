@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_39c97879-2c6a-46ff-8795-5a766f8380cc
+    types: pipeline_7a91d51a-25ef-4365-98d4-8fefb7f2cf6b
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
@@ -36,7 +36,7 @@ jobs:
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
       - &ref_0
-        name: 'Run :: Decoding Secrets 7b5e89ea-d4b2-46a4-8229-ff8a66487309'
+        name: 'Run :: Decoding Secrets for ${{ github.job }}'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
