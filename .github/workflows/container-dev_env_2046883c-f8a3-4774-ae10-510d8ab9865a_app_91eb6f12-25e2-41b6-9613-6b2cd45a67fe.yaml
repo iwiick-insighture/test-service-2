@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_f2ee5d05-fb99-4423-b319-cff467bc0c72
+    types: pipeline_8f8b142c-b24f-43c0-8c7d-b733222b243b
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
@@ -21,7 +21,7 @@ env:
   REPOSITORY_NAME: iwiick
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
-  Build:
+  build:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -56,7 +56,7 @@ jobs:
           severity: ${{env.SCAN_SEVERITY}}
           hide-progress: true
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-  Upload Trivy Results:
+  upload-trivy-results:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -72,7 +72,7 @@ jobs:
               fi
               
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-  Push To Container Registry:
+  push-to-container-registry:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -96,7 +96,7 @@ jobs:
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-  Deploy:
+  deploy:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
