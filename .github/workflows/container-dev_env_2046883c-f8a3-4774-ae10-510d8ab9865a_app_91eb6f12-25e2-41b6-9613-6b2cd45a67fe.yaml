@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_acec6523-91dc-42ea-9f69-b5167d9a3a5e
+    types: pipeline_22d6857a-9927-4b6f-8f5c-01fd8d9b59cd
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
@@ -72,6 +72,7 @@ jobs:
               fi
               
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+    needs: build
   push-to-container-registry:
     permissions: write-all
     runs-on: ubuntu-latest
@@ -96,6 +97,7 @@ jobs:
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+    needs: upload-trivy-results
   deploy:
     permissions: write-all
     runs-on: ubuntu-latest
@@ -118,3 +120,4 @@ jobs:
                 exit 1
               fi
             
+    needs: push-to-container-registry
