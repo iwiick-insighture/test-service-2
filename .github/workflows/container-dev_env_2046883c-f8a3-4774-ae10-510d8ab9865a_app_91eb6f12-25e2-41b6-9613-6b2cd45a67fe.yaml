@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e722e326-cf26-4c23-a2f1-51f3d2753b87
+    types: pipeline_f46ef65f-1b87-4e91-bfd4-db760780ad93
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
@@ -21,8 +21,8 @@ env:
   REPOSITORY_NAME: iwiick
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
-  build:
-    name: Build
+  build-and-push:
+    name: Build And Push
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -35,57 +35,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets (e5230867-7457-4271-8f30-222bb40e3018)'
-        run: >-
-          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
-          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
-          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Build With Docker'
-        run: >-
-          docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f
-          ${{env.DOCKER_FILE_PATH}} ${{env.DOCKER_BUILD_CONTEXT}}
-        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-      - name: 'Run :: Trivy vulnerability scanner'
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          format: ${{env.TRIVY_RESULT_FORMAT}}
-          output: ${{ env.IMAGE_TAG }}-trivy-result.json
-          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: ${{env.SCAN_SEVERITY}}
-          hide-progress: true
-        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-  upload-trivy-results:
-    name: Upload Trivy Results
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Run :: Decoding Secrets (6d390f87-bff5-49c3-9fd8-a27fc7598405)'
-        run: >-
-          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
-          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
-          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Upload Trivy Result To S3'
-        run: |2-
-
-              response=$(curl -X POST ${{ env.TRIVY_RESULT_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/")
-
-              if echo "$response" | grep -q '"success":true'; then
-                echo "SUCCESS :: $response"
-              else
-                echo "FAILED :: $response"
-              fi
-              
-        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-    needs: build
-  push-to-container-registry:
-    name: Push To Container Registry
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Run :: Decoding Secrets (f0a1cee9-effe-4b88-99cd-d04ae0d0d12a)'
+      - name: 'Run :: Decoding Secrets (11b987d0-20f0-4aec-86c1-a39a60590652)'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -107,16 +57,55 @@ jobs:
                 echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV
               fi
               
+      - name: 'Run :: Build With Docker'
+        run: >-
+          docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f
+          ${{env.DOCKER_FILE_PATH}} ${{env.DOCKER_BUILD_CONTEXT}}
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+      - name: 'Run :: Trivy vulnerability scanner'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          format: ${{env.TRIVY_RESULT_FORMAT}}
+          output: ${{ env.IMAGE_TAG }}-trivy-result.json
+          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: ${{env.SCAN_SEVERITY}}
+          hide-progress: true
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
-    needs: build
+  upload-trivy-results:
+    name: Upload Trivy Results
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets (05670368-710f-430e-8487-e28b5380d4c2)'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+      - name: 'Run :: Upload Trivy Result To S3'
+        run: |2-
+
+              response=$(curl -X POST ${{ env.TRIVY_RESULT_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/")
+
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
+              else
+                echo "FAILED :: $response"
+              fi
+              
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+    needs: build-and-push
   deploy:
     name: Deploy
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets (c1ba7c55-1f6c-4b1e-a680-d3abe6d85393)'
+      - name: 'Run :: Decoding Secrets (ab77debb-8c1d-484c-a863-66a788e73dbb)'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -139,4 +128,4 @@ jobs:
                 exit 1
               fi
             
-    needs: push-to-container-registry
+    needs: build-and-push
