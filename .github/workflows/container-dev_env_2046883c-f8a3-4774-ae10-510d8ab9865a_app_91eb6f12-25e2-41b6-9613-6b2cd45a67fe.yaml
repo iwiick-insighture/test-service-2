@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7a91d51a-25ef-4365-98d4-8fefb7f2cf6b
+    types: pipeline_e722e326-cf26-4c23-a2f1-51f3d2753b87
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_91EB6F1225E241B696136B2CD45A67FE}}
@@ -35,8 +35,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - &ref_0
-        name: 'Run :: Decoding Secrets for ${{ github.job }}'
+      - name: 'Run :: Decoding Secrets (e5230867-7457-4271-8f30-222bb40e3018)'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -63,7 +62,11 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - *ref_0
+      - name: 'Run :: Decoding Secrets (6d390f87-bff5-49c3-9fd8-a27fc7598405)'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
@@ -82,7 +85,11 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - *ref_0
+      - name: 'Run :: Decoding Secrets (f0a1cee9-effe-4b88-99cd-d04ae0d0d12a)'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: 'Run :: Login to Github Container Registry'
         run: >-
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{
@@ -109,7 +116,11 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - *ref_0
+      - name: 'Run :: Decoding Secrets (c1ba7c55-1f6c-4b1e-a680-d3abe6d85393)'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
