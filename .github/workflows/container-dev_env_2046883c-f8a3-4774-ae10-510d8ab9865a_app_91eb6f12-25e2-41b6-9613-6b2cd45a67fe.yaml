@@ -80,7 +80,7 @@ jobs:
       - name: 'Run :: Login to Github Container Registry'
         run: >-
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{
-          env.DOCKER_USERNAME }} --password-stdin
+          env.DOCKER_USERNAME }} --password
       - name: 'Run :: Check if image already exists'
         id: check-image-existence-step-id
         run: |2-
