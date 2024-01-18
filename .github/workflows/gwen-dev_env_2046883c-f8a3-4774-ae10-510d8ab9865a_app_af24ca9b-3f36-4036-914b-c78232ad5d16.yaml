@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ca5d895d-dab8-4999-912d-4a17f931c464
+    types: pipeline_0f092f29-dfb4-4564-a1e8-871c09c20cee
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_GWENDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -31,12 +31,13 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets e20d516e-2066-4002-819d-2f68b51851d0'
+      - name: 'Run :: Decoding Secrets 6590b544-e9b3-48c2-b5c4-d9e00be8efc6'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Configure AWS credentials'
+      - &ref_0
+        name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -57,7 +58,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 2eef6de2-8384-42d9-9979-09a48380182b'
+      - name: 'Run :: Decoding Secrets f42d90ce-addd-448f-937c-9951ce917470'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -71,11 +72,12 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 7627bdf1-2e45-4226-ab42-c3ad61cbea5d'
+      - name: 'Run :: Decoding Secrets acaec5b0-1629-43b5-97ab-f76b335de95a'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+      - *ref_0
       - name: 'Run :: Stop EC2 Runner'
         uses: machulav/ec2-github-runner@v2
         with:
