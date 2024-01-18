@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ff2ad9f9-ebbb-45ce-b7c6-82a5e938c424
+    types: pipeline_a4e6bc62-ca32-4714-8691-b3fdfa96141a
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_GWENDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -21,6 +21,20 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
+      - name: Start
+        run: >-
+          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR=false" >>
+          $GITHUB_ENV
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v2
+      - name: 'Run :: Checkout Specific Commit'
+        if: ${{ github.event.client_payload.commitId != null }}
+        run: git checkout ${{ github.event.client_payload.commitId }}
+      - name: 'Run :: Decoding Secrets 8e7a3472-7dea-48d5-82ea-91b2148904cd'
+        run: >-
+          echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
+          'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
+          "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,7 +55,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 2ee8b968-2d71-4e98-8e26-ec83296688d6'
+      - name: 'Run :: Decoding Secrets 1719de46-49d0-438e-9619-c128b00a2eb9'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -53,7 +67,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets ddc0b190-471f-4e1f-9972-4bca951ae2f0'
+      - name: 'Run :: Decoding Secrets 0112c33f-1173-4378-98c9-d145278a0d63'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
