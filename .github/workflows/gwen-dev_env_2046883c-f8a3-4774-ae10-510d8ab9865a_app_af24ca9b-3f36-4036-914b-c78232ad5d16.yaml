@@ -7,11 +7,12 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_921550a2-59ee-4463-aba4-563ae43429c0
+    types: pipeline_480da5c6-4b6d-4ff3-8c19-119526f7cde8
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_GWENDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
   EC2_INSTANCE_TYPE: t3.nano
+  EC2_IMAGE_ID: ami-0c7217cdde317cfec
   EC2_SUBNET_ID: subnet-00e7221097364ac00
   EC2_SECURITY_GROUP_ID: sg-0a59b1f2f8ce140db
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
@@ -30,7 +31,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets b362a433-4f6d-4419-8873-65d146bb0f3a'
+      - name: 'Run :: Decoding Secrets c05ac0fb-f9a0-42f6-8aee-63d75c63382f'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -48,6 +49,7 @@ jobs:
           mode: start
           github-token: ${{ secrets.GITHUB_TOKEN }}
           ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
+          ec2-image-id: ${{ env.EC2_IMAGE_ID }}
           subnet-id: ${{ env.EC2_SUBNET_ID }}
           security-group-id: ${{ env.EC2_SECURITY_GROUP_ID }}
   gwen-job:
@@ -55,19 +57,21 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets c688831e-edfd-42a0-8a39-e7ab06beee8a'
+      - name: 'Run :: Decoding Secrets 943014c7-ad98-4b42-a555-ea52f0f749e8'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
       - name: Hello World
         run: echo "Hello World"
+    needs:
+      - start-ec2-runner
   stop-runner:
     name: Stop Runner
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets efd41bdf-2c5c-45de-a8a3-f305f2732b2a'
+      - name: 'Run :: Decoding Secrets 4decfb96-5271-4ccb-99b4-c4ccfca815f4'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -79,3 +83,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           label: ${{ needs.start-runner.outputs.label }}
           ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
+    needs:
+      - start-ec2-runner
+      - gwen-job
