@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5064fef4-144a-47c5-b24e-472bf08422de
+    types: pipeline_ae1dfe3e-61b8-4c3a-a5ed-f03bd218d5ec
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_GWENDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -21,27 +21,27 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - &ref_0
-        name: 'Run :: Configure AWS credentials'
+      - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
           role-session-name: skyu-pipeline-assume-role-session
           aws-region: ${{ env.region }}
-      - &ref_1
-        name: 'Run :: Stop EC2 Runner'
+      - name: 'Run :: Start EC2 Runner'
+        id: start-ec2-runner
         uses: machulav/ec2-github-runner@v2
         with:
-          mode: stop
+          mode: start
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          label: ${{ needs.start-runner.outputs.label }}
-          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
+          ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
+          subnet-id: ${{ env.EC2_SUBNET_ID }}
+          security-group-id: ${{ env.EC2_SECURITY_GROUP_ID }}
   gwen-job:
     name: Gwen Job
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets bc6f0975-c380-4544-b4f5-032cad1364ab'
+      - name: 'Run :: Decoding Secrets 4042d4e3-abbe-40f9-a423-505e1b9902c5'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -53,10 +53,15 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 0f17c492-0663-48b0-9bd1-f0eebe47db25'
+      - name: 'Run :: Decoding Secrets c015f2a7-af83-40c9-8924-822b79e1462e'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - *ref_0
-      - *ref_1
+      - name: 'Run :: Stop EC2 Runner'
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          label: ${{ needs.start-runner.outputs.label }}
+          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
