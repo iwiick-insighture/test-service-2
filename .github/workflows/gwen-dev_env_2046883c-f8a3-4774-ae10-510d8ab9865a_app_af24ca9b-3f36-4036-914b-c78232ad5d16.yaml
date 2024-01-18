@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_623dbddf-c701-4f19-874a-699e73e305ff
+    types: pipeline_ca5d895d-dab8-4999-912d-4a17f931c464
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_GWENDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -31,7 +31,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 359b6b38-232a-465a-a291-65029fd2597b'
+      - name: 'Run :: Decoding Secrets e20d516e-2066-4002-819d-2f68b51851d0'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -57,7 +57,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets abfe1580-007a-45d9-841e-ec45b5ac0b44'
+      - name: 'Run :: Decoding Secrets 2eef6de2-8384-42d9-9979-09a48380182b'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -65,13 +65,13 @@ jobs:
       - name: Hello World
         run: echo "Hello World"
     needs:
-      - start-ec2-runner
+      - start-runner
   stop-runner:
     name: Stop Runner
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets bee903f9-e62c-4ddb-a319-abff30b641cd'
+      - name: 'Run :: Decoding Secrets 7627bdf1-2e45-4226-ab42-c3ad61cbea5d'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
