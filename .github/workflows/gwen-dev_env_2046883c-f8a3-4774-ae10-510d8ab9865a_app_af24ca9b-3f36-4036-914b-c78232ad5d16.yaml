@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ccfc20ad-6c83-4dd3-8722-734baae590e1
+    types: pipeline_c74cc08f-0877-4167-8465-bcc63c758a60
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_GWENDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -22,12 +22,12 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets bce1c842-af86-4083-8603-49af9d8d1d35'
+      - name: 'Run :: Decoding Secrets 2129f596-9c43-4c12-8c9e-50d35aee005b'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Configure AWS credentials c374a0cb-072e-4224-9b9b-beff7961ea0b'
+      - name: 'Run :: Configure AWS credentials 39fc4733-4a4b-4ce2-9661-e31428fe96c0'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -57,7 +57,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 3e446239-50d2-4c5f-9c3d-3db736fca383'
+      - name: 'Run :: Decoding Secrets 841faf89-c070-488b-b453-a54ad1be3705'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -71,17 +71,11 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 99df984a-f45b-4fd5-a465-d2acf39f4697'
+      - name: 'Run :: Decoding Secrets 597d5d05-0127-4c45-af0d-49770eb532b0'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Configure AWS credentials 265d89c8-befb-449a-b2ac-a32c96970718'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.roleARN }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ${{ env.region }}
       - name: 'Run :: Stop EC2 Runner'
         uses: machulav/ec2-github-runner@v2
         with:
