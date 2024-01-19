@@ -38,7 +38,7 @@ jobs:
         uses: machulav/ec2-github-runner@v2
         with:
           mode: start
-          github-token: ${{ env.pat }}
+          github-token: ${{ secrets.MY_TOKEN_2 }}
           ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
           ec2-image-id: ${{ env.EC2_IMAGE_ID }}
           subnet-id: ${{ env.EC2_SUBNET_ID }}
