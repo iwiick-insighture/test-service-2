@@ -7,14 +7,14 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6685fb89-8c61-4838-a4c0-d40da14c9e72
+    types: pipeline_33c2d5ca-bebd-43f1-b5d6-8db3a2f22715
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_GWENDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
   EC2_INSTANCE_TYPE: t3.micro
   EC2_IMAGE_ID: ami-0c7217cdde317cfec
-  EC2_SUBNET_ID: subnet-04836b2e1d2dd3cbe
-  EC2_SECURITY_GROUP_ID: sg-014d986dd79c2ab1b
+  EC2_SUBNET_ID: subnet-0511e49f8669e4d30
+  EC2_SECURITY_GROUP_ID: sg-0244f2edb7af33703
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
 jobs:
   start-runner:
@@ -22,12 +22,12 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 1155e146-52bb-4491-b981-6df19b7fed49'
+      - name: 'Run :: Decoding Secrets 490a4bb1-a1da-4324-bbef-e7296217b9f3'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Configure AWS credentials 8acc9985-700a-471b-8309-92edbc0002ed'
+      - name: 'Run :: Configure AWS credentials 35b1f765-9887-4db9-bafe-1ab25f08d482'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -38,7 +38,7 @@ jobs:
         uses: machulav/ec2-github-runner@v2
         with:
           mode: start
-          github-token: ${{ secrets.MY_TOKEN_2 }}
+          github-token: ${{ env.pat }}
           ec2-instance-type: ${{ env.EC2_INSTANCE_TYPE }}
           ec2-image-id: ${{ env.EC2_IMAGE_ID }}
           subnet-id: ${{ env.EC2_SUBNET_ID }}
@@ -57,7 +57,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets ab334bc9-4eca-4881-b38a-aa967594c414'
+      - name: 'Run :: Decoding Secrets b4e3f737-4983-4dd8-9ff2-8d689cd4dd08'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
@@ -71,12 +71,12 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 0979d6eb-9d7b-4ebe-b306-65ed46792338'
+      - name: 'Run :: Decoding Secrets ff91ab0a-8f7d-4801-8840-40dba6c73d58'
         run: >-
           echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r
           'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo
           "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-      - name: 'Run :: Configure AWS credentials a2236cf5-b1f5-4f69-a8b8-d7eb28bacb1f'
+      - name: 'Run :: Configure AWS credentials ccc6ad40-b90c-4e60-b0bc-26066c3562ed'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
