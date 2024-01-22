@@ -84,6 +84,8 @@ jobs:
           role-to-assume: ${{ env.roleARN }}
           role-session-name: skyu-pipeline-assume-role-session
           aws-region: ${{ env.region }}
+      - name: 'Env Check'
+        run: echo "github-token - ${{ env.pat }}, label - ${{ needs.start-runner.outputs.label }}, ec2-instance-id - ${{ needs.start-runner.outputs.ec2-instance-id }}"
       - name: 'Run :: Stop EC2 Runner'
         uses: machulav/ec2-github-runner@v2
         with:
