@@ -72,6 +72,10 @@ jobs:
     name: Stop Runner
     permissions: write-all
     runs-on: ubuntu-latest
+    needs:
+      - start-runner
+      - gwen-job
+    if: ${{ always() }}
     steps:
       - name: 'Run :: Decoding Secrets 32b2c736-360d-4c50-8adb-82d2df048eac'
         run: >-
@@ -93,7 +97,3 @@ jobs:
           github-token: ${{ env.pat }}
           label: ${{ needs.start-runner.outputs.label }}
           ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
-    needs:
-      - start-runner
-      - gwen-job
-    if: ${{ always() }}
