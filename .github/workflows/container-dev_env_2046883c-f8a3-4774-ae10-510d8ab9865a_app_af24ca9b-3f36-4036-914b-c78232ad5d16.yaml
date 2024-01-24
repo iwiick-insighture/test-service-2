@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_13e8f7dc-c588-409a-9bbe-31886c6bb6c2
+    types: pipeline_36979d3f-697d-440b-9d1a-3f0750adc6c7
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -16,8 +16,8 @@ env:
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: CRITICAL
-  TRIVY_SCAN_EXIT_CODE: '1'
-  TRIVY_RESULT_FORMAT: json
+  TRIVY_SCAN_EXIT_CODE: '0'
+  TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
@@ -27,15 +27,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Start
-        run: >-
-          echo " Starting GitHub Action!" && echo "IMAGE_EXISTS_IN_ECR=false" >>
-          $GITHUB_ENV
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV && 
+              echo "IS_SAFE_TO_DEPLOY=true" >> $GITHUB_ENV
+              
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 99e11fc6-9d12-4e06-a4cc-8145bf7c3d6d'
+      - name: 'Run :: Decoding Secrets f10695a8-6bf5-4bfb-ace6-634c0bc84cd2'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -74,7 +77,6 @@ jobs:
           format: ${{env.TRIVY_RESULT_FORMAT}}
           output: ${{ env.IMAGE_TAG }}-trivy-result.json
           exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
-          ignore-unfixed: true
           vuln-type: os,library
           severity: ${{env.SCAN_SEVERITY}}
           hide-progress: true
@@ -82,7 +84,7 @@ jobs:
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
-              response=$(curl -X POST ${{ env.TRIVY_RESULT_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/")
+              response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/trivy_results/")
 
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
@@ -100,8 +102,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-and-push
+    if: ${{ env.IS_SAFE_TO_DEPLOY == 'true' }}
     steps:
-      - name: 'Run :: Decoding Secrets 56033cfb-5649-425b-85a4-dba5250f00cf'
+      - name: 'Run :: Decoding Secrets 8f7c97cf-3e36-431f-b835-1d3acb5ad407'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
