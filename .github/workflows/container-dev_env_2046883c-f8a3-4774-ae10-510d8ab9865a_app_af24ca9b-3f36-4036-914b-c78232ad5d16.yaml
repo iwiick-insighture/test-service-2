@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_a437481f-ce30-49f6-88b3-d3af79b241f6
+    types: pipeline_b2362a13-6dfc-4c1a-97b5-e37f7b13dd0e
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: ghcr.io/${{github.repository_owner}}/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
-  SCAN_SEVERITY: LOW
+  SCAN_SEVERITY: MEDIUM
   TRIVY_SCAN_EXIT_CODE: '0'
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 1a318f2e-eb88-478e-b8fc-11ef674bc39f'
+      - name: 'Run :: Decoding Secrets ce3141f1-d307-4d18-9708-80027acc887f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -89,7 +89,6 @@ jobs:
               echo "trivy_result: $trivy_result"
               
               VULNERABILITY_COUNT=$(jq '.runs[0].tool.driver.rules | map(select(.properties."security-severity" == "${{ env.SCAN_SEVERITY }}")) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
-
               echo "Number of ${{ env.scanSeverity }} vulnerabilities: $VULNERABILITY_COUNT"
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
@@ -125,7 +124,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 53574977-c93c-421d-89be-627f6fd4daa9'
+      - name: 'Run :: Decoding Secrets d8e3e346-7271-4469-858f-de16d6ba3165'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
