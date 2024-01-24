@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b99dccab-bac9-48cc-890a-cab40adbbe68
+    types: pipeline_bbc7a764-3302-45f0-bd7c-50505c39623b
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets f4baabf5-68f2-4b24-ba69-dc35d1e57176'
+      - name: 'Run :: Decoding Secrets 67ff0a1f-1132-4259-94c9-372ed9590d30'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -90,8 +90,7 @@ jobs:
               echo "trivy_result: $trivy_result"
               echo "SCAN_SEVERITY: ${{env.SCAN_SEVERITY}}"
               
-              if [ "$(echo "$trivy_result" | jq -e 'has("Vulnerabilities")')" == "true" ] &&
-                 [ -n "$(echo "$trivy_result" | jq -e '.Vulnerabilities | any(.Severity == "${{env.SCAN_SEVERITY}}")')" ]; then
+              if [ "$(echo "$trivy_result" | jq -e 'has("runs") and .runs[0].tool.driver.rules | any(.defaultConfiguration.level == "${{env.SCAN_SEVERITY}}")')" == "true" ]; then
                 echo "Trivy scan found vulnerabilities."
                 echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
               else
@@ -128,7 +127,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 012068ce-bb94-4cfb-9448-71a2be30b460'
+      - name: 'Run :: Decoding Secrets 31771adc-c60e-408c-939f-615f166d097b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
