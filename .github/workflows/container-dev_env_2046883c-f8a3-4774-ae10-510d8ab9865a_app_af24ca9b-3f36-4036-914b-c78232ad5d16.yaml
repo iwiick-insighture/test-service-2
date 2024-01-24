@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b2362a13-6dfc-4c1a-97b5-e37f7b13dd0e
+    types: pipeline_ff14076a-daae-408e-bc17-962ec815eeab
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: ghcr.io/${{github.repository_owner}}/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
-  SCAN_SEVERITY: MEDIUM
+  SCAN_SEVERITY: CRITICAL
   TRIVY_SCAN_EXIT_CODE: '0'
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets ce3141f1-d307-4d18-9708-80027acc887f'
+      - name: 'Run :: Decoding Secrets 5e14d5f9-4aa6-4287-a65a-ad8a8eea5ed2'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -124,7 +124,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets d8e3e346-7271-4469-858f-de16d6ba3165'
+      - name: 'Run :: Decoding Secrets 6592fe1b-aecf-4e92-8ce7-2a3ca7da061f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
