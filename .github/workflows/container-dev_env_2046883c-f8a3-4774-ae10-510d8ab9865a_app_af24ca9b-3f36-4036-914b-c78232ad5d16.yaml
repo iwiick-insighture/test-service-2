@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_33eb48a8-24a0-4ebe-b346-40e3d93966b3
+    types: pipeline_f1502d78-9098-45a2-9f33-9774c4ffe283
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -33,14 +33,14 @@ jobs:
 
               echo " Starting GitHub Action!" && 
               echo "IMAGE_EXISTS_IN_ECR=false" >> $GITHUB_ENV && 
-              echo "IS_SAFE_TO_DEPLOY=true" >> $GITHUB_ENV
+              echo "IS_SAFE_TO_DEPLOY=false" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 3b7aa422-1f4c-47f9-903c-0a771e9db872'
+      - name: 'Run :: Decoding Secrets 8484a4b1-5c54-492e-9965-87d5c5c60f91'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -106,7 +106,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.isSafeToDeploy == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets b0b9aec8-2713-4994-90a8-677bb585f604'
+      - name: 'Run :: Decoding Secrets dc36e8c1-a03d-4591-ac88-b7847c82902a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
