@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_8692d99d-1ed1-4760-a609-2a50d9efb9f1
+    types: pipeline_1f7eea1e-78ec-4ca8-9b14-83c682383751
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets d8f4d767-041b-4e02-b7ad-d4cd77e41bc7'
+      - name: 'Run :: Decoding Secrets 048ea59f-01a9-46c0-be00-d7555acf13df'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -116,7 +116,7 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-        if: ${{ env.STEPS_CAN_PROCEED == 'false' }}
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
@@ -128,7 +128,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 558dfed2-6130-412a-ab3f-ffb1c7945dc1'
+      - name: 'Run :: Decoding Secrets 6bba3840-e57f-4bae-b2b2-3971245d6411'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
