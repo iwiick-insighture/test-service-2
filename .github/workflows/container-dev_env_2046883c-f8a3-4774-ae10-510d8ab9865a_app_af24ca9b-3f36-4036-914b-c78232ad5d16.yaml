@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7bbd5451-90e9-468e-8222-f874ec8e22b2
+    types: pipeline_d558eaab-a72f-479a-8b54-2f9c6ecf51a1
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -40,7 +40,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets a4ebb09c-108b-4ba6-ac97-5e89792e9cce'
+      - name: 'Run :: Decoding Secrets 9176ff7b-2ff5-4459-b715-36ffa4567dce'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -86,14 +86,14 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
 
-              trivy_result=$(cat ${{ env.IMAGE_TAG }}-trivy-result.json)
-              if echo "$trivy_result" | jq -e 'any(.Vulnerabilities[]; select(.Severity == "${{env.SCAN_SEVERITY}}"))' > /dev/null; then
-                echo "Trivy scan found vulnerabilities."
-                echo "IS_SAFE_TO_DEPLOY=false" >> $GITHUB_ENV
-              else
-                echo "Trivy scan passed. No vulnerabilities found."
-                echo "IS_SAFE_TO_DEPLOY=true" >> $GITHUB_ENV
-              fi
+                trivy_result=$(cat ${{ env.IMAGE_TAG }}-trivy-result.json)
+                if echo "$trivy_result" | jq -e 'has("Vulnerabilities") and (.Vulnerabilities | any(.Severity == "${{env.SCAN_SEVERITY}}"))' > /dev/null; then
+                  echo "Trivy scan found vulnerabilities."
+                  echo "IS_SAFE_TO_DEPLOY=false" >> $GITHUB_ENV
+                else
+                  echo "Trivy scan passed. No vulnerabilities found."
+                  echo "IS_SAFE_TO_DEPLOY=true" >> $GITHUB_ENV
+                fi
               
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
       - name: 'Run :: Upload Trivy Result To S3'
@@ -124,7 +124,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.isSafeToDeploy == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 3cb7068f-975d-4e45-ad67-7077fe7f4d8c'
+      - name: 'Run :: Decoding Secrets 4e685da9-0aae-4012-8a6e-6d5fc333600f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
