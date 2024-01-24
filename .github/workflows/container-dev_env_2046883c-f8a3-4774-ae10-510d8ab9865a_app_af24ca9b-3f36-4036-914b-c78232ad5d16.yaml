@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4dce37e3-22a0-43be-89ec-894e57b612cf
+    types: pipeline_846ccf60-6b81-46c9-9721-5f91cfa5f5e3
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 8af7215e-b9b8-4758-b2d3-7cfb48096646'
+      - name: 'Run :: Decoding Secrets e87c760f-1b74-4b8a-b603-c9054d0641a2'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -85,17 +85,11 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
 
-              trivy_result=$(cat ${{ env.IMAGE_TAG }}-trivy-result.json)
+              VULNERABILITY_COUNT=$(jq '.[].Vulnerabilities | select(.Severity == "${{env.SCAN_SEVERITY}}") | length' ${{ env.IMAGE_TAG }}-trivy-result.json)
+              echo "Number of ${{env.SCAN_SEVERITY}} vulnerabilities: $VULNERABILITY_COUNT"
 
-              echo "trivy_result: $trivy_result"
-              echo "SCAN_SEVERITY: ${{env.SCAN_SEVERITY}}"
-              
-              if [ "$(echo "$trivy_result" | jq -e 'has("runs") and .runs[0].tool.driver.rules | length > 0 and .runs[0].tool.driver.rules | any(.defaultConfiguration.level == "${{env.SCAN_SEVERITY}}")')" == "true" ]; then
-                echo "Trivy scan found vulnerabilities."
+              if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
                 echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
-              else
-                echo "Trivy scan passed. No vulnerabilities found."
-                echo "STEPS_CAN_PROCEED='true'" >> $GITHUB_ENV
               fi
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
@@ -127,7 +121,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets fdf3ef5a-50a5-498a-8df4-032fae58c90e'
+      - name: 'Run :: Decoding Secrets 73704edc-f604-4a32-970c-2580e61714b5'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
