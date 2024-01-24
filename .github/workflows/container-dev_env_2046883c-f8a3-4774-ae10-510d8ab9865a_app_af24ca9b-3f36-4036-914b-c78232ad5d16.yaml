@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_80de6221-5392-4178-84a8-3dc16de84a9f
+    types: pipeline_b8103ea8-55b2-4ab8-beab-358464264196
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -16,7 +16,7 @@ env:
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: HIGH
-  TRIVY_SCAN_EXIT_CODE: '1'
+  TRIVY_SCAN_EXIT_CODE: '0'
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
@@ -40,7 +40,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 46b85552-4eed-420a-a0ad-1432cf841670'
+      - name: 'Run :: Decoding Secrets 7a684da9-8d8d-4c2a-b4d5-a5fb9eda3d07'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -83,6 +83,19 @@ jobs:
           severity: ${{env.SCAN_SEVERITY}}
           hide-progress: true
         if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
+      - name: 'Run :: Evaluate Trivy Results'
+        run: |2-
+
+              trivy_result=$(cat ${{ env.IMAGE_TAG }}-trivy-result.json)
+              if echo "$trivy_result" | jq -e 'any(.Vulnerabilities[]; select(.Severity == ${{env.SCAN_SEVERITY}}))' > /dev/null; then
+                echo "Trivy scan found vulnerabilities."
+                echo "IS_SAFE_TO_DEPLOY=false" >> $GITHUB_ENV
+              else
+                echo "Trivy scan passed. No vulnerabilities found."
+                echo "IS_SAFE_TO_DEPLOY=true" >> $GITHUB_ENV
+              fi
+              
+        if: ${{ env.IMAGE_EXISTS_IN_ECR == 'false' }}
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
@@ -111,7 +124,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.isSafeToDeploy == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 2770dfcc-1634-4619-b00a-01fab74be2ea'
+      - name: 'Run :: Decoding Secrets 373473f2-6536-4241-9b89-afc237604bec'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
