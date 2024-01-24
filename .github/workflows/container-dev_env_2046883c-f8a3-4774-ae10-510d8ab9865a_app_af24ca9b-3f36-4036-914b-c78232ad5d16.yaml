@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_36979d3f-697d-440b-9d1a-3f0750adc6c7
+    types: pipeline_36f6b54f-0dc4-49b2-8879-6cc7b5722afa
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -38,7 +38,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets f10695a8-6bf5-4bfb-ace6-634c0bc84cd2'
+      - name: 'Run :: Decoding Secrets 66b154ac-9dee-4233-8b91-6dd8de8b0b8c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -102,9 +102,8 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-and-push
-    if: ${{ env.IS_SAFE_TO_DEPLOY == 'true' }}
     steps:
-      - name: 'Run :: Decoding Secrets 8f7c97cf-3e36-431f-b835-1d3acb5ad407'
+      - name: 'Run :: Decoding Secrets c2d75558-1b1f-4d55-b4d7-1e8834663aa9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
