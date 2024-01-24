@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_846ccf60-6b81-46c9-9721-5f91cfa5f5e3
+    types: pipeline_f0deccb2-99ff-4993-b50b-360b3d86cfe7
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets e87c760f-1b74-4b8a-b603-c9054d0641a2'
+      - name: 'Run :: Decoding Secrets 2f699df0-1f1e-4a00-b35c-521b41b75200'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -85,8 +85,8 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
 
-              VULNERABILITY_COUNT=$(jq '.[].Vulnerabilities | select(.Severity == "${{env.SCAN_SEVERITY}}") | length' ${{ env.IMAGE_TAG }}-trivy-result.json)
-              echo "Number of ${{env.SCAN_SEVERITY}} vulnerabilities: $VULNERABILITY_COUNT"
+              VULNERABILITY_COUNT=$(jq '.runs[0].tool.driver.rules | map(select(.defaultConfiguration.level == "${{ env.SCAN_SEVERITY }}")) | length' ${{ env.IMAGE_TAG }}-trivy-result.json)
+              echo "Number of ${{ env.SCAN_SEVERITY }} vulnerabilities: $VULNERABILITY_COUNT"
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
                 echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
@@ -121,7 +121,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 73704edc-f604-4a32-970c-2580e61714b5'
+      - name: 'Run :: Decoding Secrets 3e11b13c-66bf-41c9-9a19-d48731910865'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
