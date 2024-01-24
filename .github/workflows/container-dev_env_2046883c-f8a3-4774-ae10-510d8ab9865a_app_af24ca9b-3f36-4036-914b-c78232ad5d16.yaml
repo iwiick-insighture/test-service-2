@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b8103ea8-55b2-4ab8-beab-358464264196
+    types: pipeline_7bbd5451-90e9-468e-8222-f874ec8e22b2
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -40,7 +40,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 7a684da9-8d8d-4c2a-b4d5-a5fb9eda3d07'
+      - name: 'Run :: Decoding Secrets a4ebb09c-108b-4ba6-ac97-5e89792e9cce'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -87,7 +87,7 @@ jobs:
         run: |2-
 
               trivy_result=$(cat ${{ env.IMAGE_TAG }}-trivy-result.json)
-              if echo "$trivy_result" | jq -e 'any(.Vulnerabilities[]; select(.Severity == ${{env.SCAN_SEVERITY}}))' > /dev/null; then
+              if echo "$trivy_result" | jq -e 'any(.Vulnerabilities[]; select(.Severity == "${{env.SCAN_SEVERITY}}"))' > /dev/null; then
                 echo "Trivy scan found vulnerabilities."
                 echo "IS_SAFE_TO_DEPLOY=false" >> $GITHUB_ENV
               else
@@ -124,7 +124,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.isSafeToDeploy == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 373473f2-6536-4241-9b89-afc237604bec'
+      - name: 'Run :: Decoding Secrets 3cb7068f-975d-4e45-ad67-7077fe7f4d8c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
