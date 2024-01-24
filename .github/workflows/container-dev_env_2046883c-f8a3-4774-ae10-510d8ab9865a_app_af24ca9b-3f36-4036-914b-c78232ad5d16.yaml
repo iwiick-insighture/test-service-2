@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_2d7e2464-8153-45ef-8c6a-cfb86398b989
+    types: pipeline_1133ae6c-dda6-45da-8fc3-b7f924d2b518
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -32,14 +32,14 @@ jobs:
         run: |2-
 
               echo " Starting GitHub Action!" && 
-              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v2
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 42c990eb-d962-4c5d-93c3-878e461bb41e'
+      - name: 'Run :: Decoding Secrets f0eac569-4c7d-4731-ba55-214f2202969c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -125,7 +125,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets b03640a5-c32f-423d-93d8-9abaca7859b6'
+      - name: 'Run :: Decoding Secrets e00c305e-ae6c-425f-adb6-e4e33b49c81e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
