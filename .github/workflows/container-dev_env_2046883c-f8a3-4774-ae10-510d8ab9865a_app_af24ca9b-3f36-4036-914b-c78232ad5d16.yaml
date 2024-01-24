@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ff14076a-daae-408e-bc17-962ec815eeab
+    types: pipeline_a69e9970-3a2f-4a8a-be75-6c1a86af1770
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 5e14d5f9-4aa6-4287-a65a-ad8a8eea5ed2'
+      - name: 'Run :: Decoding Secrets 8d0c3c46-064f-4369-acdf-26ebf356a034'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -85,10 +85,13 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
 
-              trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.json")
+              # Minifying Json
+              jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
+
+              trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.min.json")
               echo "trivy_result: $trivy_result"
               
-              VULNERABILITY_COUNT=$(jq '.runs[0].tool.driver.rules | map(select(.properties."security-severity" == "${{ env.SCAN_SEVERITY }}")) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
+              VULNERABILITY_COUNT=$(jq '.runs[0].tool.driver.rules | map(select(.properties."security-severity" == "${{ env.SCAN_SEVERITY }}")) | length' "${{ env.IMAGE_TAG }}-trivy-result.min.json")
               echo "Number of ${{ env.scanSeverity }} vulnerabilities: $VULNERABILITY_COUNT"
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
@@ -124,7 +127,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 6592fe1b-aecf-4e92-8ce7-2a3ca7da061f'
+      - name: 'Run :: Decoding Secrets 6d691cdb-a7ec-48da-b85a-9b3dd0b95523'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
