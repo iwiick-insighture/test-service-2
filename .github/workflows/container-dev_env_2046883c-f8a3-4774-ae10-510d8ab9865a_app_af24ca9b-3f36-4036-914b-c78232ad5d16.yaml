@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1133ae6c-dda6-45da-8fc3-b7f924d2b518
+    types: pipeline_8692d99d-1ed1-4760-a609-2a50d9efb9f1
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets f0eac569-4c7d-4731-ba55-214f2202969c'
+      - name: 'Run :: Decoding Secrets d8f4d767-041b-4e02-b7ad-d4cd77e41bc7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -86,14 +86,17 @@ jobs:
         run: |2-
 
               trivy_result=$(cat ${{ env.IMAGE_TAG }}-trivy-result.json)
+
+              echo "trivy_result: $trivy_result"
+              echo "SCAN_SEVERITY: ${{env.SCAN_SEVERITY}}"
               
               if [ -n "$(echo "$trivy_result" | jq -e '.Vulnerabilities')" ] &&
                  [ "$(echo "$trivy_result" | jq -e '.Vulnerabilities | any(.Severity == "${{env.SCAN_SEVERITY}}")')" == "true" ]; then
                 echo "Trivy scan found vulnerabilities."
-                echo "STEPS_CAN_PROCEED=false" >> $GITHUB_ENV
+                echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
               else
                 echo "Trivy scan passed. No vulnerabilities found."
-                echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+                echo "STEPS_CAN_PROCEED='true'" >> $GITHUB_ENV
               fi
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
@@ -113,7 +116,7 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+        if: ${{ env.STEPS_CAN_PROCEED == 'false' }}
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
@@ -125,7 +128,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets e00c305e-ae6c-425f-adb6-e4e33b49c81e'
+      - name: 'Run :: Decoding Secrets 558dfed2-6130-412a-ab3f-ffb1c7945dc1'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
