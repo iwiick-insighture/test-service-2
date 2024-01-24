@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: ghcr.io/${{github.repository_owner}}/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
-  SCAN_SEVERITY: HIGH
+  SCAN_SEVERITY: LOW
   TRIVY_SCAN_EXIT_CODE: '0'
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
