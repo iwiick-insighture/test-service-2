@@ -86,12 +86,17 @@ jobs:
         run: |2-
 
               # Minifying Json
-              jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
-              trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.min.json")
+              jq -c '.' \${{ env.${tag} }}-${trivyScanOutput}.json > \${{ env.${tag} }}-${trivyScanOutput}.min.json
+              trivy_result=$(cat "\${{ env.${tag} }}-${trivyScanOutput}.min.json")
               echo "trivy_result: $trivy_result"
-              
-              VULNERABILITY_COUNT=$(jq '.runs[0].tool.driver.rules | map(select(.properties."security-severity" == "${{ env.SCAN_SEVERITY }}")) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
-              echo "Number of ${{ env.scanSeverity }} vulnerabilities: $VULNERABILITY_COUNT"
+
+              # Set the desired severity level
+              desiredSeverity="\${{ env.${scanSeverity} }}"
+
+              # Check if the desired severity exists in the tags array
+              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "$desiredSeverity" '.runs[0].tool.driver.rules | map(select(.tags[] == $desiredSeverity)) | length' "\${{ env.${tag} }}-${trivyScanOutput}.json")
+              echo "Number of \${{ env.scanSeverity }} vulnerabilities: $VULNERABILITY_COUNT"
+
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
                 echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
