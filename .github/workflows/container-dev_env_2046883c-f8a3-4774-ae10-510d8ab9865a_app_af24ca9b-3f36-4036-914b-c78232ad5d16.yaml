@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6c171ef4-eb81-43d9-a57d-f119fc3f4d25
+    types: pipeline_68f73fbe-2ae7-4c0e-9bf4-39868aa8c6ff
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 73f66a59-56d4-4c0e-aefd-27fc92abc194'
+      - name: 'Run :: Decoding Secrets 2bcd3f13-ce70-420b-9775-3f3fb4591b26'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -85,7 +85,9 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
 
-              trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.json")
+              # Minifying Json
+              jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
+              trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.min.json")
               echo "trivy_result: $trivy_result"
               
               VULNERABILITY_COUNT=$(jq '.runs[0].tool.driver.rules | map(select(.properties."security-severity" == "${{ env.SCAN_SEVERITY }}")) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
@@ -124,7 +126,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 3a9f85de-32f2-4302-83b9-f8caec30752c'
+      - name: 'Run :: Decoding Secrets 1c45aa65-e84c-4852-9f89-cd8749b71b3c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
