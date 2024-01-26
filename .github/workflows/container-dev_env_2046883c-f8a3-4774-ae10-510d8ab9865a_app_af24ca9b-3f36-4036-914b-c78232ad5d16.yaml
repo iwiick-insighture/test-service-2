@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_c01a92db-32ba-48ed-b18e-a9c611a794ba
+    types: pipeline_e5b2f7a9-e2fb-4e33-ad5a-44dd5eca6321
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 63fe60dd-6d59-4578-a97d-9bb65da3405a'
+      - name: 'Run :: Decoding Secrets 698aa9fa-7c9c-44c5-8afd-2ae12bb5a907'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -97,7 +97,7 @@ jobs:
               # Print the tags array for debugging
               jq '.runs[0].tool.driver.rules[].properties.tags' "${{ env.IMAGE_TAG }}-trivy-result.json"
 
-              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "$desiredSeverity" '.runs[0].tool.driver.rules | map(select(.properties.tags and .properties.tags | index($desiredSeverity) // empty)) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
+              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "$desiredSeverity" '.runs[0].tool.driver.rules | map(select(.properties.tags and (.properties.tags | map(tostring) | index($desiredSeverity) // empty))) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
               echo "Number of $desiredSeverity vulnerabilities: $VULNERABILITY_COUNT"
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
@@ -133,7 +133,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 80979bf0-2800-41a8-9cc3-9d3952679b98'
+      - name: 'Run :: Decoding Secrets 8f3eb5d5-bc06-4977-bd5a-97d5051c44fc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
