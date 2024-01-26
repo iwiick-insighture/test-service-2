@@ -94,8 +94,9 @@ jobs:
               desiredSeverity="${{ env.SCAN_SEVERITY }}"
 
               # Check if the desired severity exists in the tags array
-              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "$desiredSeverity" '.runs[0].tool.driver.rules | map(select(.tags and .tags[] == $desiredSeverity)) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
+              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "MEDIUM" '.runs[0].tool.driver.rules | map(select(.tags and .properties.tags[] == $desiredSeverity)) | length' "${{ env.${tag} }}-${trivyScanOutput}.json")
               echo "Number of ${{ env.scanSeverity }} vulnerabilities: $VULNERABILITY_COUNT"
+
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
                 echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
