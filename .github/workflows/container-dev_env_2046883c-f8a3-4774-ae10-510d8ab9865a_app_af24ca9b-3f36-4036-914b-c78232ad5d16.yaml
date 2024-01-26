@@ -112,6 +112,8 @@ jobs:
               fi
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      - name: "Run :: Testing ENVs"
+        run: echo "HELLO"
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
