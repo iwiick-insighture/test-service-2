@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_59db34b1-df45-4b3e-8feb-68ab0e5ac6c3
+    types: pipeline_63faef3b-58eb-4e5e-9629-3779ff7dd327
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 8b63e328-89c4-4b82-8750-eb68d963ef2a'
+      - name: 'Run :: Decoding Secrets 0d361c3f-7fec-47b2-b466-dd5528831daf'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -89,17 +89,24 @@ jobs:
               jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
               trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.min.json")
               echo "trivy_result: $trivy_result"
-
+              
               # Set the desired severity level
               desiredSeverity="${{ env.SCAN_SEVERITY }}"
-              echo "Desired Severity: $desiredSeverity"
-
+              IFS=',' read -ra severities <<< "$desiredSeverity"  # Split the severity string
+              
               # Print the tags array for debugging
               jq '.runs[0].tool.driver.rules[].properties.tags' "${{ env.IMAGE_TAG }}-trivy-result.json"
-
-              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "$desiredSeverity" '.runs[0].tool.driver.rules | map(select(.properties.tags and (.properties.tags | map(tostring) | index($desiredSeverity) // empty))) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
-              echo "Number of $desiredSeverity vulnerabilities: $VULNERABILITY_COUNT"
-
+              
+              VULNERABILITY_COUNT=0
+              
+              for severity in "${severities[@]}"; do
+                count=$(jq --arg severity "$severity" '.runs[0].tool.driver.rules | map(select(.properties.tags and (.properties.tags | map(tostring) | index($severity) // empty))) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
+                echo "Number of $severity vulnerabilities: $count"
+                VULNERABILITY_COUNT=$((VULNERABILITY_COUNT + count))
+              done
+              
+              echo "Total Number of vulnerabilities: $VULNERABILITY_COUNT"
+              
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
                 echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
               fi
@@ -133,7 +140,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 3f4a37bc-f749-4b06-a51d-12fa7daad98a'
+      - name: 'Run :: Decoding Secrets ae91c131-fd4b-4e0c-a8e0-f9735c326d6d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
