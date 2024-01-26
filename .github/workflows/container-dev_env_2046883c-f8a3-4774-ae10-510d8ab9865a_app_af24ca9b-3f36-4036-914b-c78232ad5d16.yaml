@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_795b4a5d-0c48-4158-9fc2-268389a68722
+    types: pipeline_113a211d-c032-405b-88f0-c70207053cfb
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets bb505efb-804c-4cd4-82fd-8c000cf648b4'
+      - name: 'Run :: Decoding Secrets 1fd2a38d-2320-46d2-a9d5-df370ad49b43'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -108,12 +108,11 @@ jobs:
               echo "Total Number of vulnerabilities: $VULNERABILITY_COUNT"
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
-                echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
+                echo "STEPS_CAN_PROCEED=false" >> $GITHUB_ENV
               fi
+              echo "ARE_TRIVY_RESULTS_EVALUATED=true" >> $GITHUB_ENV
               
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
-      - name: "Run :: Testing ENVs"
-        run: echo "HELLO"
       - name: 'Run :: Upload Trivy Result To S3'
         run: |2-
 
@@ -130,7 +129,7 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+        if: ${{ env.STEPS_CAN_PROCEED == 'false' }}
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
@@ -142,7 +141,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 861e2b38-f227-4497-a62b-4d6ef8e5d988'
+      - name: 'Run :: Decoding Secrets 23cce0a5-4025-4fef-bf34-0dd70a7e8d08'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
