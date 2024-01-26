@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_cdd8089a-89e7-4b73-8566-befc1cece2a1
+    types: pipeline_31bd2648-d152-427e-84c6-689254f0738d
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 77dcd271-b54b-4f1d-b8f1-a5de7de085c0'
+      - name: 'Run :: Decoding Secrets 94b03eba-0e5f-48d4-9e42-e24e59bc21d1'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -93,10 +93,11 @@ jobs:
               # Set the desired severity level
               desiredSeverity="${{ env.SCAN_SEVERITY }}"
 
-              # Check if the desired severity exists in the tags array
-              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "MEDIUM" '.runs[0].tool.driver.rules | map(select(.tags and .properties.tags[] == $desiredSeverity)) | length' "${{ env.${tag} }}-${trivyScanOutput}.json")
-              echo "Number of ${{ env.scanSeverity }} vulnerabilities: $VULNERABILITY_COUNT"
+              # Print the tags array for debugging
+              jq '.runs[0].tool.driver.rules[].tags' "${{ env.IMAGE_TAG }}-trivy-result.json"
 
+              VULNERABILITY_COUNT=$(jq --arg desiredSeverity "$desiredSeverity" '.runs[0].tool.driver.rules | map(select(.tags and .tags[] == $desiredSeverity)) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
+              echo "Number of ${{ env.scanSeverity }} vulnerabilities: $VULNERABILITY_COUNT"
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
                 echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
@@ -131,7 +132,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 2b4bdd0d-ad47-4010-a76c-fc6121a31b02'
+      - name: 'Run :: Decoding Secrets 624b5520-ae72-4175-b9b1-f445dfdb874b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
