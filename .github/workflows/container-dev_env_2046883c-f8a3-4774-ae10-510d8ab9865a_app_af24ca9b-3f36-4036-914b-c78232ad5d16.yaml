@@ -4,11 +4,11 @@ name: >-
 'on':
   schedule:
     schedule:
-      - cron: 0 0 * * *
-      - cron: 0 14 * * 1
+      - cron: '"0 0 * * *"'
+      - cron: '"0 14 * * 1"'
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5eea8e7a-1739-4f0b-b683-1e6ed9851bb7
+    types: pipeline_e928b41c-6efb-4eee-8206-7bd2099dac61
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -40,7 +40,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 70755c3f-b36b-4264-aba8-58ba8cf234bf'
+      - name: 'Run :: Decoding Secrets 43d626b5-19a3-4af0-a23f-87013489a7c9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -142,7 +142,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 04b61b78-43a6-4116-85c4-a2db4686eaf1'
+      - name: 'Run :: Decoding Secrets 643fac6e-8c70-4482-8911-ad359731436e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
