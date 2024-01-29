@@ -3,10 +3,11 @@ name: >-
   Pipeline (Skyu Generated)
 'on':
   schedule:
-    - cron: '"0 14 * * 1"'
+    - cron: 0 0 * * *
+    - cron: 0 14 * * 1
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_8d490357-fcb0-4946-a332-f958587e27fa
+    types: pipeline_d79b6983-d02c-4d06-b932-78a9e5b67c3d
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -38,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets c4bff625-b7b3-4284-9c05-e700a59a8e36'
+      - name: 'Run :: Decoding Secrets 53c6382e-d3c3-4f13-b5bd-32beb56dcace'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -140,7 +141,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 541c9353-f422-4c92-8e19-8385d901a1b4'
+      - name: 'Run :: Decoding Secrets 322774a8-9507-4e7e-a957-f497e2a0087f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
