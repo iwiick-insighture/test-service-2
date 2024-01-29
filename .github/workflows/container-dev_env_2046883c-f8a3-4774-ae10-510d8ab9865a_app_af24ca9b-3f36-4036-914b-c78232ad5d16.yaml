@@ -2,12 +2,13 @@ name: >-
   container-dev_env_2046883c-f8a3-4774-ae10-510d8ab9865a_app_af24ca9b-3f36-4036-914b-c78232ad5d16
   Pipeline (Skyu Generated)
 'on':
-  push:
-    branches:
-      - master
+  schedule:
+    schedule:
+      - cron: 0 0 * * *
+      - cron: 0 14 * * 1
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7af3a3a8-19d6-4500-b8d0-9431da724cc0
+    types: pipeline_5eea8e7a-1739-4f0b-b683-1e6ed9851bb7
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +40,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 4ffca6f6-9fef-4e2d-8829-74835603e9e3'
+      - name: 'Run :: Decoding Secrets 70755c3f-b36b-4264-aba8-58ba8cf234bf'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -141,7 +142,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets c43a69b5-7c11-425d-b8bd-6d4aa2080b8f'
+      - name: 'Run :: Decoding Secrets 04b61b78-43a6-4116-85c4-a2db4686eaf1'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
