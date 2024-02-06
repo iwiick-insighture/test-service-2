@@ -5,7 +5,7 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_3b824b42-5b00-4b9f-a9bc-67b8a002ff82
+    types: pipeline_d42a372e-f32a-404d-863a-e51dc7308d90
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CICD}}
@@ -18,7 +18,7 @@ jobs:
     needs:
       - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets 3bb1e30f-4ce7-4b0a-8f5b-0461a68c588c'
+      - name: 'Run :: Decoding Secrets 1b3cb639-19e7-4a5c-97ba-89d0e4e083bc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
