@@ -7,12 +7,12 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_d3e387eb-d3ca-4bac-8dbf-f81603505545
+    types: pipeline_40df95be-09d6-427b-b418-95cd0fed5347
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_DOCKERLAMBDADEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
-  IMAGE_NAME: ghcr.io/${{github.repository_owner}}/iwiick
+  IMAGE_NAME: skyu-gen-img
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: CRITICAL
@@ -40,7 +40,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 41a05d89-db41-415d-98aa-4aef06c90554'
+      - name: 'Run :: Decoding Secrets 91dd1de2-f71c-4edd-8c60-3e5ca8d13475'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -50,10 +50,15 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Login to Github Container Registry'
-        run: >-
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{
-          env.DOCKER_USERNAME }} --password-stdin
+      - name: 'Run :: Configure AWS credentials b6f3430c-af68-4553-8cd5-5f2ddeb08063'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Login to Amazon ECR'
+        id: skyu-login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
       - name: 'Run :: Check if image already exists'
         id: check-image-existence-step-id
         run: |2-
@@ -131,6 +136,11 @@ jobs:
               fi
               
         if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
+      - name: 'Run :: Create Repository'
+        run: >-
+          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
+          || true
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
@@ -143,7 +153,7 @@ jobs:
     needs:
       - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets 4d5fa2c8-0abe-4c68-b32f-b6a8759c9aea'
+      - name: 'Run :: Decoding Secrets 3a69c34c-47d9-4609-99fa-716f3c5fffb4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -166,7 +176,7 @@ jobs:
       - deploy-lambda
     if: needs.deploy-lambda.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets c53d91bd-21e2-46fb-9510-450ca2e0a13f'
+      - name: 'Run :: Decoding Secrets 1c3cf527-4745-4ed4-bdc2-26d6274d7f08'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
