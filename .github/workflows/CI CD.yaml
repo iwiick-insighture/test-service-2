@@ -18,7 +18,7 @@ jobs:
     needs:
       - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets 426da07c-2faa-41de-bd6c-61540551a61b'
+      - name: 'Run :: Decoding Secrets 987c5911-cc04-47b9-8d4d-c9125b36d8b7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -38,3 +38,7 @@ jobs:
         name: Step 1
       - name: step2
         run: aaa
+        config:
+          envVars:
+            - key: Hello
+              value: VALUEEEEEEE
