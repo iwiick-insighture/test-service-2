@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_10226c4d-b9ab-4f73-b9f0-06677a1c4ed9
+    types: pipeline_5c8274fb-18ff-47b9-8d97-dc80f369ff4b
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_DOCKERLAMBDADEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -20,7 +20,6 @@ env:
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
   LAMBDA_FUNCTION_NAME: iwiick-docker-lambda-dev
-  DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   build-and-push:
     name: Build And Push
@@ -40,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 0f213392-6d4b-48ec-9714-04a33bc9ce8c'
+      - name: 'Run :: Decoding Secrets 88f4a5de-7332-4153-8342-40ff0f4cd458'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -50,7 +49,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 4c576f65-104f-4a44-84ec-3cd14784b57c'
+      - name: 'Run :: Configure AWS credentials 921aee66-ba81-4d81-becb-3451112bbc73'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -152,7 +151,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets d970e5b7-160d-411c-bc96-522beef2a589'
+      - name: 'Run :: Decoding Secrets 57b63cd2-c496-4db0-88c7-1d5d15c06795'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -162,7 +161,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 6c562a17-691b-445a-9679-a67e87e823b4'
+      - name: 'Run :: Configure AWS credentials 5ec47f55-f4dc-4f56-8977-0ab31d14ca0b'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -188,7 +187,7 @@ jobs:
     needs:
       - deploy-lambda
     steps:
-      - name: 'Run :: Decoding Secrets bff82573-7083-4ec5-afd9-cc0849514ca8'
+      - name: 'Run :: Decoding Secrets dabdfda1-092f-4f52-921f-a2f23f18d507'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -201,18 +200,11 @@ jobs:
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
-              response=$(curl -d "appType=Deployment&imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.DEPLOYMENT_ENDPOINT }}')
-              status_code=$?
+              response=$(curl -d "appType=Lambda&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.DEPLOYMENT_ENDPOINT }}')
 
-              if [ $status_code -eq 0 ]; then
-                if echo "$response" | grep -q '"success":true'; then
-                  echo "SUCCESS :: $response"
-                else
-                  echo "FAILED :: $response"
-                  exit 1
-                fi
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
               else
-                echo "Failed to deploy. HTTP status code: $status_code"
-                exit 1
+                echo "FAILED :: $response"
               fi
             
