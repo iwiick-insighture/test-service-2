@@ -18,7 +18,7 @@ jobs:
     needs:
       - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets 1b3cb639-19e7-4a5c-97ba-89d0e4e083bc'
+      - name: 'Run :: Decoding Secrets b93e2234-8da4-4596-863f-6adbf30b5ede'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -28,12 +28,6 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: Start
-        run: |2-
-
-              echo " Starting GitHub Action!" && 
-              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
-              
       - run: run 1
         name: Step 1
       - name: step2
