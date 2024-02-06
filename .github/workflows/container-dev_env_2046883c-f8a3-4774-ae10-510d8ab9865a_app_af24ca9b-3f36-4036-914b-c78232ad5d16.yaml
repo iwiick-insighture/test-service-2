@@ -20,6 +20,7 @@ env:
   TRIVY_RESULT_FORMAT: json
   REPOSITORY_NAME: workflow-sameera
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
+  HELLO: HELOOOOO
 jobs:
   build-and-push:
     name: Build And Push
@@ -37,7 +38,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 65aee952-1797-4d95-a8b0-9d0842ce3eab'
+      - name: 'Run :: Decoding Secrets 6cfdad7c-78a5-46d6-9641-0ac78b8f6136'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -138,7 +139,7 @@ jobs:
     needs:
       - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets 3f266981-3476-497c-9815-ff9764cbd583'
+      - name: 'Run :: Decoding Secrets 26f9588e-1713-4912-9ab3-b8e82e62a6fc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
