@@ -18,7 +18,7 @@ jobs:
     needs:
       - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets db43f1d8-5104-47de-bbc5-0b8ea9232980'
+      - name: 'Run :: Decoding Secrets dafdd00b-984a-4c2e-b278-89bc3f7c105d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
