@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ebb5e5e6-932d-4179-aac6-dc02c87a44b7
+    types: pipeline_6acefbbd-46de-4047-b3f1-ed697d6478d4
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_ZIPLAMBDADEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -34,7 +34,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets f49e6663-b4d3-4b7a-bf5c-c8bd333eeb95'
+      - name: 'Run :: Decoding Secrets 3c62fb5b-ddf1-4a04-836c-5e12487a8f8a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -44,7 +44,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 7aeff54c-8551-4d36-a3b0-f4f272f38a5c'
+      - name: 'Run :: Configure AWS credentials 5b033c5f-8460-4692-8e1d-279ce00a3ae0'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -61,18 +61,20 @@ jobs:
       - name: 'Run :: Deploy Lambda Function from Zip'
         run: |2-
 
-              echo "Zipping the build Folder"
+              echo "Zipping the Build Folder"
               zip -r lambda_function.zip ${{ env.APP_BUILD_FOLDER }}
 
-              echo "Listing Filesssssssssssssssssssssssssssssssssssssssss"
-              ls -R
+              echo "Creating or updating Lambda function..."
+              aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --runtime nodejs14.x       --role ${{ env.roleARN }}       --handler index.handler       --zip-file fileb://lambda_function.zip       --region ${{ env.region }}
               
   deploy:
     name: Deploy
     permissions: write-all
     runs-on: ubuntu-latest
+    needs:
+      - build-and-zip-to-lambda
     steps:
-      - name: 'Run :: Decoding Secrets 8dbc37e2-e02e-4a3a-b857-1ffaa2291ef7'
+      - name: 'Run :: Decoding Secrets d0aa5aef-102e-48ec-9c0b-ca8f357c7f52'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
