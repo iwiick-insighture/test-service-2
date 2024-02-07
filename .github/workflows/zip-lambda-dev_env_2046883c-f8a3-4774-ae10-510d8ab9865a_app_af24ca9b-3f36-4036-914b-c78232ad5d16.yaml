@@ -61,7 +61,11 @@ jobs:
       - name: 'Run :: Deploy Lambda Function from Zip'
         run: |2-
 
-              echo "HELLOOOOOO"
+              echo "Zipping the build Folder"
+              zip -r lambda_function.zip ${{ env.APP_BUILD_FOLDER }}
+
+              echo "Listing Filesssssssssssssssssssssssssssssssssssssssss"
+              ls -R
               
   deploy:
     name: Deploy
