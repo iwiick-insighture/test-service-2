@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e14dbaeb-8a6e-47d4-8d59-08db467108f2
+    types: pipeline_931aa3fb-6dd9-4998-b0ba-e32f4d05d8ba
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_ZIPLAMBDADEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -17,6 +17,7 @@ env:
   APP_BUILD_COMMAND: npm run build
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
   LAMBDA_FUNCTION_NAME: iwiick-zip-lambda-dev
+  LAMBDA_FUNCTION_HANDLER: dist/src/main.ts
 jobs:
   build-and-zip-to-lambda:
     name: Build And Zip To Lambda
@@ -34,7 +35,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 11751aec-9025-40f7-ac6a-f60b0462948b'
+      - name: 'Run :: Decoding Secrets 10530181-ee7f-4351-9ef8-78ac04d589be'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -44,7 +45,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials ea65541b-09fc-46c3-a053-39a581fdc059'
+      - name: 'Run :: Configure AWS credentials 872c3d65-0bcc-4dc8-9d77-9a7c780ac68e'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -70,7 +71,7 @@ jobs:
                 aws lambda update-function-code         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
               else
                 echo "Creating new Lambda Function"
-                aws lambda create-function         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --runtime nodejs14.x         --role ${{ env.roleARN }}         --handler index.handler         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
+                aws lambda create-function         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --runtime nodejs14.x         --role ${{ env.roleARN }}         --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
               fi
               
   deploy:
@@ -80,7 +81,7 @@ jobs:
     needs:
       - build-and-zip-to-lambda
     steps:
-      - name: 'Run :: Decoding Secrets f6659930-9ddd-4336-8b8c-b7e9f9be0425'
+      - name: 'Run :: Decoding Secrets 11079fbb-0861-4419-a114-bc4929335691'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
