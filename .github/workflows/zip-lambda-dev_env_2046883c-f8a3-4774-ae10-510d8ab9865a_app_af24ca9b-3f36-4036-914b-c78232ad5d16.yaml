@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6acefbbd-46de-4047-b3f1-ed697d6478d4
+    types: pipeline_3a5507f3-5118-462b-9c25-37fbd1782e81
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_ZIPLAMBDADEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -34,7 +34,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 3c62fb5b-ddf1-4a04-836c-5e12487a8f8a'
+      - name: 'Run :: Decoding Secrets a9defdd4-c71a-4dbd-8e32-c668eb5e626f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -44,7 +44,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 5b033c5f-8460-4692-8e1d-279ce00a3ae0'
+      - name: 'Run :: Configure AWS credentials 77d20a2d-4fd5-4e04-9302-d4c214f1855d'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -62,10 +62,17 @@ jobs:
         run: |2-
 
               echo "Zipping the Build Folder"
-              zip -r lambda_function.zip ${{ env.APP_BUILD_FOLDER }}
+              cd ${{ env.APP_BUILD_FOLDER }}
+              zip -r lambda_function.zip .
 
               echo "Creating or updating Lambda function..."
-              aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --runtime nodejs14.x       --role ${{ env.roleARN }}       --handler index.handler       --zip-file fileb://lambda_function.zip       --region ${{ env.region }}
+              if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
+                echo "Lambda Exists! Updating function"
+                aws lambda update-function-code         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
+              else
+                echo "Creating new Lambda Function"
+                aws lambda create-function         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --runtime nodejs14.x         --role ${{ env.roleARN }}         --handler index.handler         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
+              fi
               
   deploy:
     name: Deploy
@@ -74,7 +81,7 @@ jobs:
     needs:
       - build-and-zip-to-lambda
     steps:
-      - name: 'Run :: Decoding Secrets d0aa5aef-102e-48ec-9c0b-ca8f357c7f52'
+      - name: 'Run :: Decoding Secrets 51418414-5ef7-4fa1-841e-36f3257813ee'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
