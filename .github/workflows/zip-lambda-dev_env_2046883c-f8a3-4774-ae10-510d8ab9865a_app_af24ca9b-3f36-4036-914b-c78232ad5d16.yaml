@@ -1,0 +1,103 @@
+name: >-
+  zip-lambda-dev_env_2046883c-f8a3-4774-ae10-510d8ab9865a_app_af24ca9b-3f36-4036-914b-c78232ad5d16
+  Pipeline (Skyu Generated)
+'on':
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: pipeline_e14dbaeb-8a6e-47d4-8d59-08db467108f2
+env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_ZIPLAMBDADEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
+  BUILD_ENVIRONEMENT_VERSION: latest
+  APP_BUILD_FOLDER: dist
+  APP_INSTALL_DEPS_COMMAND: npm i
+  APP_BUILD_COMMAND: npm run build
+  IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
+  LAMBDA_FUNCTION_NAME: iwiick-zip-lambda-dev
+jobs:
+  build-and-zip-to-lambda:
+    name: Build And Zip To Lambda
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v2
+      - name: 'Run :: Checkout Specific Commit'
+        if: ${{ github.event.client_payload.commitId != null }}
+        run: git checkout ${{ github.event.client_payload.commitId }}
+      - name: 'Run :: Decoding Secrets 11751aec-9025-40f7-ac6a-f60b0462948b'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Configure AWS credentials ea65541b-09fc-46c3-a053-39a581fdc059'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Set up Node.js'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.BUILD_ENVIRONEMENT_VERSION }}
+      - name: 'Run :: Install App Dependancies'
+        run: ${{ env.APP_INSTALL_DEPS_COMMAND }}
+      - name: 'Run :: Build App'
+        run: ${{ env.APP_BUILD_COMMAND }} && ls -R
+      - name: 'Run :: Deploy Lambda Function from Zip'
+        run: |2-
+
+              echo "Zipping the Build Folder"
+              zip -r lambda_function.zip ${{ env.APP_BUILD_FOLDER }}
+
+              echo "Creating or updating Lambda function..."
+              if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
+                echo "Lambda Exists! Updating function"
+                aws lambda update-function-code         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
+              else
+                echo "Creating new Lambda Function"
+                aws lambda create-function         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --runtime nodejs14.x         --role ${{ env.roleARN }}         --handler index.handler         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
+              fi
+              
+  deploy:
+    name: Deploy
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-zip-to-lambda
+    steps:
+      - name: 'Run :: Decoding Secrets f6659930-9ddd-4336-8b8c-b7e9f9be0425'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Deploy and Notify Resource Service'
+        run: |2-
+
+              response=$(curl -d "appType=Lambda&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.DEPLOYMENT_ENDPOINT }}')
+
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
+              else
+                echo "FAILED :: $response"
+              fi
+            
