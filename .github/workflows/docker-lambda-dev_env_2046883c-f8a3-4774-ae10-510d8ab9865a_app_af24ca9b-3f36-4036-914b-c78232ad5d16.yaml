@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5c8274fb-18ff-47b9-8d97-dc80f369ff4b
+    types: pipeline_3308400f-f2fb-41c4-966d-987d5b2268e9
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_DOCKERLAMBDADEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 88f4a5de-7332-4153-8342-40ff0f4cd458'
+      - name: 'Run :: Decoding Secrets 062a50f6-4be1-4f9b-8956-7a2ad305bb5d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -49,7 +49,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 921aee66-ba81-4d81-becb-3451112bbc73'
+      - name: 'Run :: Configure AWS credentials 7e22da92-d032-4f4a-a282-69573ea21d5c'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -151,7 +151,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 57b63cd2-c496-4db0-88c7-1d5d15c06795'
+      - name: 'Run :: Decoding Secrets 2043b781-634f-49bd-8dd1-9b5d31257f83'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -161,7 +161,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 5ec47f55-f4dc-4f56-8977-0ab31d14ca0b'
+      - name: 'Run :: Configure AWS credentials 3ef198ed-077c-4326-ae0f-6e2848eecd8a'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -171,8 +171,7 @@ jobs:
         run: |2-
 
               # Check if the Lambda function already exists
-              aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1
-              if [ $? -eq 0 ]; then
+              if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
                 echo "Lambda Exists! Updating function"
                 aws lambda update-function-code --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --image-uri ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --region ${{ env.region }}
               else
@@ -187,7 +186,7 @@ jobs:
     needs:
       - deploy-lambda
     steps:
-      - name: 'Run :: Decoding Secrets dabdfda1-092f-4f52-921f-a2f23f18d507'
+      - name: 'Run :: Decoding Secrets 14181b5e-7284-4686-bc32-e015d2ac4f28'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
