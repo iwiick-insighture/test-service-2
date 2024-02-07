@@ -17,7 +17,7 @@ env:
   APP_BUILD_COMMAND: npm run build
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
   LAMBDA_FUNCTION_NAME: iwiick-zip-lambda-dev
-  LAMBDA_FUNCTION_HANDLER: dist/src/main.js
+  LAMBDA_FUNCTION_HANDLER: dist/src/main.handler
 jobs:
   build-and-zip-to-lambda:
     name: Build And Zip To Lambda
