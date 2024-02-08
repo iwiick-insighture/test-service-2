@@ -3,11 +3,11 @@ name: >-
   Pipeline (Skyu Generated)
 'on':
   push:
-    paths:
-      - README.md
+    branches:
+      - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_20c3d1e0-ee1a-421a-ac4b-ca907003cfd8
+    types: pipeline_621d1bd9-cc07-4639-bec5-3889dddeb38e
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 04e1771e-c4e9-4c95-9dad-cf60f1eb8139'
+      - name: 'Run :: Decoding Secrets 769ceadd-ff32-4527-a3d4-83d84ab92d14'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -49,7 +49,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 2292b269-f30c-45a3-8026-90c16dca9cc2'
+      - name: 'Run :: Configure AWS credentials 3954d0a1-a709-4d9b-864a-8895d31fb828'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -93,7 +93,6 @@ jobs:
               # Minifying Json
               jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
               trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.min.json")
-              echo "trivy_result: $trivy_result"
 
               # Set the desired severity level
               desiredSeverity="${{ env.SCAN_SEVERITY }}"
@@ -134,6 +133,10 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
+              if ${{ env.STEPS_CAN_PROCEED == 'false' }}; then
+                exit 1
+              fi
+              
         if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
       - name: 'Run :: Create Repository'
         run: >-
@@ -151,7 +154,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 09d576c5-2c61-406c-8ce0-97a14e93f8ac'
+      - name: 'Run :: Decoding Secrets 9d86b8db-4a57-4b16-bc9a-cfeab6a7c38b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
