@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9aaa6b24-211a-4bd9-a83e-f533a2ce6bcf
+    types: pipeline_58ca20fa-145f-4841-be45-89aadb277a83
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 92416659-7607-4c45-8e47-4aa68080776d'
+      - name: 'Run :: Decoding Secrets 5a65aba4-aefb-46fb-91da-a16a77336187'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -49,7 +49,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 16787996-6114-4c41-b7cb-00769abd7b33'
+      - name: 'Run :: Configure AWS credentials efcef25a-7ec3-42a6-8803-68b557c5ff92'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -113,6 +113,7 @@ jobs:
 
               if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
                 echo "STEPS_CAN_PROCEED=false" >> $GITHUB_ENV
+                echo "VULNERABILITY_COUNT=$VULNERABILITY_COUNT" >> $GITHUB_ENV
               fi
               echo "ARE_TRIVY_RESULTS_EVALUATED=true" >> $GITHUB_ENV
               
@@ -133,11 +134,19 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-              if ${{ env.STEPS_CAN_PROCEED == 'false' }}; then
-                exit 1
+        if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
+      - name: 'Run :: Check Pipeline Safety'
+        run: |2-
+
+              echo "HEREEEEEEEEE 1 :: ${{ env.VULNERABILITY_COUNT }}"
+              echo "HEREEEEEEEEE 1 :: [ "${{ env.VULNERABILITY_COUNT }}" -gt 0 ]"
+              
+              if [ "${{ env.VULNERABILITY_COUNT }}" -gt 0 ]; then
+                echo "UN-SAFE to continue Pipeline"
+              else
+              echo "SAFE to continue Pipeline"
               fi
               
-        if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
@@ -154,7 +163,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets f5999165-c11b-4f8a-bd6a-9eee7f190bd8'
+      - name: 'Run :: Decoding Secrets 5d87f2f6-78b5-438d-9015-1307d8df76ea'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
