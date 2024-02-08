@@ -4,7 +4,7 @@ name: >-
 'on':
   push:
     paths:
-      - '*'
+      - '/*'
   workflow_dispatch: {}
   repository_dispatch:
     types: pipeline_48a78e63-96a8-4a57-94ea-aa3a429a59a2
