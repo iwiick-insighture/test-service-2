@@ -7,15 +7,15 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_621d1bd9-cc07-4639-bec5-3889dddeb38e
+    types: pipeline_9aaa6b24-211a-4bd9-a83e-f533a2ce6bcf
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
-  IMAGE_NAME: skyu-gen-img
+  IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
-  SCAN_SEVERITY: CRITICAL
+  SCAN_SEVERITY: MEDIUM
   TRIVY_SCAN_EXIT_CODE: '0'
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 769ceadd-ff32-4527-a3d4-83d84ab92d14'
+      - name: 'Run :: Decoding Secrets 92416659-7607-4c45-8e47-4aa68080776d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -49,7 +49,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 3954d0a1-a709-4d9b-864a-8895d31fb828'
+      - name: 'Run :: Configure AWS credentials 16787996-6114-4c41-b7cb-00769abd7b33'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -154,7 +154,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 9d86b8db-4a57-4b16-bc9a-cfeab6a7c38b'
+      - name: 'Run :: Decoding Secrets f5999165-c11b-4f8a-bd6a-9eee7f190bd8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
