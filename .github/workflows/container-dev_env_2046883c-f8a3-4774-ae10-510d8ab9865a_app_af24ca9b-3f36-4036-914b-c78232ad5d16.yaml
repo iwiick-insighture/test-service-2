@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_610009af-1b4e-470b-9da8-65b62d39992e
+    types: pipeline_dc89f35f-6dd1-435c-afd6-8f89c93829a0
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 5c1d07ef-76e1-4959-85e9-14216e5abacf'
+      - name: 'Run :: Decoding Secrets 1219f437-190f-4bb5-b9e8-a74b3c8986f1'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -49,7 +49,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 54fc6f4c-dbac-4816-9a15-57acea157078'
+      - name: 'Run :: Configure AWS credentials c4303cac-7a1d-4959-bae2-c9d9ff04a0f1'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -87,12 +87,6 @@ jobs:
           severity: ${{env.SCAN_SEVERITY}}
           hide-progress: true
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
-        config:
-          resultFormat: sarif
-          exitCode: '0'
-          imageName: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
-          scanSeverity:
-            - MEDIUM
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
 
@@ -141,7 +135,6 @@ jobs:
               fi
               
         if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
-        config: {}
       - name: 'Run :: Check Pipeline Safety'
         run: |2-
 
@@ -152,7 +145,6 @@ jobs:
                 echo "SAFE to continue Pipeline"
               fi
               
-        config: {}
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
@@ -169,7 +161,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets c85dc9e9-5cf7-4b19-a047-0a164cda5c5f'
+      - name: 'Run :: Decoding Secrets f09d96d6-04ba-44c5-bfbe-7ea032b6dd6f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -197,8 +189,3 @@ jobs:
                 exit 1
               fi
             
-        config:
-          versionId: version_56c6436e-8c73-4c06-b26c-a43aea825a68
-          containerName: iwiick-app-1-main
-          usePrevDockerBuild: true
-          shouldDeploy: true
