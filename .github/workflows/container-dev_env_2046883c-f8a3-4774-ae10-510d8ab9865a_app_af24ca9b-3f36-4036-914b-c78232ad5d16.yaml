@@ -7,12 +7,12 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_daed6644-5566-4538-81a3-139614aa6629
+    types: pipeline_7b84ff47-6229-4710-8136-5070e99a8c11
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16}}
   IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
-  IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
+  IMAGE_NAME: skyu-gen-img
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
   SCAN_SEVERITY: MEDIUM
@@ -39,7 +39,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 3a9bc0ee-a16e-4d03-b007-53a210f24bc2'
+      - name: 'Run :: Decoding Secrets 3e373d18-6908-40c7-8ff5-b8e0db75f1e4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -49,7 +49,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials b72f1552-1d2e-4b4b-923b-daa193e0cabd'
+      - name: 'Run :: Configure AWS credentials 710f4bc1-a49c-4934-b52f-356540ea0914'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -161,7 +161,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 22cd4c0e-6c45-4f86-8714-40d593271013'
+      - name: 'Run :: Decoding Secrets 685235dd-c54c-402a-ab81-1b3243314320'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
