@@ -40,9 +40,10 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+        output: "codeql-report.sarif"
 
     - name: Workspace
       run: echo "${{ github.workspace }}"
 
     - name: Print SARIF content
-      run: cat "$(dirname "${{ github.workspace }}")/results/javascript.sarif"
+      run: cat "$(dirname "${{ github.workspace }}")/results/codeql-report.sarif"
