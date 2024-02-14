@@ -40,7 +40,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
-        output: "codeql-report.sarif"
+        output: "${{ github.workspace }}/codeql-report/custom_name.sarif"
 
     - name: Workspace
       run: echo "${{ github.workspace }}"
