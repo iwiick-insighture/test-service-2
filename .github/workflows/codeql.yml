@@ -45,4 +45,4 @@ jobs:
       run: echo "${{ github.workspace }}"
 
     - name: Print SARIF content
-      run: cat "${{ github.workspace }}/$(basename "${{ github.workspace }}")/results/javascript.sarif"
+      run: cat "$(dirname "${{ github.workspace }}")/results/javascript.sarif"
