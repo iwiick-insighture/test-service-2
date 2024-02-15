@@ -17,8 +17,8 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-        language: [ 'javascript-typescript' ]
+      matrix: {}
+        # language: [ 'javascript-typescript' ]
         # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
 
     steps:
@@ -40,10 +40,10 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
-        output: "${{ github.workspace }}/codeql-report/custom_name.sarif"
+        # output: "${{ github.workspace }}/codeql-report/custom_name.sarif"
 
     - name: Workspace
       run: echo "${{ github.workspace }}"
 
     - name: Print SARIF content
-      run: cat "$(dirname "${{ github.workspace }}")/results/codeql-report.sarif"
+      run: cat "$(dirname "${{ github.workspace }}")/results/javascript.sarif"
