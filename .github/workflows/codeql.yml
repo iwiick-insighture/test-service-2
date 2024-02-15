@@ -17,9 +17,6 @@ jobs:
 
     strategy:
       fail-fast: false
-      # matrix:
-      #   language: [ 'javascript-typescript' ]
-        # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
 
     steps:
     - name: Checkout repository
@@ -40,10 +37,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
-        # output: "${{ github.workspace }}/codeql-report/custom_name.sarif"
+        output: "../resultsssss"
 
-    - name: Workspace
-      run: echo "${{ github.workspace }}"
-
-    - name: Print SARIF content
-      run: cat "$(dirname "${{ github.workspace }}")/results/javascript.sarif"
+    # - name: Print SARIF content
+    #   run: cat "$(dirname "${{ github.workspace }}")/results/javascript.sarif"
