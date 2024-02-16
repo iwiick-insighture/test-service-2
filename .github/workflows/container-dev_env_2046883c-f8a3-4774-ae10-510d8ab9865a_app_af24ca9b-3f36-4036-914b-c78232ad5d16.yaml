@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5ea0a1e7-fbde-4d90-940b-8a4bda680145
+    types: pipeline_21c42a40-820a-4338-b38b-82fab243205c
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -23,15 +23,22 @@ env:
 jobs:
   analyze-code-quality:
     name: Analyze Code Quality
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions: write-all
-    strategy:
-      fail-fast: false
+    runs-on: ubuntu-latest
     steps:
+      - name: 'Run :: Decoding Secrets 4329dcd4-eb78-45ba-8a0f-b997ef7ae60a'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 84850dc2-9b1c-4678-8384-9a6a2da1051c'
+      - name: 'Run :: Decoding Secrets bcf297cf-2682-4f36-8356-9bfb8c10d230'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -52,7 +59,7 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: /language:${{matrix.language}}
-      - name: 'Run :: Configure AWS credentials 2cea8940-4152-471f-93fd-8a456c01354f'
+      - name: 'Run :: Configure AWS credentials eabc310c-0806-4948-8de4-8055363addcc'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -95,7 +102,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 1cb57a50-06a3-4814-ba05-3b2a07126864'
+      - name: 'Run :: Decoding Secrets 6ae1006e-4877-4d37-9914-0e7f9a341831'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -105,7 +112,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials cab6151b-acf3-4f8a-96b7-9ada4649661c'
+      - name: 'Run :: Configure AWS credentials 3070e081-26b4-41f2-affc-6b663affda9a'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -217,7 +224,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets dc39af30-a1c4-4b82-b3c7-59d19091709b'
+      - name: 'Run :: Decoding Secrets 4a629195-f809-450f-a513-ffea826c281e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
