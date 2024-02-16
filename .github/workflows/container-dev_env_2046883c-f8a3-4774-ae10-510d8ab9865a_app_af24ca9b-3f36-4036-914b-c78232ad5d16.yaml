@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_11a41496-43f0-40d6-b7c8-4a504c06df38
+    types: pipeline_44fca76d-6353-4c27-8fe2-3c55757c16ab
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -26,7 +26,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets bcafb20d-88db-4547-9baf-23a56f7f91d4'
+      - name: 'Run :: Decoding Secrets fefd06d1-4737-4b3b-91d0-2ffaa01e512a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -86,7 +86,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets c2d10fbd-7449-4e44-8d3a-c5aba7d2d34f'
+      - name: 'Run :: Decoding Secrets e62784cb-656a-4eba-9122-1a3730e3991a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -96,7 +96,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials bde9034c-b460-42d5-a54f-78088bb45591'
+      - name: 'Run :: Configure AWS credentials b6cc5bd6-446e-47c6-b01d-ec699cd4a96b'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -208,7 +208,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets efe00461-ed8b-45dc-9857-1784460ad61b'
+      - name: 'Run :: Decoding Secrets ba3f63ba-0f0d-4e71-a6ee-3bce6a85163f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
