@@ -1,0 +1,228 @@
+name: >-
+  container-dev_env_2046883c-f8a3-4774-ae10-510d8ab9865a_app_af24ca9b-3f36-4036-914b-c78232ad5d16
+  Pipeline (Skyu Generated)
+'on':
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: pipeline_6e7dd29c-8349-4706-b68f-83fcf8046eee
+env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
+  IMAGE_TAG: ${{github.event.client_payload.commitId || github.sha}}
+  IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
+  DOCKER_FILE_PATH: Dockerfile
+  DOCKER_BUILD_CONTEXT: .
+  SCAN_SEVERITY: MEDIUM
+  TRIVY_SCAN_EXIT_CODE: '0'
+  TRIVY_RESULT_FORMAT: sarif
+  REPOSITORY_NAME: iwiick
+  DEPLOY_STEP_SHOULD_DEPLOY: 'true'
+jobs:
+  Analyze Code Quality:
+    name: Analyze Code Quality
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets eaf4cf2e-b4f1-49be-afe2-7ee925cdd3a9'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Checkout repository for CodeQL
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild for CodeQL
+        uses: ' github/codeql-action/autobuild@v3'
+      - name: Perform CodeQL Analysis
+        id: codeql-analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:${{matrix.language}}
+      - name: Print & Upload CodeQL Report
+        run: |2-
+
+                    SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
+                    if [ -n "$SARIF_FILE" ], then
+                      cat "$SARIF_FILE"
+                    else
+                      echo "SARIF file not found."
+                    fi
+  build-and-push:
+    name: Build And Push
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
+    steps:
+      - name: Start
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v2
+      - name: 'Run :: Checkout Specific Commit'
+        if: ${{ github.event.client_payload.commitId != null }}
+        run: git checkout ${{ github.event.client_payload.commitId }}
+      - name: 'Run :: Decoding Secrets 874db2ed-7d12-47fa-ac73-11a1ddd45e24'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Configure AWS credentials 09107f97-b959-447b-924a-3ab6e2b40c72'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Login to Amazon ECR'
+        id: skyu-login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: 'Run :: Check if image already exists'
+        id: check-image-existence-step-id
+        run: |2-
+
+              if docker pull ${{ env.IMAGE_NAME }}:${{env.IMAGE_TAG}} >/dev/null 2>&1; 
+              then
+                echo "Image exists in registry."
+                echo "STEPS_CAN_PROCEED=false" >> $GITHUB_ENV
+              else
+                echo "Image does not exist in registry."
+                echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              fi
+              
+      - name: 'Run :: Build With Docker'
+        run: >-
+          docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f
+          ${{env.DOCKER_FILE_PATH}} ${{env.DOCKER_BUILD_CONTEXT}}
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      - name: 'Run :: Trivy vulnerability scanner'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          format: ${{env.TRIVY_RESULT_FORMAT}}
+          output: ${{ env.IMAGE_TAG }}-trivy-result.json
+          exit-code: ${{env.TRIVY_SCAN_EXIT_CODE}}
+          vuln-type: os,library
+          severity: ${{env.SCAN_SEVERITY}}
+          hide-progress: true
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      - name: 'Run :: Evaluate Trivy Results'
+        run: |2-
+
+              # Minifying Json
+              jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
+              trivy_result=$(cat "${{ env.IMAGE_TAG }}-trivy-result.min.json")
+
+              # Set the desired severity level
+              desiredSeverity="${{ env.SCAN_SEVERITY }}"
+              IFS=',' read -ra severities <<< "$desiredSeverity"  # Split the severity string
+
+              # Print the tags array for debugging
+              jq '.runs[0].tool.driver.rules[].properties.tags' "${{ env.IMAGE_TAG }}-trivy-result.json"
+
+              VULNERABILITY_COUNT=0
+
+              for severity in "${severities[@]}"; do
+                count=$(jq --arg severity "$severity" '.runs[0].tool.driver.rules | map(select(.properties.tags and (.properties.tags | map(tostring) | index($severity) // empty))) | length' "${{ env.IMAGE_TAG }}-trivy-result.json")
+                echo "Number of $severity vulnerabilities: $count"
+                VULNERABILITY_COUNT=$((VULNERABILITY_COUNT + count))
+              done
+
+              echo "Total Number of vulnerabilities: $VULNERABILITY_COUNT"
+
+              if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
+                echo "STEPS_CAN_PROCEED=false" >> $GITHUB_ENV
+                echo "VULNERABILITY_COUNT=$VULNERABILITY_COUNT" >> $GITHUB_ENV
+              fi
+              echo "ARE_TRIVY_RESULTS_EVALUATED=true" >> $GITHUB_ENV
+              
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      - name: 'Run :: Upload Trivy Result To S3'
+        run: |2-
+
+
+              # Minifying Json
+              jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
+
+              # Uploading Minified Trivy Resuls
+              response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.min.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/trivy_results/")
+
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
+              else
+                echo "FAILED :: $response"
+              fi
+              
+        if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
+      - name: 'Run :: Check Pipeline Safety'
+        run: |2-
+
+              if [ "${{ env.VULNERABILITY_COUNT }}" -gt 0 ]; then
+                echo "UN-SAFE to continue Pipeline"
+                exit 1
+              else
+                echo "SAFE to continue Pipeline"
+              fi
+              
+      - name: 'Run :: Create Repository'
+        run: >-
+          aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
+          || true
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+      - name: 'Run :: Build, tag, and push image'
+        run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+  deploy:
+    name: Deploy
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-push
+    if: needs.build-and-push.outputs.stepsCanProceed == 'true'
+    steps:
+      - name: 'Run :: Decoding Secrets fc076fbd-2851-40f6-866c-ea87a4a4bc35'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Deploy and Notify Resource Service'
+        run: |2-
+
+              response=$(curl -d "appType=Deployment&imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.DEPLOYMENT_ENDPOINT }}')
+              status_code=$?
+
+              if [ $status_code -eq 0 ]; then
+                if echo "$response" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $response"
+                else
+                  echo "FAILED :: $response"
+                  exit 1
+                fi
+              else
+                echo "Failed to deploy. HTTP status code: $status_code"
+                exit 1
+              fi
+            
