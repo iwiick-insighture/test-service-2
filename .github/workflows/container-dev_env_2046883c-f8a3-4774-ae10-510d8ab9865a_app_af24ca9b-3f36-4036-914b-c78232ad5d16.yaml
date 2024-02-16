@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_f8e7709c-5bc8-4f64-80bd-c64a4bab770c
+    types: pipeline_11a41496-43f0-40d6-b7c8-4a504c06df38
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -22,17 +22,31 @@ env:
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   analyze:
-    name: analyze
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
-    strategy:
-      fail-fast: false
+    name: Analyze
+    permissions: write-all
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: 'Run :: Decoding Secrets bcafb20d-88db-4547-9baf-23a56f7f91d4'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Decoding Secrets 40725bb0-c652-4764-91c1-a09bff7f669d'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Checkout repository for CodeQL
         uses: actions/checkout@v4
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -72,7 +86,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 7daa457f-abef-4f2b-98a0-45c5058a1812'
+      - name: 'Run :: Decoding Secrets c2d10fbd-7449-4e44-8d3a-c5aba7d2d34f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -82,7 +96,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials db94628f-6f19-4190-8a99-b1d4a6b9dbb7'
+      - name: 'Run :: Configure AWS credentials bde9034c-b460-42d5-a54f-78088bb45591'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -194,7 +208,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets fce52423-0f4b-415f-bd77-1085628db759'
+      - name: 'Run :: Decoding Secrets efe00461-ed8b-45dc-9857-1784460ad61b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
