@@ -5,13 +5,13 @@ name: My Test Workflow (Skyu Generated)
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9e8b7976-199c-4607-9ca4-8b2cbb6678d0
+    types: pipeline_b93f351f-557d-4a70-a487-c9c8d80e39da
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CICD_YAML}}
   Hello: VALUEEEEEEE
 jobs:
-  analyze-code-quality:
+  Analyze Code Quality:
     name: Analyze Code Quality
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
@@ -71,10 +71,8 @@ jobs:
     name: Deploy
     permissions: write-all
     runs-on: ubuntu-latest
-    needs:
-      - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets 12d76a39-f6be-4b83-a7c6-9c0a27dfe517'
+      - name: 'Run :: Decoding Secrets 23d962d2-960d-441b-8df6-1e6d1b146483'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
