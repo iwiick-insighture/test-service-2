@@ -39,4 +39,12 @@ jobs:
         category: "/language:${{matrix.language}}"
 
     - name: Print SARIF content
-      run: cat "${{ steps.codeql-analysis.outputs.sarif-output }}/*.sarif"
+      run: |
+          SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
+          if [ -n "$SARIF_FILE" ]; then
+            cat "$SARIF_FILE"
+          else
+            echo "SARIF file not found."
+          exit 1
+          fi
+
