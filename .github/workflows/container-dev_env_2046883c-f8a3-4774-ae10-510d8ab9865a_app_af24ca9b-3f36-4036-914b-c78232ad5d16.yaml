@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_cdadf691-2255-4bba-8817-410392d6ead7
+    types: pipeline_f8e7709c-5bc8-4f64-80bd-c64a4bab770c
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -32,14 +32,14 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - name: Checkout repository for CodeQL
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
       - name: Autobuild for CodeQL
-        uses: ' github/codeql-action/autobuild@v3'
+        uses: github/codeql-action/autobuild@v3
       - name: Perform CodeQL Analysis
         id: codeql-analysis
         uses: github/codeql-action/analyze@v3
@@ -72,7 +72,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 3e8a26e6-37ba-42af-ba62-03e85625679b'
+      - name: 'Run :: Decoding Secrets 7daa457f-abef-4f2b-98a0-45c5058a1812'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -82,7 +82,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 95e4f7c1-b9e0-438c-9168-6e5a09ab4c6f'
+      - name: 'Run :: Configure AWS credentials db94628f-6f19-4190-8a99-b1d4a6b9dbb7'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -194,7 +194,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 72d17824-9edc-4928-87d0-94503490a00f'
+      - name: 'Run :: Decoding Secrets fce52423-0f4b-415f-bd77-1085628db759'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
