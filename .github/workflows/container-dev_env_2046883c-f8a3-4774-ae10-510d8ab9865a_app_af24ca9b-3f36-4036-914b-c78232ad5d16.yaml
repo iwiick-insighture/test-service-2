@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9f6843ae-7d3d-43b1-aa3b-f38341599da4
+    types: pipeline_53ed5147-6be6-4dd0-9118-5fb45375f90e
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -32,7 +32,29 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - name: 'Run :: Decoding Secrets 780165e3-705c-44f1-a373-f4e75154e27e'
+      - name: Checkout repository for CodeQL
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild for CodeQL
+        uses: github/codeql-action/autobuild@v3
+      - name: Perform CodeQL Analysis
+        id: codeql-analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:${{matrix.language}}
+      - name: Print & Upload CodeQL Report
+        run: |2-
+
+                    SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
+                    if [ -n "$SARIF_FILE" ], then
+                      cat "$SARIF_FILE"
+                    else
+                      echo "SARIF file not found."
+                    fi
+      - name: 'Run :: Decoding Secrets 40f76362-fb4f-4fa7-8913-7ce99273ab2d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -60,7 +82,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 3623a676-f244-41d7-90f1-ffcf8ac67a0a'
+      - name: 'Run :: Decoding Secrets ec2f7ace-c755-438d-af4e-e96cd6fbe32d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -70,7 +92,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 0bdd2bc3-4681-444b-b475-b3f4f3ba16b7'
+      - name: 'Run :: Configure AWS credentials 020ccd6d-d5e0-4e44-898a-1a7d018eead4'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -182,7 +204,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 28d175f5-ac57-454c-b9bf-8b99877932d1'
+      - name: 'Run :: Decoding Secrets 80b57a6b-6421-4a37-a7e4-fe520fde4555'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
