@@ -1,0 +1,96 @@
+name: My Test Workflow (Skyu Generated)
+'on':
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: pipeline_9e8b7976-199c-4607-9ca4-8b2cbb6678d0
+env:
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CICD_YAML}}
+  Hello: VALUEEEEEEE
+jobs:
+  analyze-code-quality:
+    name: Analyze Code Quality
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    permissions: write-all
+    strategy:
+      fail-fast: false
+    steps:
+      - name: 'Run :: Checkout repository for CodeQL'
+        uses: actions/checkout@v4
+      - name: 'Run :: Decoding Secrets 9f8cc8af-f981-4883-89c1-892bb7332026'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Initialize CodeQL'
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - name: 'Run :: Autobuild for CodeQL'
+        uses: github/codeql-action/autobuild@v3
+      - name: 'Run :: Perform CodeQL Analysis'
+        id: codeql-analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:${{matrix.language}}
+      - name: 'Run :: Configure AWS credentials 84230dc2-9415-4b3b-b052-e39908ab8355'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Print & Upload CodeQL Report'
+        run: |2-
+
+                  SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
+                  if [ -n "$SARIF_FILE" ]; then
+                      echo "CodeQL Results"
+                      cat "$SARIF_FILE" > ${{ env.IMAGE_TAG }}-codeql-result.sarif
+
+                      echo "Uploading CodeQL Results to S3 :: ${{ env.IMAGE_TAG }}-codeql-result.sarif"
+                      # Uploading Minified Trivy Resuls
+                          response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-codeql-result.sarif" -F "provider=aws" -F "resourceType=codeql-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/codeql_results/")
+                          if echo "$response" | grep -q '"success":true'; then
+                            echo "SUCCESS :: $response"
+                          else
+                            echo "FAILED :: $response"
+                          fi
+                  else
+                      echo "SARIF file not found."
+                  fi
+  deploy:
+    name: Deploy
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-push
+    steps:
+      - name: 'Run :: Decoding Secrets 12d76a39-f6be-4b83-a7c6-9c0a27dfe517'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Start
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - run: run 1
+        name: Step 1
+      - name: step2
+        run: aaa
