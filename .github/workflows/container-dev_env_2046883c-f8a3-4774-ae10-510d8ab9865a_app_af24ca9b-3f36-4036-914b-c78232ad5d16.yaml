@@ -22,38 +22,47 @@ env:
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   analyze:
-    name: analyze
+    name: Analyze
+
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       security-events: write
       actions: read
       contents: read
+
     strategy:
       fail-fast: false
-    steps:
-      - name: Checkout repository for CodeQL
-        uses: actions/checkout@v4
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-      - name: Autobuild for CodeQL
-        uses: ' github/codeql-action/autobuild@v3'
-      - name: Perform CodeQL Analysis
-        id: codeql-analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: /language:${{matrix.language}}
-      - name: Print & Upload CodeQL Report
-        run: |2-
 
-                    SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
-                    if [ -n "$SARIF_FILE" ], then
-                      cat "$SARIF_FILE"
-                    else
-                      echo "SARIF file not found."
-                    fi
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    # Perform CodeQL Analysis
+    - name: Perform CodeQL Analysis
+      id: codeql-analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
+
+    - name: Print SARIF content
+      run: |
+          SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
+          if [ -n "$SARIF_FILE" ]; then
+            cat "$SARIF_FILE"
+          else
+            echo "SARIF file not found."
+          exit 1
+          fi
   build-and-push:
     name: Build And Push
     permissions: write-all
