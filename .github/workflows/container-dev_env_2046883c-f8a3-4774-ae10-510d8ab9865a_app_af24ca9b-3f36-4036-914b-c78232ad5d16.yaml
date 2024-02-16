@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_baacb086-1ce2-4e72-89f9-9e68db240278
+    types: pipeline_f1ab2184-64ac-402c-a7ce-7ba62a3e5059
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 39fb725e-06a4-44cc-aafd-61d8e765059e'
+      - name: 'Run :: Decoding Secrets d08b39a1-eeca-4e28-9f8b-44fdc8a7c33b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -41,12 +41,6 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 6b659685-5eea-4d3a-aad5-ebf34ecebcc9'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.roleARN }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ${{ env.region }}
       - name: 'Run :: Initialize CodeQL'
         uses: github/codeql-action/init@v3
         with:
@@ -58,15 +52,21 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: /language:${{matrix.language}}
+      - name: 'Run :: Configure AWS credentials 3c34d8f7-af8d-40b4-b01f-4eff64f58e68'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
       - name: 'Run :: Print & Upload CodeQL Report'
         run: |2-
 
-                    SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
-                    if [ -n "$SARIF_FILE" ], then
-                      cat "$SARIF_FILE"
-                    else
-                      echo "SARIF file not found."
-                    fi
+                  SARIF_FILE=$(find "${{ steps.codeql-analysis.outputs.sarif-output }}" -name '*.sarif' -type f)
+                  if [ -n "$SARIF_FILE" ]; then
+                    cat "$SARIF_FILE"
+                  else
+                    echo "SARIF file not found."
+                  fi
   build-and-push:
     name: Build And Push
     permissions: write-all
@@ -85,7 +85,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 16abf002-b49a-4355-a5b2-67908270a01c'
+      - name: 'Run :: Decoding Secrets 117f3f63-d361-4fef-8764-dedfbdae1486'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -95,7 +95,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 8331aa1a-13fb-40d8-bd6d-58adf0f337fb'
+      - name: 'Run :: Configure AWS credentials 2932650d-01cd-4dff-a909-93c99aa11627'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -207,7 +207,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets b941efcc-43bc-41da-bca3-2b7258b88d22'
+      - name: 'Run :: Decoding Secrets c004237a-83f6-4d26-b1f8-8c6cb5f573b9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
