@@ -79,7 +79,7 @@ jobs:
       stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
     steps:
       - name: HEREEEEEEEEEEEEE
-        run: echo "IS PROJECT RELEASE :: ${{github.event.client_payload.isProjectRelease"
+        run: echo "IS PROJECT RELEASE :: ${{ github.event.client_payload.isProjectRelease }}"
       - name: Start
         run: |2-
 
