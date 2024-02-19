@@ -19,6 +19,7 @@ jobs:
       - name: Step 1 of Job 2
         run: |
           echo "Running step 1 of Job 2"
+          exit 1
         # Add more steps as needed
 
   final-job:
