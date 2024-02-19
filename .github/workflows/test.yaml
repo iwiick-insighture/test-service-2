@@ -1,0 +1,34 @@
+name: Run Final Job on Failure
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 of Job 1
+        run: echo "Running step 1 of Job 1"
+        # Add more steps as needed
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 of Job 2
+        run: echo "Running step 1 of Job 2"
+        # Add more steps as needed
+
+  final-job:
+    runs-on: ubuntu-latest
+    needs: [job1, job2]
+    if: always() && cancelled() # Run this job if any previous jobs were canceled due to failure
+    steps:
+      - name: Check job status
+        run: |
+          if [ ${{ job.status }} != 'success' ]; then
+            echo "FAILURE"
+          else
+            echo "DONE"
+          fi
