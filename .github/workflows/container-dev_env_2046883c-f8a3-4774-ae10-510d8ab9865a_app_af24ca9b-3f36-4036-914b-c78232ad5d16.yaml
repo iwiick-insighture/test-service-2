@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_c0d52617-5860-421b-89ba-0203bd2354c6
+    types: pipeline_e5055688-c529-482b-8b83-9815aa5d2721
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 4b1251b8-58a0-48b6-96d4-77005e4011a5'
+      - name: 'Run :: Decoding Secrets b6fbb0f6-a37b-4bf3-9672-69f97370243b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -71,6 +71,26 @@ jobs:
                   else
                       echo "SARIF file not found."
                   fi
+  _status-pending:
+    name: _status Pending
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets 904c8cd1-831d-4c0b-9408-5b60ef8a27e3'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Pipeline Started
+        run: |-
+          |
+                echo "TODO :: Pipeline Status PENDING"
+              
   build-and-push:
     name: Build And Push
     permissions: write-all
@@ -89,7 +109,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets af32676c-f933-4c73-940c-6f849ef5237c'
+      - name: 'Run :: Decoding Secrets 6ad7510c-14e7-44d0-b82e-3e1a6eb97f60'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -99,7 +119,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials bafffb65-13b6-42b2-8ec6-75c8f5310616'
+      - name: 'Run :: Configure AWS credentials 16a5dcd9-4120-49ec-91ff-a9eb6c5899f5'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -203,6 +223,46 @@ jobs:
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+  _status-success:
+    name: _status Success
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets b80109d9-2661-431b-8e0e-202fa9f3dfee'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Pipeline Success
+        run: |-
+          |
+                echo "TODO :: Pipeline Status SUCCESS"
+              
+  _status-failed:
+    name: _status Failed
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets 8f015d36-e6d2-48c2-a842-ac759a59232a'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Pipeline Failed
+        run: |-
+          |
+                echo "TODO :: Pipeline Status FAILED"
+              
   deploy:
     name: Deploy
     permissions: write-all
@@ -211,7 +271,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 6f023870-39b0-47bc-ba79-6252deb81f8b'
+      - name: 'Run :: Decoding Secrets 70981629-31f5-42ef-acb4-1bf100f8ea2e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
