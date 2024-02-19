@@ -31,8 +31,9 @@ jobs:
         run: |
           echo "${{ job.status }}"
           
-          if [ ${{ job.status }} != 'success' ]; then
+          if [[ -n "$(failure)" ]]; then
             echo "FAILURE"
+            exit 1
           else
             echo "DONE"
           fi
