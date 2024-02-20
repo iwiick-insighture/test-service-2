@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e4382748-5fc1-4a28-ba12-2304e0f5bd7d
+    types: pipeline_6c6dd992-c390-4509-be99-d6bd15fc2aec
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
-  SCAN_SEVERITY: CRITICAL
+  SCAN_SEVERITY: MEDIUM
   TRIVY_SCAN_EXIT_CODE: '0'
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 37bcb3d9-cd1b-486c-9a5b-b08e95fd3b50'
+      - name: 'Run :: Decoding Secrets 49d6cbca-f1dc-4abc-ab7a-30340c9f3493'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -76,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets b6e5a0a4-7618-4356-9c01-32c5d5e3ddc9'
+      - name: 'Run :: Decoding Secrets 18bb1df2-78a4-42f7-a650-a025528cdf9a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -90,31 +90,6 @@ jobs:
         run: |2-
 
                 echo "TODO :: Pipeline Status PENDING"
-              
-  _release-info:
-    name: _release Info
-    permissions: write-all
-    runs-on: ubuntu-latest
-    if: ${{ github.event.client_payload.releaseData }}
-    steps:
-      - name: 'Run :: Decoding Secrets 403ed2a4-a803-4f8f-8a18-45dc3e474835'
-        run: |2-
-
-                  if [ ! -x "$(command -v jq)" ]; then
-                    echo "jq not found, installing..."
-                    sudo apt-get update
-                    sudo apt-get install -y jq
-                  fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
-      - name: Pipeline Release
-        run: |2-
-
-                echo "Pipeline Release Information"
-                echo "////////////////////////////"
-                echo "Release ID  : github.event.client_payload.releaseData.releaseId"
-                echo "Pipeline ID : github.event.client_payload.releaseData.pipelineId"
-                echo "App ID      : github.event.client_payload.releaseData.appId"
               
   build-and-push:
     name: Build And Push
@@ -134,7 +109,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 5c58fcb2-ad02-4ae5-bd80-77b7bc5e4fa5'
+      - name: 'Run :: Decoding Secrets 64c21d9a-6ca2-4add-8fd9-7e9c094f69c4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -144,7 +119,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 92bdda7b-e09f-433f-a78b-e015deb9bab4'
+      - name: 'Run :: Configure AWS credentials eacab56d-1dbf-4d4d-b11c-a8657ae5c6cb'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -254,9 +229,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-and-push
-    if: ${{ !(failure() || cancelled()) }}
+    if: ${{ !failure() }}
     steps:
-      - name: 'Run :: Decoding Secrets dd5255cd-9c07-41f5-b873-39c97597a53c'
+      - name: 'Run :: Decoding Secrets ef7c71b7-1ea9-4768-ad7d-04da8c9cb292'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -277,9 +252,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-and-push
-    if: ${{ failure() || cancelled() }}
+    if: ${{ failure() }}
     steps:
-      - name: 'Run :: Decoding Secrets bfd2f0b7-170a-420d-bc8f-b3dd22d1e096'
+      - name: 'Run :: Decoding Secrets 6b72ebad-3992-4595-99ff-dfe30fb70389'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -300,11 +275,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-and-push
-    if: >-
-      needs.build-and-push.outputs.stepsCanProceed == 'true' && ${{
-      !github.event.client_payload.releaseData }}
+    if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets d64961c2-39b1-4939-8fa7-4a198ee0d4df'
+      - name: 'Run :: Decoding Secrets 12f73b4a-ff1b-4d35-bc1d-2b59b9488d4e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
