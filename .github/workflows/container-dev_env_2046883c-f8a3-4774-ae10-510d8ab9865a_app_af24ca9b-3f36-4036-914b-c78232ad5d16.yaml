@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_c5ca96d0-4f01-49d2-a7ea-c952b0e4d83c
+    types: pipeline_93f0726f-74de-4e68-85d9-d9a0d54899f6
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
-  SCAN_SEVERITY: MEDIUM
+  SCAN_SEVERITY: CRITICAL
   TRIVY_SCAN_EXIT_CODE: '0'
   TRIVY_RESULT_FORMAT: sarif
   REPOSITORY_NAME: iwiick
@@ -76,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 15ac585a-500f-4ed6-b250-ea71550728cc'
+      - name: 'Run :: Decoding Secrets 2290c15c-bfab-4b1a-a252-5ef832895221'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -109,7 +109,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 7f8bee6c-11a6-4539-9193-b8b85aabbbbf'
+      - name: 'Run :: Decoding Secrets 2a3aed0a-06db-41ac-b9a4-15d9b1d5099e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -119,7 +119,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 89d6d7b4-ac83-4366-94d4-c761387ce7e2'
+      - name: 'Run :: Configure AWS credentials a305edaf-356e-4e5d-b12a-3a251f857923'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -231,7 +231,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 11278901-d9e9-456c-b88e-ec322d89e6db'
+      - name: 'Run :: Decoding Secrets 8131ad94-7db9-4673-b0fb-ab79d66f8ced'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -254,7 +254,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 1e2f7604-1b44-47f5-830a-33495e14557e'
+      - name: 'Run :: Decoding Secrets b4c4c9b9-b225-4110-8fa8-9fb31e8d8b1d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -277,7 +277,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets b40ecd6a-1342-4288-b88e-e83a17a3877f'
+      - name: 'Run :: Decoding Secrets afa0d5ca-6715-41c2-9d67-4c67ce809be6'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
