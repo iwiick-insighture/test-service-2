@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_855a5bbf-5302-4537-a91e-e6b2305c844d
+    types: pipeline_13a4c982-e62f-46b8-8a76-305687424f93
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 43c3679e-55b7-489b-98de-3f8bc00a527f'
+      - name: 'Run :: Decoding Secrets 0fcee297-face-4e4f-86fe-1c9d3f44c1c4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -76,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 6e9988f0-2d33-4ead-a6a9-2d99f4ed1a0e'
+      - name: 'Run :: Decoding Secrets 13022810-08c0-498c-8ada-1666bb94ebe9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -90,7 +90,12 @@ jobs:
         run: |2-
 
                 response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/PENDING')
-                echo "RESPONSE: $resonse"
+                
+                if echo "$response" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $response"
+                else
+                  echo "FAILED :: $response"
+                fi
               
   _release-info:
     name: _release Info
@@ -98,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 65cbedf1-a7eb-459b-8df8-bf773f5865ff'
+      - name: 'Run :: Decoding Secrets fc3e8ad2-aca7-4df0-8a78-b8076a8d3e5d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -135,7 +140,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 158b1448-2662-4eca-87f5-b604190bd2d8'
+      - name: 'Run :: Decoding Secrets 9e26e939-8fb2-4281-88fb-ac2130eed709'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -145,7 +150,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 8e6a88a9-0ecd-48d2-bc64-4f9071c21a45'
+      - name: 'Run :: Configure AWS credentials 13b3ae4a-0bb1-4aaa-98c6-368d7fac9a28'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -257,7 +262,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets f2a82595-864f-4089-afa7-02efd9db2024'
+      - name: 'Run :: Decoding Secrets ff5aa852-cf15-4a18-adff-0838b8fdefb9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -271,7 +276,12 @@ jobs:
         run: |2-
 
                 response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/SUCCESS')
-                echo "RESPONSE: $resonse"
+                
+                if echo "$response" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $response"
+                else
+                  echo "FAILED :: $response"
+                fi
               
   _status-failed:
     name: _status Failed
@@ -281,7 +291,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 9ab674ea-7022-4d6d-8fee-c276c5a9d4ff'
+      - name: 'Run :: Decoding Secrets 1210656e-9c68-49d9-9177-27e1e35de942'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -295,7 +305,12 @@ jobs:
         run: |2-
 
                 response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/FAILED')
-                echo "RESPONSE: $resonse"
+                
+                if echo "$response" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $response"
+                else
+                  echo "FAILED :: $response"
+                fi
               
   deploy:
     name: Deploy
@@ -307,7 +322,7 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' && ${{
       !github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets ff0fd666-7e2f-4c7c-8584-29dddfbd9328'
+      - name: 'Run :: Decoding Secrets 3f649fd4-8d91-4e51-a4f0-d39c8ebbc546'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
