@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5ea835aa-15a8-4695-9b98-23c7436bb979
+    types: pipeline_d511e4c4-bce8-4483-926d-f04c5b261a61
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 07c4a500-a2ae-4cde-a15d-dfb6f8b8cc8a'
+      - name: 'Run :: Decoding Secrets 7aba9fae-5af0-42e5-a4a0-a82d97544434'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -76,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 7844f845-e308-4566-a992-6ca5ff7fa35e'
+      - name: 'Run :: Decoding Secrets 03561cfd-fcc6-4d7a-8277-9a9f6a655e97'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -109,7 +109,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 7c04300b-e3a1-4560-8c0e-6c4537590098'
+      - name: 'Run :: Decoding Secrets d6a4e532-1808-4211-b1d3-95fdbb012268'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -119,7 +119,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 1c7e23a4-df65-482c-be64-52e9999a2351'
+      - name: 'Run :: Configure AWS credentials ec77fa4f-c357-43a7-9ed2-cc70d9672352'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -229,8 +229,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-and-push
+    if: ${{ !failure() }}
     steps:
-      - name: 'Run :: Decoding Secrets 1a23ff7b-9504-49a5-a4ce-3347e8c844a0'
+      - name: 'Run :: Decoding Secrets fdc62bbb-4c54-4864-a79f-68d2d01cc4a6'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -251,8 +252,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build-and-push
+    if: ${{ failure() }}
     steps:
-      - name: 'Run :: Decoding Secrets 51aaf272-a308-4b44-851d-8afa98eb845a'
+      - name: 'Run :: Decoding Secrets 4f8abbba-0681-4920-b25e-1c2babd543a9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -275,7 +277,7 @@ jobs:
       - build-and-push
     if: needs.build-and-push.outputs.stepsCanProceed == 'true'
     steps:
-      - name: 'Run :: Decoding Secrets 638f84e9-e097-4b77-908b-709b1ec09136'
+      - name: 'Run :: Decoding Secrets 89b319b9-3472-4ed5-9252-d31bf332c638'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
