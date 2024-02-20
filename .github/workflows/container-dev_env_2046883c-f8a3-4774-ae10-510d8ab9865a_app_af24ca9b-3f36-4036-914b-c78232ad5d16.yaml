@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_cdb18fc8-4ecc-4a2f-9dad-ef9fdb979782
+    types: fb9114eb-8345-4fe5-8989-3f41537fc1d8
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets e77f667f-b316-4267-9956-6da01b46d8e4'
+      - name: 'Run :: Decoding Secrets cf3210ba-2c6b-4cf9-bd12-b83bd3368ed5'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -62,7 +62,7 @@ jobs:
 
                       echo "Uploading CodeQL Results to S3 :: ${{ env.IMAGE_TAG }}-codeql-result.sarif"
                       # Uploading Minified Trivy Resuls
-                          response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-codeql-result.sarif" -F "provider=aws" -F "resourceType=codeql-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/codeql_results/")
+                          response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.PIPELINE_PROJECT_ID }}" -H "x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}" -H "x-trace-id: ${{ env.PIPELINE_TRACE_ID }}" -H "x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-codeql-result.sarif" -F "provider=aws" -F "resourceType=codeql-report" -F "cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/codeql_results/")
                           if echo "$response" | grep -q '"success":true'; then
                             echo "SUCCESS :: $response"
                           else
@@ -76,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 1e3c2edb-0ffd-4d34-993c-ad522ae01ae3'
+      - name: 'Run :: Decoding Secrets 4e01fc54-cac5-45c2-88bc-6c025c5c6934'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -89,7 +89,7 @@ jobs:
       - name: Pipeline Started
         run: |2-
 
-                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/PENDING')
+                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/PENDING')
                 
                 if echo "$response" | grep -q '"success":true'; then
                   echo "SUCCESS :: $response"
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 2c47621f-7965-4e8f-8cfa-ca1c99b94832'
+      - name: 'Run :: Decoding Secrets 3f9c7620-b1fb-4f1e-818a-e72da7aea02b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -140,7 +140,7 @@ jobs:
       - name: 'Run :: Checkout Specific Commit'
         if: ${{ github.event.client_payload.commitId != null }}
         run: git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets b7204899-8e61-4234-8210-b0ea58e7bf87'
+      - name: 'Run :: Decoding Secrets 297abdc0-bf2b-43e4-bd89-7f0e7e53bd19'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -150,7 +150,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 457bba41-8d85-4a8f-8bdd-b9a9202ba666'
+      - name: 'Run :: Configure AWS credentials b9d32adf-2df9-487d-a1eb-42f5e384d4e5'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -227,7 +227,7 @@ jobs:
               jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
 
               # Uploading Minified Trivy Resuls
-              response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}" -H "x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}" -H "x-resource-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.min.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.DEPLOYMENT_APPLICATION_ID }}/trivy_results/")
+              response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.PIPELINE_PROJECT_ID }}" -H "x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}" -H "x-trace-id: ${{ env.PIPELINE_TRACE_ID }}" -H "x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.min.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy_results/")
 
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
@@ -262,7 +262,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 49ceb15b-43b9-44b3-bf70-b39e91ecf7ce'
+      - name: 'Run :: Decoding Secrets f1b48e52-22b8-4dc5-b43b-e2d275e67d00'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -275,7 +275,7 @@ jobs:
       - name: Pipeline Success
         run: |2-
 
-                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/SUCCESS')
+                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/SUCCESS')
                 
                 if echo "$response" | grep -q '"success":true'; then
                   echo "SUCCESS :: $response"
@@ -291,7 +291,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets fe8a5c39-8197-4289-b9f4-1ff02f293556'
+      - name: 'Run :: Decoding Secrets d2f2e12a-7698-423c-a7a1-a4a98601a759'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -304,7 +304,7 @@ jobs:
       - name: Pipeline Failed
         run: |2-
 
-                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/FAILED')
+                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/FAILED')
                 
                 if echo "$response" | grep -q '"success":true'; then
                   echo "SUCCESS :: $response"
@@ -322,7 +322,7 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' && ${{
       !github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 19453c7a-4d9e-4853-b305-9e838474a0ae'
+      - name: 'Run :: Decoding Secrets 1faad45d-8ef3-4fe4-b123-36e10ebe4e38'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -335,7 +335,7 @@ jobs:
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
 
-              response=$(curl -d "appType=Deployment&imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.DEPLOYMENT_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.DEPLOYMENT_PROJECT_ID }}' -H 'x-environment-id: ${{ env.DEPLOYMENT_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.DEPLOYMENT_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.DEPLOYMENT_ENDPOINT }}')
+              response=$(curl -d "appType=Deployment&imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=\"${{ github.event.head_commit.message }}\"&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-application-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.DEPLOYMENT_ENDPOINT }}')
               status_code=$?
 
               if [ $status_code -eq 0 ]; then
