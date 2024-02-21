@@ -142,7 +142,7 @@ jobs:
         if: ${{ github.event.client_payload.commitId != null }}
         run: |2-
 
-              git fetch
+              git fetch origin
               git checkout ${{ github.event.client_payload.commitId }}
       - name: 'Run :: Decoding Secrets 3d704506-b324-4bbf-9e91-a74e5aff3ea9'
         run: |2-
