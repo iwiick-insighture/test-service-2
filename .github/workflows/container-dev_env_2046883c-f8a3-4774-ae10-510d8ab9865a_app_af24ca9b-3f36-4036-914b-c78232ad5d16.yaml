@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_caee0aa9-7b05-4fe0-bfa5-58e24707e682
+    types: pipeline_f922055d-c22a-48c8-a592-32401cee3349
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 2a95cf9b-4240-4d52-a57f-7f44eea700fd'
+      - name: 'Run :: Decoding Secrets a9e008ce-9037-4130-b207-f425b7b85cc3'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -76,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 11c23494-df38-4946-84ba-5f63eb29b118'
+      - name: 'Run :: Decoding Secrets a0102214-da4e-4766-a6bd-a1318e30e7a3'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 454c27c9-7934-4176-b128-66dc618dc91c'
+      - name: 'Run :: Decoding Secrets 032b13da-4aef-4a5a-a3f0-fa428643a95e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -130,9 +130,9 @@ jobs:
                 echo "commitId          : ${{ env.IMAGE_TAG }}"
                 echo "commitHash        : ${{ env.IMAGE_TAG }}"
                 echo "commitAvatar      : https://github.com/${{ github.event.head_commit.author.name }}.png"
-                echo "commitTime        : $(git log -1 --format='%ci' '${{ env.IMAGE_TAG }}')"
-                echo "commitMessage     : $(git log -1 --format='%s' '${{ env.IMAGE_TAG }}')"
-                echo "commitUser        : $(git log -1 --format='%an' '${{ env.IMAGE_TAG }}')"
+                echo "commitTime        : $(git log -1 --format="%ci" "${{ env.IMAGE_TAG }}")"
+                echo "commitMessage     : $(git log -1 --format="%s" "${{ env.IMAGE_TAG }}")"
+                echo "commitUser        : $(git log -1 --format="%an" "${{ env.IMAGE_TAG }}")"
               
   build-and-push:
     name: Build And Push
@@ -155,7 +155,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets f19883c1-2cf4-4f0d-b4c0-2567c9704c4f'
+      - name: 'Run :: Decoding Secrets 446158e8-686b-4ee3-befc-5c5ebc3372de'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -165,7 +165,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 2d4b76f7-d3a1-49e9-b31a-5e83c5d7d2d9'
+      - name: 'Run :: Configure AWS credentials 4df22f55-91ec-4207-99fb-671235b9678d'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -277,7 +277,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 59576e2e-a45b-492d-a474-749e96a6723e'
+      - name: 'Run :: Decoding Secrets 5a7801da-7615-4326-a1cf-538a1fc3c89d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -306,7 +306,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets db2968f6-3035-4d03-b6c1-cdb1769060d6'
+      - name: 'Run :: Decoding Secrets f675322e-a201-4935-86a6-fd4dc71232d0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -337,7 +337,7 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' && ${{
       github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets b0acb877-f290-49f8-bbd1-34efedc73d11'
+      - name: 'Run :: Decoding Secrets 8761209d-6816-4fe7-9683-290a6f736351'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
