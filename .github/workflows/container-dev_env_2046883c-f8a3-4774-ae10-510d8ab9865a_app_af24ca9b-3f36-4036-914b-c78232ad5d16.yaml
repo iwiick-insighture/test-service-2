@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_fdc175ef-24fe-4429-8cda-2550e38259aa
+    types: pipeline_c2f70e8d-2f37-4051-874b-230558faf48a
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 29a42d3d-53ce-465e-ae1a-ef2b553915ba'
+      - name: 'Run :: Decoding Secrets a41e60d4-5745-44de-81fe-c635bf656f02'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -76,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets f5d854ed-227f-406b-a036-a9be5de96a76'
+      - name: 'Run :: Decoding Secrets 9c9feaf6-c9d1-4b3c-8e89-56e28cdb483f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets a0756596-b140-40fb-976c-c3b333f3e31d'
+      - name: 'Run :: Decoding Secrets 13295041-cb50-470e-a465-27ac5952b5ca'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -120,19 +120,23 @@ jobs:
                 echo "////////////////////////////"
                 echo "releaseId         : ${{ github.event.client_payload.releaseData.releaseId }}"
                 echo "pipelineId        : ${{ github.event.client_payload.releaseData.pipelineId }}"
-                echo "applicationId     : ${{ github.event.client_payload.releaseData.appId }}"
                 echo "pipelineRunId     : ${{ github.run_id }}"
+                echo "applicationId     : ${{ github.event.client_payload.releaseData.appId }}"
                 echo "versionId         : ${{ env.DEPLOYMENT_APP_VERSION_ID }}"
-                echo "credentialId      : ${{ env.PIPELINE_CREDENTIAL_ID }}""
-                echo "userName          : ${{ github.repository_owner }}""
-                echo "shouldDeployFlag  : ${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}"
+                echo "credentialId      : ${{ env.PIPELINE_CREDENTIAL_ID }}"
+
+                echo "userName          : ${{ github.repository_owner }}"
                 echo "repositoryName    : ${{ github.repository }}"
+
                 echo "commitId          : ${{ env.IMAGE_TAG }}"
                 echo "commitHash        : ${{ env.IMAGE_TAG }}"
                 echo "commitAvatar      : https://github.com/${{ github.event.head_commit.author.name }}.png"
                 echo "commitTime        : ${{ github.event.head_commit.timestamp }}"
                 echo "commitMessage     : ${{ github.event.head_commit.message }}"
                 echo "commitUser        : ${{ github.event.head_commit.author.name }}"
+
+                echo "shouldDeploy      : ${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}"
+                echo "containerName     : ${{ env.DEPLOYMENT_CONTAINER_NAME }}"
               
   build-and-push:
     name: Build And Push
@@ -155,7 +159,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 27d07bc1-8950-44e7-9cc0-693db1c16f56'
+      - name: 'Run :: Decoding Secrets 2352f41b-6538-474b-9319-4222acb4b390'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -165,7 +169,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 44eff8cc-f197-4da3-ab18-06f13d074706'
+      - name: 'Run :: Configure AWS credentials c0889aa6-f81e-452a-b6f9-700368618b61'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -242,7 +246,7 @@ jobs:
               jq -c '.' ${{ env.IMAGE_TAG }}-trivy-result.json > ${{ env.IMAGE_TAG }}-trivy-result.min.json
 
               # Uploading Minified Trivy Resuls
-              response=$(curl -X POST ${{ env.S3_UPLOAD_ENDPOINT }} -H "Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}" -H "x-auth-by: sa" -H "x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}" -H "x-project-id: ${{ env.PIPELINE_PROJECT_ID }}" -H "x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}" -H "x-trace-id: ${{ env.PIPELINE_TRACE_ID }}" -H "x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}" -H "Content-Type: multipart/form-data" -F "file=@${{ env.IMAGE_TAG }}-trivy-result.min.json" -F "provider=aws" -F "resourceType=trivy-report" -F "cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy_results/")
+              response=$(curl -X POST -F 'file=@${{ env.IMAGE_TAG }}-trivy-result.min.json' -F 'provider=aws' -F 'resourceType=trivy-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy_results/'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: multipart/form-data'  '${{ env.S3_UPLOAD_ENDPOINT }}')
 
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
@@ -277,7 +281,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 1df5018c-6032-40dd-8e57-e8e0ff4ee3be'
+      - name: 'Run :: Decoding Secrets 38c1cb25-8941-4568-a123-176df22f5248'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -290,13 +294,7 @@ jobs:
       - name: Pipeline Success
         run: |2-
 
-                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/SUCCESS')
-                
-                if echo "$response" | grep -q '"success":true'; then
-                  echo "SUCCESS :: $response"
-                else
-                  echo "FAILED :: $response"
-                fi
+              response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/SUCCESS')
               
   _status-failed:
     name: _status Failed
@@ -306,7 +304,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets de3d517e-a335-489d-9e50-08493521f03e'
+      - name: 'Run :: Decoding Secrets 1761c5a7-4518-4bf9-a2a1-ed925cc11f1d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -319,13 +317,7 @@ jobs:
       - name: Pipeline Failed
         run: |2-
 
-                response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/FAILED')
-                
-                if echo "$response" | grep -q '"success":true'; then
-                  echo "SUCCESS :: $response"
-                else
-                  echo "FAILED :: $response"
-                fi
+              response=$(curl -X PUT -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/${{ env.PIPELINE_ID }}/FAILED')
               
   deploy:
     name: Deploy
@@ -337,7 +329,7 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' && ${{
       github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 4ef7697c-9991-44c5-bbe3-60b1ade1bec4'
+      - name: 'Run :: Decoding Secrets 3a9a4f5d-cc1f-4df8-9869-bc14a1076b1c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -349,8 +341,9 @@ jobs:
                 
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
-
-              response=$(curl -d "imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=${{ github.event.head_commit.message }}&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}" -X PATCH -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-application-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded' '${{ env.DEPLOYMENT_ENDPOINT }}')
+              
+              response=$(curl -X PATCH -d "imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.IMAGE_TAG }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=${{ github.event.head_commit.message }}&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.DEPLOYMENT_ENDPOINT }}')
+              
               status_code=$?
 
               if [ $status_code -eq 0 ]; then
