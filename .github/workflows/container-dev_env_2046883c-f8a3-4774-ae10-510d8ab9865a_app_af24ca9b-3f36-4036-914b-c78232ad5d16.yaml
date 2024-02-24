@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for CodeQL'
         uses: actions/checkout@v4
+      - name: TESTINGGGGGGGGGGGG
+        run: ls
       - name: 'Run :: Decoding Secrets 0039a0b9-3306-4c39-87e6-399e55cb8f0a'
         run: |2-
 
