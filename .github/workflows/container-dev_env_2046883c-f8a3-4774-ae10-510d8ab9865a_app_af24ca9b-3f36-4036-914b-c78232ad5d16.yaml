@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_d1c0f2ac-e879-4f60-a1d3-0d70fae6056f
+    types: pipeline_600ac59d-34d5-4ba3-be37-fead6345b22c
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_CONTAINERDEV_ENV_2046883CF8A34774AE10510D8AB9865A_APP_AF24CA9B3F364036914BC78232AD5D16_YAML}}
@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 31b41127-cd78-48f9-9c4e-c72fdfb7edcb'
+      - name: 'Run :: Decoding Secrets 3a7bd8ed-7f98-4b24-85a8-76a9daf77f29'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -52,7 +52,7 @@ jobs:
                     cat "$SARIF_FILE" > ${{ env.IMAGE_TAG }}-codeql-result.sarif
                     echo "Uploading CodeQL Results to S3 :: ${{ env.IMAGE_TAG }}-codeql-result.sarif"
            
-                    response=$(curl -X POST -F 'file=@${{ env.IMAGE_TAG }}-codeql-result.sarif' -F 'provider=aws' -F 'resourceType=codeql-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/codeql_results/'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.S3_UPLOAD_ENDPOINT }}')
+                    response=$(curl -X POST -F 'file=@${{ env.IMAGE_TAG }}-codeql-result.sarif' -F 'provider=aws' -F 'resourceType=codeql-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/codeql_results/'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.S3_UPLOAD_ENDPOINT }}')
 
                     if echo "$response" | grep -q '"success":true'; then
                       echo "SUCCESS :: $response"
@@ -68,7 +68,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 37dea7c7-cf54-455f-8577-1e42326ad3e9'
+      - name: 'Run :: Decoding Secrets dad30c5c-7722-444a-9ce0-6129986fcb66'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 2b4f7c53-1bfe-4f88-867c-30fa1ae93338'
+      - name: 'Run :: Decoding Secrets b3956e21-6448-413f-90b4-23c606d8c36c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -161,7 +161,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 4de61382-1014-4976-905e-f92d206510e7'
+      - name: 'Run :: Decoding Secrets 31c17ba5-46f6-4481-bc55-0064f4c86dc0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -171,7 +171,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 862108fd-4594-47e6-afaf-e2d072c1cc8a'
+      - name: 'Run :: Configure AWS credentials e673e352-e5b8-4a61-a44e-e2d3dd5c04c2'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -283,7 +283,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets cee8b710-9646-44ee-8f51-1e1fd3ce44e0'
+      - name: 'Run :: Decoding Secrets 5d79e8ab-58a8-4bca-8070-72205c9297b2'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -306,7 +306,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets ff6ab193-3cf5-4a2b-827f-d09ae6d6912c'
+      - name: 'Run :: Decoding Secrets 64ca608e-9cb8-4416-904c-6324794080d3'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -331,7 +331,7 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' && ${{
       github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets cc21ba3e-d16f-4732-9f0f-ae2d6423a1ea'
+      - name: 'Run :: Decoding Secrets ef7b58fc-5452-4505-a65e-9b86053c8c04'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
