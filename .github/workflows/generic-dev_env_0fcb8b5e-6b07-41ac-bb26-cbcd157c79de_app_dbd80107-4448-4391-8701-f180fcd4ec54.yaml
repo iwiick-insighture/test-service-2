@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_f3561c32-f1a8-4925-89f2-6863d8b75466
+    types: pipeline_ab304f4c-b1db-4707-a352-e41e2a97fe25
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_0FCB8B5E6B0741ACBB26CBCD157C79DE_APP_DBD80107444843918701F180FCD4EC54_GENERICDEV_ENV_0FCB8B5E6B0741ACBB26CBCD157C79DE_APP_DBD80107444843918701F180FCD4EC54_YAML}}
@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 839291fd-9bc8-40c4-a47c-028d5816dc6e'
+      - name: 'Run :: Decoding Secrets 832a4b53-b990-4797-9109-fefe850343db'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -61,7 +61,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 11479346-53f5-4023-a3c5-765e4f5f0e75'
+      - name: 'Run :: Decoding Secrets a2b9d8fb-c406-4dfb-8971-c819700cf7bf'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 66c9835f-8a74-45d6-afe9-d101199fff8e'
+      - name: 'Run :: Decoding Secrets 67b878b2-e691-4bd2-b611-621ed65440c2'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -140,7 +140,7 @@ jobs:
     needs: []
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 0ec396e9-a8e7-4d9e-a084-d180bc338622'
+      - name: 'Run :: Decoding Secrets efd08891-0f3b-4a0c-b89f-0117a454ab09'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -162,7 +162,7 @@ jobs:
     needs: []
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 87169999-5f8a-47b7-a8a3-a1afc55ff23c'
+      - name: 'Run :: Decoding Secrets 4c53310c-4e32-4e0a-86a8-ccc3819acef6'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -181,11 +181,9 @@ jobs:
     name: Deploy
     permissions: write-all
     runs-on: ubuntu-latest
-    needs:
-      - build-and-push
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets d9682fb7-27ee-4408-b900-3e4ceeb80197'
+      - name: 'Run :: Decoding Secrets b937463b-88b8-448b-8561-93b592496e6a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
