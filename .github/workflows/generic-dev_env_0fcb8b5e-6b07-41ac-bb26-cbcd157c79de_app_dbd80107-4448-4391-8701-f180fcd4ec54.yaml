@@ -7,10 +7,11 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ab304f4c-b1db-4707-a352-e41e2a97fe25
+    types: pipeline_97439e0b-d114-487d-9ff8-7c9ac56688e4
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_0FCB8B5E6B0741ACBB26CBCD157C79DE_APP_DBD80107444843918701F180FCD4EC54_GENERICDEV_ENV_0FCB8B5E6B0741ACBB26CBCD157C79DE_APP_DBD80107444843918701F180FCD4EC54_YAML}}
+  Hello: VALUEEEEEEE
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   code-scan:
@@ -61,7 +62,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets a2b9d8fb-c406-4dfb-8971-c819700cf7bf'
+      - name: 'Run :: Decoding Secrets 458857e6-d0db-4551-97cd-174ae9c78c01'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -88,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 67b878b2-e691-4bd2-b611-621ed65440c2'
+      - name: 'Run :: Decoding Secrets f2bada0e-c600-477d-ba8d-a06aeef77fc7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -133,14 +134,34 @@ jobs:
                   echo "FAILED :: $response"
                 fi
               
+  custom-job:
+    name: Custom Job
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets afb2fb26-d79e-4768-aa58-000bb4c22bb0'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - run: run 1
+        name: Step 1
+      - name: step2
+        run: aaa
   _status-success:
     name: _status Success
     permissions: write-all
     runs-on: ubuntu-latest
-    needs: []
+    needs:
+      - custom-job
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets efd08891-0f3b-4a0c-b89f-0117a454ab09'
+      - name: 'Run :: Decoding Secrets ac41a4d1-bfdd-4e2d-a6c6-047f466eb05a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -159,10 +180,11 @@ jobs:
     name: _status Failed
     permissions: write-all
     runs-on: ubuntu-latest
-    needs: []
+    needs:
+      - custom-job
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 4c53310c-4e32-4e0a-86a8-ccc3819acef6'
+      - name: 'Run :: Decoding Secrets a423744f-c67c-4049-978a-1b3a2a6321b8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -181,9 +203,11 @@ jobs:
     name: Deploy
     permissions: write-all
     runs-on: ubuntu-latest
+    needs:
+      - custom-job
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets b937463b-88b8-448b-8561-93b592496e6a'
+      - name: 'Run :: Decoding Secrets 19ce484d-2129-44bb-837d-a9514e981a0f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
