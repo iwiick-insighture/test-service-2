@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_97439e0b-d114-487d-9ff8-7c9ac56688e4
+    types: pipeline_890bf4f2-08f6-4bd7-a4e5-7927e040f882
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_0FCB8B5E6B0741ACBB26CBCD157C79DE_APP_DBD80107444843918701F180FCD4EC54_GENERICDEV_ENV_0FCB8B5E6B0741ACBB26CBCD157C79DE_APP_DBD80107444843918701F180FCD4EC54_YAML}}
@@ -62,7 +62,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 458857e6-d0db-4551-97cd-174ae9c78c01'
+      - name: 'Run :: Decoding Secrets 2bc97299-f028-4dd0-b472-79c9fb1ccc11'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets f2bada0e-c600-477d-ba8d-a06aeef77fc7'
+      - name: 'Run :: Decoding Secrets b876cab5-f8a8-4274-9649-af412c50cf6c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -134,12 +134,12 @@ jobs:
                   echo "FAILED :: $response"
                 fi
               
-  custom-job:
-    name: Custom Job
+  first-job:
+    name: First Job
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets afb2fb26-d79e-4768-aa58-000bb4c22bb0'
+      - name: 'Run :: Decoding Secrets 945f67c9-f37c-4f0d-8f0e-4b72c645a4ca'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -149,19 +149,37 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - run: run 1
-        name: Step 1
+      - name: Step 1
+        run: echo "STEP 1 RUNNING"
+  custom-job:
+    name: Custom Job
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets 59f47972-79b3-477e-beed-eb3583a9189c'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Step 1
+        run: echo "STEP 1 RUNNING"
       - name: step2
-        run: aaa
+        run: echo "STEP 2 RUNNING"
   _status-success:
     name: _status Success
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
+      - first-job
       - custom-job
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets ac41a4d1-bfdd-4e2d-a6c6-047f466eb05a'
+      - name: 'Run :: Decoding Secrets 8ae56588-e3f6-4b16-9377-f4f3add621a6'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -181,10 +199,11 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
+      - first-job
       - custom-job
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets a423744f-c67c-4049-978a-1b3a2a6321b8'
+      - name: 'Run :: Decoding Secrets 0a6ec4c0-8249-45a4-b4a6-2b606db435fc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -204,10 +223,10 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - custom-job
+      - first-job
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 19ce484d-2129-44bb-837d-a9514e981a0f'
+      - name: 'Run :: Decoding Secrets 23dc7e31-4f77-487e-9cea-bd5a789dd10e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
