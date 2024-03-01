@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0df7b082-06c9-44b2-a045-5f41c2f1e0dc
+    types: pipeline_e318d027-188d-4088-9cb3-5523d30fd4fc
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_DOCKERLAMBDADEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -29,7 +29,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 51e6aae2-8fea-4dc4-8f14-6e7de4782b34'
+      - name: 'Run :: Decoding Secrets 02dc1479-f815-47f1-9b6e-b0cc67bd83ea'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -67,7 +67,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets c22fb00c-7634-4268-8b2b-21fde7362268'
+      - name: 'Run :: Decoding Secrets 2008a601-563c-4634-8af2-ae866108350e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -94,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 81390e2d-8169-4305-957c-6d047647eab0'
+      - name: 'Run :: Decoding Secrets 06434913-eb97-4cff-a99f-3ffaecb906b9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -158,7 +158,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 1c408bca-fa8e-4c98-addd-31c0d50dfbab'
+      - name: 'Run :: Decoding Secrets 32ec7745-2f4a-4f5e-9c8d-93f7ae31063d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -168,7 +168,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials fbbcf3fb-f2aa-4625-bec4-c240d190100c'
+      - name: 'Run :: Configure AWS credentials 30386788-3e29-4645-b353-43039c8b2561'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -280,7 +280,7 @@ jobs:
     needs:
       - build-and-push
     steps:
-      - name: 'Run :: Decoding Secrets b7a13b26-66a2-4832-b867-5763d75b5d56'
+      - name: 'Run :: Decoding Secrets 7b2ab281-0216-49c1-9c8c-f274f108c6e5'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -290,7 +290,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 2eb1bd2d-c4be-499c-8aae-5f662facbb79'
+      - name: 'Run :: Configure AWS credentials d8e26bc2-28c9-4df4-a302-7ca1589fc108'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -306,7 +306,7 @@ jobs:
               fi
                 
               echo "Creating new Lambda Function"
-              aws lambda create-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --package-type Image --code ImageUri=${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }} --role ${{ env.roleARN }} --region ${{ env.region }} --environment "Variables={BUILD_WITH=SKYU}"
+              aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --package-type Image       --code ImageUri=${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }}       --role ${{ env.roleARN }}       --region ${{ env.region }}       --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
               
   _status-success:
     name: _status Success
@@ -317,7 +317,7 @@ jobs:
       - deploy-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 52384cc5-b47c-4f35-8ebe-61441ac1dd10'
+      - name: 'Run :: Decoding Secrets 290c75cf-7302-419c-999b-3a5659fa89fa'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -341,7 +341,7 @@ jobs:
       - deploy-lambda
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets c0ad1d5a-57c3-4365-a5e0-4b958f3a5ed1'
+      - name: 'Run :: Decoding Secrets 0829e3c4-d7ac-49f7-829b-6f83cbcc13da'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -364,7 +364,7 @@ jobs:
       - deploy-lambda
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 9e112e39-0ee6-47f5-9b3a-59581ef9df40'
+      - name: 'Run :: Decoding Secrets c15f324f-b87f-4cf9-9d61-0e1dacd2e001'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
