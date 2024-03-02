@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ab5f0c18-d7fe-47e0-a7b8-b4a9bba1bcba
+    types: pipeline_f955f2cb-7236-42c3-9e61-74b899b159b9
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_WEBAPPDEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 2e664a4e-60d3-49f9-a0cd-622f4f59eae1'
+      - name: 'Run :: Decoding Secrets ab35b742-846f-466a-bb73-e3f72c8b99f4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -64,7 +64,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 94e927b1-627a-4f0a-bf95-4cb16d08269d'
+      - name: 'Run :: Decoding Secrets 639d5e1c-2937-4c09-a91d-71aeb38b192d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 118041c3-53e4-44be-9c41-c439e882d058'
+      - name: 'Run :: Decoding Secrets 8fe81ef1-4f29-4b6d-90ee-86e7eca5a59f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -155,7 +155,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 9057d0b0-7b33-4d9b-af17-ca27dfac0724'
+      - name: 'Run :: Decoding Secrets 03623e74-c1b3-4285-ad89-7bc6dfdddf2d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -165,7 +165,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 69a753cd-ea3c-4039-a95a-f20848beffff'
+      - name: 'Run :: Configure AWS credentials e5707c80-ab61-4914-b258-0458372df9ba'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -195,7 +195,7 @@ jobs:
       - build-and-sync-web-app
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 1b4782f7-5860-46dc-a8af-ea6cd3129f13'
+      - name: 'Run :: Decoding Secrets df752777-fe47-48a0-8d4b-f814693ad7e0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -218,7 +218,7 @@ jobs:
       - build-and-sync-web-app
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 49d58100-a9e8-45c3-86df-6e5332e5464b'
+      - name: 'Run :: Decoding Secrets 6d40e98f-2f4a-4cc6-9df3-70568c9dce10'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -241,7 +241,7 @@ jobs:
       - build-and-sync-web-app
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets db1ce2a3-2f86-4f6b-8b58-687dcb00af1f'
+      - name: 'Run :: Decoding Secrets c522e7e0-a940-44e8-918b-d9d81ae8969e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
