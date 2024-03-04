@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_099162ed-c268-47b1-9366-e3c66a49ce3b
+    types: pipeline_700c6627-ec66-4e67-9731-79b93516f1c0
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_ZIPLAMBDADEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets b6667f0d-1db2-403d-847d-58f10b219890'
+      - name: 'Run :: Decoding Secrets c10b2005-a514-4509-a254-2186db8db66d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -71,7 +71,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 38c776b2-ca09-4913-8ac2-5b5dbdc16e46'
+      - name: 'Run :: Decoding Secrets 7f0861d1-7afc-4673-9f0a-714d48230152'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets d5226b2c-091c-47c6-ab31-89c21b02d637'
+      - name: 'Run :: Decoding Secrets 528b0b02-a8bc-4f0f-8af1-3ee1fc9cf2a8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -162,7 +162,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 40b5ca3d-ef45-4e53-b712-2677a56e418a'
+      - name: 'Run :: Decoding Secrets 06781e08-dfd8-4051-9679-2df5d7bfcecc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -172,7 +172,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 21338828-f4a1-4b99-af02-f864b3d2f188'
+      - name: 'Run :: Configure AWS credentials a583fda0-4650-4a75-9398-065ddc35495f'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -198,13 +198,18 @@ jobs:
               if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
                 echo "Lambda function exists. Deleting the function..."
                 aws lambda delete-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --region ${{ env.region }}
+                aws lambda delete-function-url-config --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
               fi
 
               echo "Creating new Lambda Function"
               aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"       --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}       --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}       --runtime nodejs20.x       --role ${{ env.roleARN }}       --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}       --zip-file fileb://lambda_function.zip       --region ${{ env.region }}       --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
 
               echo "Creating Lambda Function URL"
-              aws lambda create-function-url-config       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}     
+              aws lambda create-function-url-config       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} 
+              if ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} == NONE; then
+                aws lambda add-permission         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}          --statement-id lambda-invoke-function-url         --action lambda:InvokeFunctionUrl         --principal "*"         --source-arn "arn:aws:execute-api:*:*:*"         --source-account "$(aws sts get-caller-identity --query Account --output text)"
+              fi
+              
   _status-success:
     name: _status Success
     permissions: write-all
@@ -213,7 +218,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 32e706a2-ca90-4757-9e71-5bf2fe8c8b6a'
+      - name: 'Run :: Decoding Secrets bfd03fb2-abc4-4971-995d-967e6fc84193'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -236,7 +241,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets f3060386-3515-4386-b57e-b48739853b69'
+      - name: 'Run :: Decoding Secrets 77e30d71-4905-4517-8544-0b8c5ba68f5c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -259,7 +264,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 73f98200-8128-4a2f-94b3-8a0b837b22ce'
+      - name: 'Run :: Decoding Secrets 1de8be8a-c0a4-4b14-9b33-8788d8fbf818'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
