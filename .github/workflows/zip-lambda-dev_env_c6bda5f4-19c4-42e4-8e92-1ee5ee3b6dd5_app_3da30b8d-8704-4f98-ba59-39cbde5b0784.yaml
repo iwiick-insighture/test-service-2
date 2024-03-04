@@ -7,14 +7,14 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ec14fb9a-a037-4129-b503-634f8c890a34
+    types: pipeline_77dc06ae-0300-44d0-ab5d-e906f778cad7
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_ZIPLAMBDADEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
   BUILD_ENVIRONEMENT_VERSION: latest
   DEP_MANAGER_VERSION: latest
-  APP_BUILD_FOLDER: build
+  APP_BUILD_FOLDER: dist
   APP_INSTALL_DEPS_COMMAND: npm i
   APP_INSTALL_DEPS_PRE_COMMAND: npm --version
   APP_BUILD_COMMAND: npm run build
@@ -71,7 +71,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 1d2a7f11-e7cc-412b-a73b-6b1d35bc4124'
+      - name: 'Run :: Decoding Secrets 1f562ec3-472b-407f-9bcf-16ebeffb0c61'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets f73f5fb6-1be8-48b5-a4b9-3ba19a355122'
+      - name: 'Run :: Decoding Secrets b92d4292-2a3c-4c33-8112-2bdfc4609d26'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -162,7 +162,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 2285da6e-dece-4229-92f2-3283f300f896'
+      - name: 'Run :: Decoding Secrets 5d9dc212-8e3e-438e-968b-bbf74e4046cd'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -172,7 +172,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 2a980f53-89a8-4de0-ac6a-da23f7ff56ce'
+      - name: 'Run :: Configure AWS credentials 705b02d6-e676-4390-8d45-2854dfd756ca'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -211,7 +211,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets d6a34fd1-4caa-4106-9beb-b0e6111d5bcb'
+      - name: 'Run :: Decoding Secrets 7248f858-6228-48e8-9f48-c4d40dda5bab'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -234,7 +234,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 59d825c2-68fc-4c6e-b873-b4ba508c2544'
+      - name: 'Run :: Decoding Secrets 38cb0e34-3e28-44c9-8252-996a0d4509eb'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -257,7 +257,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 7f236efe-9167-4ead-8a6a-c40da5c0b264'
+      - name: 'Run :: Decoding Secrets 4714aa1a-b20c-4507-a23f-7f11834c42a1'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
