@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_700c6627-ec66-4e67-9731-79b93516f1c0
+    types: pipeline_73b9bfd5-9acb-45f6-82f3-6277dd064028
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_ZIPLAMBDADEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -22,7 +22,7 @@ env:
   LAMBDA_FUNCTION_DESCRIPTION: My Description
   LAMBDA_FUNCTION_MEMORY_SIZE: '130'
   LAMBDA_FUNCTION_TIMEOUT: '5'
-  LAMBDA_FUNCTION_URL_AUTH_TYPE: AWS_IAM
+  LAMBDA_FUNCTION_URL_AUTH_TYPE: NONE
   LAMBDA_FUNCTION_HANDLER: dist/src/lambda.handler
   DEPLOY_STEP_SHOULD_DEPLOY: 'false'
 jobs:
@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets c10b2005-a514-4509-a254-2186db8db66d'
+      - name: 'Run :: Decoding Secrets e803a8cd-907f-40bc-a3b7-947c6512600e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -71,7 +71,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 7f0861d1-7afc-4673-9f0a-714d48230152'
+      - name: 'Run :: Decoding Secrets 81c8a58e-fc00-4e4d-9288-1695cbdd4ae6'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 528b0b02-a8bc-4f0f-8af1-3ee1fc9cf2a8'
+      - name: 'Run :: Decoding Secrets 9d10047b-1270-4f1f-b3c6-815ebe76ba2f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -162,7 +162,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 06781e08-dfd8-4051-9679-2df5d7bfcecc'
+      - name: 'Run :: Decoding Secrets 4964d3ae-63f5-464b-acc9-18dcab32bb9e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -172,7 +172,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials a583fda0-4650-4a75-9398-065ddc35495f'
+      - name: 'Run :: Configure AWS credentials 9a603c47-4000-4118-8f51-5ba469b0992e'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -207,6 +207,7 @@ jobs:
               echo "Creating Lambda Function URL"
               aws lambda create-function-url-config       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} 
               if ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} == NONE; then
+                echo "Adding Lambda Function URL access Permissions"
                 aws lambda add-permission         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}          --statement-id lambda-invoke-function-url         --action lambda:InvokeFunctionUrl         --principal "*"         --source-arn "arn:aws:execute-api:*:*:*"         --source-account "$(aws sts get-caller-identity --query Account --output text)"
               fi
               
@@ -218,7 +219,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets bfd03fb2-abc4-4971-995d-967e6fc84193'
+      - name: 'Run :: Decoding Secrets 6a0a7dc5-f46c-4030-9715-dc46e60da933'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -241,7 +242,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 77e30d71-4905-4517-8544-0b8c5ba68f5c'
+      - name: 'Run :: Decoding Secrets 5efbb312-35cf-453f-8c57-2ae366634543'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -264,7 +265,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 1de8be8a-c0a4-4b14-9b33-8788d8fbf818'
+      - name: 'Run :: Decoding Secrets a32d4725-6759-4f53-8718-54c6464819c2'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
