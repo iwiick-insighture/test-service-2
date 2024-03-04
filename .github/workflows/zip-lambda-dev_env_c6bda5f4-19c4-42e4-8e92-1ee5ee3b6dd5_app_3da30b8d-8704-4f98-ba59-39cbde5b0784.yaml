@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0681af76-c87a-45fd-a220-d2208be56558
+    types: pipeline_e1dff5c6-09f1-4432-8e83-c63fb446fcaa
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_ZIPLAMBDADEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 9f7d46ba-184f-4513-b506-064dfa413fcb'
+      - name: 'Run :: Decoding Secrets ab48616f-7b7b-4189-a05b-03e302e40b56'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -71,7 +71,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 7a5f259e-bfbf-4186-be95-fd09a3123b91'
+      - name: 'Run :: Decoding Secrets 17717f3d-8d19-4abf-b7d8-67748c319f51'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 985a59eb-b305-437a-b85c-f88092c30863'
+      - name: 'Run :: Decoding Secrets b733ed09-9d3d-4f21-b0f2-4efb919eea40'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -162,7 +162,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets b1d783e4-258f-4eda-b45c-757455cbd763'
+      - name: 'Run :: Decoding Secrets 536855ef-8f61-432c-b1b5-44f50c7b5ad5'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -172,7 +172,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 9d37581a-6adb-44b6-bf9e-554eb1b62c51'
+      - name: 'Run :: Configure AWS credentials d15811fe-2fe7-4fd5-abd7-952567d19503'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -208,7 +208,8 @@ jobs:
               aws lambda create-function-url-config       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} 
               echo "Adding Lambda Function URL access Permissions"
               aws lambda add-permission       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}        --statement-id FunctionURLAllowPublicAccess       --action lambda:InvokeFunctionUrl       --principal "*"
-                --condition '{"StringEquals":{"lambda:FunctionUrlAuthType":"NONE"}}'
+                --function-url-auth-type "${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}"
+                --condition "{"StringEquals":{"lambda:FunctionUrlAuthType": "NONE"}}"
               
   _status-success:
     name: _status Success
@@ -218,7 +219,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 403d71bd-f549-438b-bcf4-82eef362998f'
+      - name: 'Run :: Decoding Secrets 71fb607d-5891-4bd0-8b29-59c859c3c450'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -241,7 +242,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 2174891d-02d8-45c1-ad2d-c525c528bb63'
+      - name: 'Run :: Decoding Secrets 2a698b64-7708-491d-92c3-7d8515a76213'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -264,7 +265,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 84b2aa07-4e02-466a-a9c2-574e436a1d54'
+      - name: 'Run :: Decoding Secrets 05379db2-3a8e-4a1c-ada2-335fbf0913f7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
