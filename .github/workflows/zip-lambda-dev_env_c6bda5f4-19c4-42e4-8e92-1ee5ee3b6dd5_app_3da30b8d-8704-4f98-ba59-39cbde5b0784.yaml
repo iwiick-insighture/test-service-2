@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4860db9b-7d5e-45ab-b940-2894461aedf9
+    types: pipeline_0d534aa8-d137-45cc-93e7-41ab3cc0bdee
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_ZIPLAMBDADEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets c558b694-7f3b-4f44-a093-f9df54027071'
+      - name: 'Run :: Decoding Secrets b71c56d2-e5f6-468c-88f9-0838031bc5c7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -72,7 +72,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets ca0b0c10-25c5-4a26-ba00-1b96abe40dee'
+      - name: 'Run :: Decoding Secrets 7e13c0a5-0951-43b7-8e54-2ed90077f53b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 5179e2e8-31ec-44bb-b208-38db44f859b7'
+      - name: 'Run :: Decoding Secrets 67908a4d-78c1-4852-baac-48605db3183a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -163,7 +163,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets edb82dcc-b399-4232-b417-7b4d4f2c45fa'
+      - name: 'Run :: Decoding Secrets b4b798c5-f12c-4a39-b60c-33eeb22c40a0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -173,7 +173,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 86e4dfe2-2c67-4ede-bcec-c69ef1dea293'
+      - name: 'Run :: Configure AWS credentials 1bca28d7-093d-4d92-b6b2-375cd5953377'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -205,7 +205,7 @@ jobs:
               fi
 
               echo "Creating new Lambda Function"
-              aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"       --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}       --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}       --ephemeral-storage ${{ env.LAMBDA_FUNCTION_EPHEMERAL_STORAGE }}       --runtime nodejs20.x       --role ${{ env.roleARN }}       --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}       --zip-file fileb://lambda_function.zip       --region ${{ env.region }}       --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
+              aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"       --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}       --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}       --ephemeral-storage "Size=${{ env.LAMBDA_FUNCTION_EPHEMERAL_STORAGE }}"       --runtime nodejs20.x       --role ${{ env.roleARN }}       --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}       --zip-file fileb://lambda_function.zip       --region ${{ env.region }}       --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
 
               echo "Creating Lambda Function URL"
               aws lambda create-function-url-config       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} 
@@ -220,7 +220,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 9fdd07e4-4df3-4fad-a781-54b8fe9f2150'
+      - name: 'Run :: Decoding Secrets ca5efb8a-1c84-4791-bb6e-67d3a2b6a0b3'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -243,7 +243,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets ccea97c2-a1f8-4431-a6bf-9fc59a6792c4'
+      - name: 'Run :: Decoding Secrets 1624ee0a-7dd8-4e85-be33-4178ab85b6b7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -266,7 +266,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets eca64ab2-8cc5-49d7-a65f-12b2cd1f1f3e'
+      - name: 'Run :: Decoding Secrets dc2c933d-246b-4481-9da2-978a5fa24e60'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
