@@ -7,7 +7,7 @@ name: >-
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_466f9208-5326-4e3a-8c00-660e6dd68e6a
+    types: pipeline_4860db9b-7d5e-45ab-b940-2894461aedf9
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_ZIPLAMBDADEV_ENV_C6BDA5F419C442E48E921EE5EE3B6DD5_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -23,6 +23,7 @@ env:
   LAMBDA_FUNCTION_MEMORY_SIZE: '128'
   LAMBDA_FUNCTION_TIMEOUT: '3'
   LAMBDA_FUNCTION_URL_AUTH_TYPE: NONE
+  LAMBDA_FUNCTION_EPHEMERAL_STORAGE: '520'
   LAMBDA_FUNCTION_HANDLER: dist/src/lambda.handler
   DEPLOY_STEP_SHOULD_DEPLOY: 'false'
 jobs:
@@ -33,7 +34,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 57d13bd5-1c00-4fcc-80e6-d51fab43fafd'
+      - name: 'Run :: Decoding Secrets c558b694-7f3b-4f44-a093-f9df54027071'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -71,7 +72,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 574a2a62-f822-44ec-8f2a-02a983e41db0'
+      - name: 'Run :: Decoding Secrets ca0b0c10-25c5-4a26-ba00-1b96abe40dee'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -98,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets cf6dc839-db80-4def-89b6-aebf6b793468'
+      - name: 'Run :: Decoding Secrets 5179e2e8-31ec-44bb-b208-38db44f859b7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -162,7 +163,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets 22bcd4b0-1b56-4b32-9e1b-f46518a06ab5'
+      - name: 'Run :: Decoding Secrets edb82dcc-b399-4232-b417-7b4d4f2c45fa'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -172,7 +173,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials ff936d1c-c464-4668-a4dd-ac5ee056472b'
+      - name: 'Run :: Configure AWS credentials 86e4dfe2-2c67-4ede-bcec-c69ef1dea293'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -198,11 +199,13 @@ jobs:
               if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
                 echo "Lambda function exists. Deleting the function..."
                 aws lambda delete-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --region ${{ env.region }}
+
+                echo "Deleting Lambda function URL configs" 
                 aws lambda delete-function-url-config --function-name ${{ env.LAMBDA_FUNCTION_NAME }}
               fi
 
               echo "Creating new Lambda Function"
-              aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"       --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}       --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}       --runtime nodejs20.x       --role ${{ env.roleARN }}       --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}       --zip-file fileb://lambda_function.zip       --region ${{ env.region }}       --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
+              aws lambda create-function       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"       --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}       --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}       --ephemeral-storage ${{ env.LAMBDA_FUNCTION_EPHEMERAL_STORAGE }}       --runtime nodejs20.x       --role ${{ env.roleARN }}       --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}       --zip-file fileb://lambda_function.zip       --region ${{ env.region }}       --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
 
               echo "Creating Lambda Function URL"
               aws lambda create-function-url-config       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} 
@@ -217,7 +220,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 2eb0b7ae-77e7-4dec-8527-11044cf68701'
+      - name: 'Run :: Decoding Secrets 9fdd07e4-4df3-4fad-a781-54b8fe9f2150'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -240,7 +243,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets e38d254c-a8a5-40dc-883d-22b8651192ba'
+      - name: 'Run :: Decoding Secrets ccea97c2-a1f8-4431-a6bf-9fc59a6792c4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -263,7 +266,7 @@ jobs:
       - build-and-zip-to-lambda
     if: ${{ github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 4768306a-d3a3-493e-a57f-75798b7a34df'
+      - name: 'Run :: Decoding Secrets eca64ab2-8cc5-49d7-a65f-12b2cd1f1f3e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
