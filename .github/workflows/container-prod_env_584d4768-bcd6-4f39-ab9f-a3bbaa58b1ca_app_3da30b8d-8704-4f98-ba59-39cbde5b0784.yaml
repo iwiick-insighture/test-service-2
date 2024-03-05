@@ -7,7 +7,7 @@ name: >-
       - production
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_016fc17a-f3ed-46de-92b3-0f6c99b2c0b4
+    types: pipeline_b9440f36-6f2b-4d22-b23d-b3e082d59fa5
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_ENV_584D4768BCD64F39AB9FA3BBAA58B1CA_APP_3DA30B8D87044F98BA5939CBDE5B0784_CONTAINERPROD_ENV_584D4768BCD64F39AB9FA3BBAA58B1CA_APP_3DA30B8D87044F98BA5939CBDE5B0784_YAML}}
@@ -23,12 +23,22 @@ env:
 jobs:
   code-scan:
     name: Code Scan
-    runs-on: ubuntu-latest
     permissions: write-all
+    runs-on: ubuntu-latest
     steps:
+      - name: 'Run :: Decoding Secrets 135f0164-62ba-4f3f-ac5f-ae7bd42a9b98'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets b27d67ad-b2b0-449f-ac1e-bcd323324cee'
+      - name: 'Run :: Decoding Secrets 800c0b61-9936-4e7b-9a94-aecdbd362abf'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -66,7 +76,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 91e72148-7afc-454a-ab37-33b2651eec30'
+      - name: 'Run :: Decoding Secrets 4cb71717-a04e-4f86-91df-c62110a72648'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -93,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 41fae214-b3e9-4ec6-b54f-998406dceb4b'
+      - name: 'Run :: Decoding Secrets 65054074-cc0d-4dee-a8b2-5c97fcf0b41c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -159,7 +169,7 @@ jobs:
 
               git fetch
               git checkout ${{ github.event.client_payload.commitId }}
-      - name: 'Run :: Decoding Secrets b3d943a3-964f-444c-b183-d0ca04168c6c'
+      - name: 'Run :: Decoding Secrets ab2558e0-b68f-4bcc-9752-140e6f6c3fbe'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -169,7 +179,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials e38fea45-a7d3-4055-bdcb-d77c4ff41d3c'
+      - name: 'Run :: Configure AWS credentials 43934c37-9dfc-4626-8fb7-c2a56a039ef7'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -282,7 +292,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 77769483-4809-45ac-9de4-c915d45fed52'
+      - name: 'Run :: Decoding Secrets 99b05004-c509-425a-ae7f-e726a6e704d7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -305,7 +315,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 5a54d334-abfa-4840-9399-028fdbf286d5'
+      - name: 'Run :: Decoding Secrets 9ed7b109-1d40-4e1b-a8f6-5f3508786243'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -330,7 +340,7 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' && ${{
       github.event.client_payload.releaseData == null }}
     steps:
-      - name: 'Run :: Decoding Secrets 44666bb6-6582-4645-918e-1f8f038cd610'
+      - name: 'Run :: Decoding Secrets 299cde19-0fc3-48af-a311-5174b5da4cf8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
