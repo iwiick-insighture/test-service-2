@@ -328,7 +328,7 @@ jobs:
       github.event.client_payload.releaseData == null }}
     steps:
       - name: 'TESTINGGGGGGGGGGG'
-        run: echo "CONDITION: ${{ github.event.client_payload.releaseData }}"
+        run: 'echo "CONDITION: ${{ github.event.client_payload.releaseData }}"'
       - name: 'Run :: Decoding Secrets fda16eaf-15b6-4013-99b9-41515a65d348'
         run: |2-
 
