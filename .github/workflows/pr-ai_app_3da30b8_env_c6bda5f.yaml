@@ -1,22 +1,58 @@
 name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
-  pull_request:
-    types:
-      - opened
-      - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_91aac479-67f6-4738-ae0d-93de2aa1c75f
+    types: pipeline_d1ff2c08-d3ec-473b-8150-eb93430a3341
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
 jobs:
+  code-scan:
+    name: Code Scan
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: 'Run :: Checkout repository for Code Scan'
+        uses: actions/checkout@v4
+      - name: 'Run :: Decoding Secrets 420cbaed-40ae-49ce-a4fe-53456b7ff775'
+        run: |2-
+
+                  if [ ! -x "$(command -v jq)" ]; then
+                    echo "jq not found, installing..."
+                    sudo apt-get update
+                    sudo apt-get install -y jq
+                  fi
+                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Install Semgrep, Scan and Print'
+        run: >-
+          docker run -i -v "${PWD}:/src" semgrep/semgrep semgrep /src --json
+          --quiet > semgrep_results.json
+      - name: 'Run :: Upload Code Scan Report'
+        run: |2-
+
+                  SARIF_FILE="semgrep_results.json"
+                  if [ -n "$SARIF_FILE" ]; then
+                    cat "$SARIF_FILE" > ${{ env.COMMIT_ID }}-code-scan-report.sarif
+                    echo "Uploading CodeQL Results to S3 :: ${{ env.COMMIT_ID }}-code-scan-report.sarif"
+           
+                    response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-code-scan-report.sarif' -F 'provider=aws' -F 'resourceType=code-scan-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/code-scan-reports/'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.S3_UPLOAD_ENDPOINT }}')
+
+                    if echo "$response" | grep -q '"success":true'; then
+                      echo "SUCCESS :: $response"
+                    else
+                      echo "FAILED :: $response"
+                    fi
+
+                  else
+                      echo "SARIF file not found."
+                  fi
   _status-pending:
     name: _status Pending
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 94d6003b-a862-40eb-98c1-ada11c76b935'
+      - name: 'Run :: Decoding Secrets 70eb4122-19ba-4c73-a957-90a151e2dbdb'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -43,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 1769f012-e9e5-40a1-abe5-9d68d81aef94'
+      - name: 'Run :: Decoding Secrets 367a2809-c8be-4218-845d-c890ea8c788e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -95,7 +131,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets 4436ae28-4932-4e86-b6af-5b7e4315b05e'
+      - name: 'Run :: Decoding Secrets 4e879370-9967-4aa7-9a9a-03a1d2f237e4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -189,7 +225,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 2f3d2195-7465-4bcc-b854-99ee61e6eb2a'
+      - name: 'Run :: Decoding Secrets 092eb005-4446-4e2a-b0f2-56ebc6fbbcbd'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -212,7 +248,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 428a0d8a-948d-4872-a455-1a391b20b868'
+      - name: 'Run :: Decoding Secrets 7c69d287-d4d3-49ca-abf7-d276235d86b0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
