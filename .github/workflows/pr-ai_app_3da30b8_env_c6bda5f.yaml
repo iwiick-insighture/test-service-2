@@ -5,7 +5,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4eaa3322-0dc5-4e4a-a0ec-cd509fd46180
+    types: pipeline_1c2429f4-8659-47ea-9cea-e6a2e83b68a2
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 46a18673-f7dc-4dcd-a624-d04be0e83b1f'
+      - name: 'Run :: Decoding Secrets 3cd83b0d-7984-435a-b7d0-7e6b652e1b00'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -55,7 +55,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 48e50777-2188-4b0a-a9cc-db210dc80516'
+      - name: 'Run :: Decoding Secrets 24648c8c-a1f0-43a2-b677-59f28b5bebed'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets e1e98162-acc2-4d16-aa58-1e5fa2d20de0'
+      - name: 'Run :: Decoding Secrets 5f2e803b-0565-493c-aaa7-4f97921aa34a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -134,7 +134,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets be360c20-fb93-42c2-a812-6d237d879aa3'
+      - name: 'Run :: Decoding Secrets d8a2a605-067e-480d-b5af-a4a8c69c3171'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -151,23 +151,6 @@ jobs:
       - name: 'Run :: Get file paths'
         id: get-file-paths
         run: "\n        files=\"$(git ls-files -z | tr '\0' ,)\"\n        echo \"file-paths=$files\" >> $GITHUB_OUTPUT\n      "
-      - name: 'Run :: Send logs to AI service'
-        id: send-logs
-        env:
-          FILE_PATHS: ${{ steps.get-file-paths.outputs.file-paths }}
-        run: |2-
-
-                  payload=$(jq -n --arg logs "$LOGS" --arg file_paths "$FILE_PATHS" '{"error_message": $logs, "available_files": $file_paths}')
-                  echo "payload: $payload"
-
-                  response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/identify-files/')
-                  echo "Response: $response"
-
-                  identifiedFiles=$(echo "$response" | jq -r '.identified_files')
-                  echo "identified-files=$identifiedFiles" >> $GITHUB_OUTPUT
-                  
-      - name: 'Run :: Create new branch'
-        run: git checkout -b fix-issue-${{ github.run_id }}
   _status-success:
     name: _status Success
     permissions: write-all
@@ -176,7 +159,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 0223e1c3-e07d-40ee-b73c-953ffc137268'
+      - name: 'Run :: Decoding Secrets 02fb01ef-9358-4909-87f6-9b25935d38fd'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -199,7 +182,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets bf644136-70b7-4438-b977-ea9e7a3bf50c'
+      - name: 'Run :: Decoding Secrets 4074dec3-f796-4bcb-8b01-8d6f7f04d8ae'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
