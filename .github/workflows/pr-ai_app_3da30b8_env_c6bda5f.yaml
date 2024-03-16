@@ -2,7 +2,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_47d55bf6-4f91-4423-a36e-431a5253ee24
+    types: pipeline_75cd85b2-e04f-448c-8984-c0e97b192c0b
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -12,7 +12,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 343340e8-f6a8-41de-9627-c4a24f259843'
+      - name: 'Run :: Decoding Secrets 46bf95'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -40,7 +40,13 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets d3409ece-e9bd-4faa-a75a-4e52b4897468'
+      - name: 'Run :: Check Logs'
+        id: check-logs
+        run: |2-
+
+                  echo "Logs: ${{ env.LOGS }}"
+                
+      - name: 'Run :: Decoding Secrets 65225e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -67,7 +73,7 @@ jobs:
           FILE_PATHS: ${{ steps.get-file-paths.outputs.file-paths }}
         run: |2-
 
-                  payload=$(jq -n --arg logs "$LOGS" --arg file_paths "$FILE_PATHS" '{"error_message": $logs, "available_files": $file_paths}')
+                  payload=$(jq -n --arg logs "${{ env.LOGS }}" --arg file_paths "$FILE_PATHS" '{"error_message": $logs, "available_files": $file_paths}')
                   echo "payload: $payload"
 
                   response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/identify-files/')
@@ -86,7 +92,7 @@ jobs:
         run: |2-
 
                   file_content=$(cat "$FILE_PATH")
-                  payload=$(jq -n --arg fileName "$FILE_NAME" --arg fileContent "$file_content" --arg logs "$LOGS" '{"file_contents": {($fileName): $fileContent}, "error_message": $logs}')
+                  payload=$(jq -n --arg fileName "$FILE_NAME" --arg fileContent "$file_content" --arg logs "${{ env.LOGS }}" '{"file_contents": {($fileName): $fileContent}, "error_message": $logs}')
                   echo "payload: $payload"
 
                   response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/correct-errors/')
@@ -134,7 +140,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 5197d8b7-72cc-4dcb-a2eb-9f5997bc0803'
+      - name: 'Run :: Decoding Secrets 9ea71e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -157,7 +163,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 2114b2c9-a6c8-449c-b4c7-69670e5b8670'
+      - name: 'Run :: Decoding Secrets 6b498a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
