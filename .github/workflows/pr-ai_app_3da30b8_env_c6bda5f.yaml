@@ -1,12 +1,11 @@
 name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
-  pull_request:
-    types:
-      - opened
-      - synchronize
+  push:
+    branches:
+      - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0b51c7d7-1857-4081-8ab3-b61c4f91f826
+    types: pipeline_044949bc-abfa-4bce-9c3a-a5336f73dbb1
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -16,7 +15,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 4d449a83-4d3c-43c4-9cd7-a44d1fe7a9b4'
+      - name: 'Run :: Decoding Secrets c6dd9fa0-afb6-4012-8520-65b0a80aee2c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -43,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 044228b9-c15a-4154-861d-0a86f4c79512'
+      - name: 'Run :: Decoding Secrets 9bd28481-8292-4683-808d-978408d17df1'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -95,7 +94,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets 728a1a9e-fa54-4b40-a4db-1b1d8a6798e7'
+      - name: 'Run :: Decoding Secrets 71b57583-9739-43ca-9061-760229807224'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -189,7 +188,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 6286fc47-2d66-4158-b1c7-2183e865cf20'
+      - name: 'Run :: Decoding Secrets 4d4a85f4-5478-4682-9294-f386cffade3c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -212,7 +211,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 91498923-c24e-4fc6-b55b-e99ea3fabe79'
+      - name: 'Run :: Decoding Secrets c01318ae-e87c-426d-ad37-76bc7617c81d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
