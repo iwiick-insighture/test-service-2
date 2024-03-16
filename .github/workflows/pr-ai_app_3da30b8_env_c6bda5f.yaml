@@ -2,7 +2,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ac80e0b0-dbcd-451b-a327-28c12a1f8ec2
+    types: pipeline_2cf74cf8-3616-49f2-9bfd-cb1a932715b3
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -12,7 +12,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 81864ab6-a2ba-44c0-8734-95469d3948d8'
+      - name: 'Run :: Decoding Secrets 9a850d5a-09f0-4c9e-ae24-c0486087fd11'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -33,57 +33,6 @@ jobs:
                   echo "FAILED :: $response"
                 fi
               
-  _release-info:
-    name: _release Info
-    permissions: write-all
-    runs-on: ubuntu-latest
-    if: ${{ github.event.client_payload.releaseData }}
-    steps:
-      - name: 'Run :: Decoding Secrets f994f8f6-1658-40d3-ad8e-3f43fd0f638e'
-        run: |2-
-
-                  if [ ! -x "$(command -v jq)" ]; then
-                    echo "jq not found, installing..."
-                    sudo apt-get update
-                    sudo apt-get install -y jq
-                  fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
-      - name: Pipeline Release
-        run: |2-
-
-                echo "Pipeline Release Information"
-                echo "////////////////////////////"
-                echo "releaseId         : ${{ github.event.client_payload.releaseData.releaseId }}"
-                echo "pipelineId        : ${{ github.event.client_payload.releaseData.pipelineId }}"
-                echo "pipelineRunId     : ${{ github.run_id }}"
-                echo "applicationId     : ${{ github.event.client_payload.releaseData.appId }}"
-                echo "versionId         : ${{ env.DEPLOYMENT_APP_VERSION_ID }}"
-                echo "credentialId      : ${{ env.PIPELINE_CREDENTIAL_ID }}"
-
-                echo "userName          : ${{ github.repository_owner }}"
-                echo "repositoryName    : ${{ github.repository }}"
-
-                echo "commitId          : ${{ env.COMMIT_ID }}"
-                echo "commitHash        : ${{ env.COMMIT_ID }}"
-                echo "commitAvatar      : https://github.com/${{ github.event.head_commit.author.name }}.png"
-                echo "commitTime        : ${{ github.event.head_commit.timestamp }}"
-                echo "commitMessage     : ${{ github.event.client_payload.commitMessage }}"
-                echo "commitUser        : ${{ github.event.head_commit.author.name }}"
-
-                echo "shouldDeploy      : ${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}"
-                echo "containerName     : ${{ env.DEPLOYMENT_CONTAINER_NAME }}"
-                echo "imageRegistryURL  : ${{ env.IMAGE_NAME }}",
-
-                # Storing Release Infomation for Deployment
-                response=$(curl -X POST -d "releaseId=${{ github.event.client_payload.releaseData.releaseId }}&pipelineId=${{ github.event.client_payload.releaseData.pipelineId }}&pipelineRunId=${{ github.run_id }}&versionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&applicationId=${{ github.event.client_payload.releaseData.appId }}&credentialId=${{ env.PIPELINE_CREDENTIAL_ID }}&userName=${{ github.repository_owner }}&repositoryName=${{ github.repository }}&commitId=${{ env.COMMIT_ID }}&commitData[commitHash]=${{ env.COMMIT_ID }}&commitData[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitData[commitTime]=${{ github.event.head_commit.timestamp }}&commitData[commitMessage]=${{ github.event.client_payload.commitMessage }}&commitData[commitUser]=${{ github.event.head_commit.author.name }}&shouldDeploy=${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&imageRegistryURL=${{ env.IMAGE_NAME }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/release/pipeline')
-
-                if echo "$response" | grep -q '"success":true'; then
-                  echo "SUCCESS :: $response"
-                else
-                  echo "FAILED :: $response"
-                fi
-              
   fix-code-with-ai:
     name: Fix Code With AI
     runs-on: ubuntu-latest
@@ -91,7 +40,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets ca6dcc31-009c-438c-966d-287d8e2bf12f'
+      - name: 'Run :: Decoding Secrets bf84286c-1141-4f1b-8f6b-2e3cfb25bb0d'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -185,7 +134,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 39a26375-dde9-42c1-8a15-19ced7ab6b47'
+      - name: 'Run :: Decoding Secrets 92a1a240-f273-4fd0-8210-a2b5964c096f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -208,7 +157,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 5982b852-89e0-4671-9b13-45d123b746dc'
+      - name: 'Run :: Decoding Secrets 3b39088d-420a-430d-8290-9faea746da04'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
