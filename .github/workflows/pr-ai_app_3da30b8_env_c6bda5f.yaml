@@ -5,7 +5,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_218506ab-60d5-456d-b586-ef8b97c80160
+    types: pipeline_338b5a1b-5d65-4dec-b87a-59c5947aa386
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 266cecac-c6ec-454c-aaab-b1c4267985a1'
+      - name: 'Run :: Decoding Secrets 8cfbef9c-ce6b-4b10-9c38-fff77dc57353'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -55,7 +55,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 71d47114-4d12-4c0d-b0f9-c9f82dd43e82'
+      - name: 'Run :: Decoding Secrets 254dc962-ef8f-43a8-b796-179fe902c30e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets ea582732-b12a-4c88-bf60-d4d34e4ded74'
+      - name: 'Run :: Decoding Secrets 641e2e0f-c3b3-4487-8c63-31f247d907d7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -132,10 +132,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     env:
-      API_URL: https://f600-111-118-199-2.ngrok-free.app
+      API_URL: ${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets 6530bb86-1459-46fd-adae-8eabc55a9acd'
+      - name: 'Run :: Decoding Secrets aff66c08-d70b-483f-9730-7d8eb896cd5e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -161,8 +161,8 @@ jobs:
 
                   payload=$(jq -n --arg logs "$LOGS" --arg file_paths "$FILE_PATHS" '{"error_message": $logs, "available_files": $file_paths}')
                   echo "payload: $payload"
-                  
-                  response=$(curl -X POST -H 'accept: application/json' -H "Content-Type: application/json" -d "$payload" "$API_URL")
+
+                  response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '$API_URL')
                   echo "Response: $response"
 
                   identifiedFiles=$(echo "$response" | jq -r '.identified_files')
@@ -182,7 +182,7 @@ jobs:
                   payload=$(jq -n --arg fileName "$FILE_NAME" --arg fileContent "$file_content" --arg logs "$LOGS" '{"file_contents": {($fileName): $fileContent}, "error_message": $logs}')
                   echo "payload: $payload"
 
-                  response=$(curl -X POST -H 'accept: application/json' -H "Content-Type: application/json" -d "$payload" "$API_URL")
+                  response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '$API_URL')
                   echo "response: $response"
 
                   correction_files=$(echo "${response}" | jq -r '.corrected_files')
@@ -227,7 +227,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets e3437e0d-037b-4e4e-89af-51d6bdb7210f'
+      - name: 'Run :: Decoding Secrets 2bf70231-ef86-48cb-bebf-e38eb43042a0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -250,7 +250,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 40f26d67-aa13-4549-ae90-1dd881fa9bb8'
+      - name: 'Run :: Decoding Secrets c503181e-f028-4f19-9e63-a9daae9a8b10'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
