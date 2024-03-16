@@ -5,7 +5,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e43a562b-ab39-4cb4-8366-e2fbed5c31ac
+    types: pipeline_c0481f39-6563-48a3-a0a6-99a9723c4cf3
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 0f2432af-68fa-46fa-a3e7-60c0916b7916'
+      - name: 'Run :: Decoding Secrets 020e2fae-5564-4e38-bbea-09584b72b198'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -55,7 +55,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 66276dae-afb6-4889-be11-725489c93f57'
+      - name: 'Run :: Decoding Secrets 2f3ccde8-7024-4164-b5d4-d1904b4540cf'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 1313a592-1039-410d-bef0-959625f72bf7'
+      - name: 'Run :: Decoding Secrets b353d89c-7b02-4ab9-9839-4d7fe4beb3df'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -134,7 +134,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets dca7c7ff-0398-4479-aff8-459bc5de3542'
+      - name: 'Run :: Decoding Secrets baedcb40-6c3a-4934-beeb-86757889b661'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -144,78 +144,6 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Checkout repository for AI Fixes'
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: 'Run :: Get file paths'
-        id: get-file-paths
-        run: "\n        files=\"$(git ls-files -z | tr '\0' ,)\"\n        echo \"file-paths=$files\" >> $GITHUB_OUTPUT\n      "
-      - name: 'Run :: Send logs to AI service'
-        id: send-logs
-        env:
-          FILE_PATHS: ${{ steps.get-file-paths.outputs.file-paths }}
-        run: |2-
-
-                  payload=$(jq -n --arg logs "$LOGS" --arg file_paths "$FILE_PATHS" '{"error_message": $logs, "available_files": $file_paths}')
-                  echo "payload: $payload"
-
-                  response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/identify-files/')
-                  echo "Response: $response"
-
-                  identifiedFiles=$(echo "$response" | jq -r '.identified_files')
-                  echo "identified-files=$identifiedFiles" >> $GITHUB_OUTPUT
-                  
-      - name: 'Run :: Create new branch'
-        run: git checkout -b fix-issue-${{ github.run_id }}
-      - name: 'Run :: Send file to AI Service'
-        id: send-file
-        env:
-          FILE_NAME: ${{ steps.send-logs.outputs.identified-files }}
-          FILE_PATH: ${{ steps.send-logs.outputs.identified-files }}
-        run: |2-
-
-                  file_content=$(cat "$FILE_PATH")
-                  payload=$(jq -n --arg fileName "$FILE_NAME" --arg fileContent "$file_content" --arg logs "$LOGS" '{"file_contents": {($fileName): $fileContent}, "error_message": $logs}')
-                  echo "payload: $payload"
-
-                  response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/correct-errors/')
-                  echo "response: $response"
-
-                  correction_files=$(echo "${response}" | jq -r '.corrected_files')
-
-                  # Loop through the JSON object
-                  echo "${correction_files}" | jq -r 'to_entries[] | @base64' | while read -r line; do
-                      # Decode the base64 to get the original JSON string
-                      decoded=$(echo "${line}" | base64 --decode)
-                      # Extract the key (filename) and value (file content) using jq
-                      key=$(echo "${decoded}" | jq -r '.key')
-                      value=$(echo "${decoded}" | jq -r '.value')
-                      # Use the key as the filename and the value as the content, writing to the file
-                      echo "${value}" > "${key}"
-                      echo "Written to ${key}"
-                  done
-
-                  echo "All files have been created."
-                
-      - name: 'Run :: Commit changes'
-        run: |2-
-
-                  git config --global user.email "actions@github.com"
-                  git config --global user.name "GitHub Actions"
-                  git add .
-                  git commit -m "fix issue"
-                
-      - name: 'Run :: Push changes'
-        run: git push origin fix-issue-${{ github.run_id }}
-      - name: 'Run :: Create Pull Request'
-        uses: repo-sync/pull-request@v2
-        with:
-          source_branch: fix-issue-${{ github.run_id }}
-          destination_branch: main
-          pr_title: Fix Issue-${{ github.run_id }}
-          pr_body: This pull request fixes the error contained in the logs.
-          github_token: ${{ secrets.GITHUB_TOKEN }}
   _status-success:
     name: _status Success
     permissions: write-all
@@ -224,7 +152,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 06650224-16a9-4293-8065-4b36dcb5c8a1'
+      - name: 'Run :: Decoding Secrets 0c02d83e-e715-45e1-8c6d-2a178a0a7b94'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -247,7 +175,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 6156e563-fc14-417a-8ce5-1bed9111aaf9'
+      - name: 'Run :: Decoding Secrets b5cffb12-f83b-47c8-8310-46cd6d48baa7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
