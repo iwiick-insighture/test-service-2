@@ -2,7 +2,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_73af562c-0e53-434c-a85d-3ecea70ba080
+    types: pipeline_2df90e71-27b8-4c9a-89d1-d69e99777298
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -12,7 +12,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 89d864'
+      - name: 'Run :: Decoding Secrets b49237'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -44,13 +44,14 @@ jobs:
         id: check-logs
         run: |2-
 
-                  if [${{ env.LOGS }}]; then
+                  if [${{ env.LOGS != null }}]; then
                     echo "Logs found..."
                   else 
                     echo "Logs Not found to run the AI pipeline"
+                    exit 1
                   fi
                 
-      - name: 'Run :: Decoding Secrets 606355'
+      - name: 'Run :: Decoding Secrets b4be38'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -144,7 +145,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets b7f1c5'
+      - name: 'Run :: Decoding Secrets b7927a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -167,7 +168,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 85b4e3'
+      - name: 'Run :: Decoding Secrets bceb8f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
