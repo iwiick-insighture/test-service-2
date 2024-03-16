@@ -5,7 +5,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_58d352c0-65ff-4c89-aa64-c7b022c26ce4
+    types: pipeline_0e732034-5025-4c61-9a2b-d0eb051f1b2f
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 23d1c11e-0ed9-48a0-b562-d5d5a6b4195e'
+      - name: 'Run :: Decoding Secrets a89e4588-291b-4dac-9a8c-170eb0dac62c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -55,7 +55,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets a23bf681-762b-4f7f-9ad3-274e54de997e'
+      - name: 'Run :: Decoding Secrets d932714f-da5b-44c8-9697-d866d2e74085'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 342609c6-48d3-411b-a976-2407a971e9d6'
+      - name: 'Run :: Decoding Secrets 42c10db6-43c3-4ab0-8f65-999fbf446cc0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -134,7 +134,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets cc906ff2-6ec5-433c-9fc0-745a6a43624e'
+      - name: 'Run :: Decoding Secrets f4b085d6-16eb-4a26-9f05-6b3b11a782fe'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -150,10 +150,7 @@ jobs:
           fetch-depth: 0
       - name: 'Run :: Get file paths'
         id: get-file-paths
-        run: |2-
-
-                  echo "Hello"
-                
+        run: "\n        files=\"$(git ls-files -z | tr '\0' ,)\"\n        echo \"file-paths=$files\" >> $GITHUB_OUTPUT\n      "
       - name: 'Run :: Send logs to AI service'
         id: send-logs
         env:
@@ -227,7 +224,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets a5978c73-5dac-41a8-82c0-55534a7682ea'
+      - name: 'Run :: Decoding Secrets b23e7d23-c837-49bd-83ff-887b58d1b678'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -250,7 +247,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets e309ad52-7360-4e70-8727-df391245d307'
+      - name: 'Run :: Decoding Secrets 5e897a7e-84ac-4fdc-9dd9-75fa2abe8ee7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
