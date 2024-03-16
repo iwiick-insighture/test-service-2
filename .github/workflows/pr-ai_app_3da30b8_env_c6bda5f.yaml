@@ -5,7 +5,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - master
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1c2429f4-8659-47ea-9cea-e6a2e83b68a2
+    types: pipeline_f839fb39-1a8e-45e6-b614-90e3d076a298
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
-      - name: 'Run :: Decoding Secrets 3cd83b0d-7984-435a-b7d0-7e6b652e1b00'
+      - name: 'Run :: Decoding Secrets ba2af1a3-4f8c-4687-abf7-20d3a61673f0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -55,7 +55,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 24648c8c-a1f0-43a2-b677-59f28b5bebed'
+      - name: 'Run :: Decoding Secrets 481f1d87-fe9e-4935-b897-03914882a427'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 5f2e803b-0565-493c-aaa7-4f97921aa34a'
+      - name: 'Run :: Decoding Secrets 9712c0ea-e7ee-4b89-a7c8-42f35ea32b76'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -134,7 +134,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets d8a2a605-067e-480d-b5af-a4a8c69c3171'
+      - name: 'Run :: Decoding Secrets 53922b87-94a4-488e-bd4e-6a95e55f9fef'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -148,9 +148,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: 'Run :: Get file paths'
-        id: get-file-paths
-        run: "\n        files=\"$(git ls-files -z | tr '\0' ,)\"\n        echo \"file-paths=$files\" >> $GITHUB_OUTPUT\n      "
   _status-success:
     name: _status Success
     permissions: write-all
@@ -159,7 +156,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 02fb01ef-9358-4909-87f6-9b25935d38fd'
+      - name: 'Run :: Decoding Secrets 6c193674-9c7d-472f-913b-7de2bf227b5e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -182,7 +179,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 4074dec3-f796-4bcb-8b01-8d6f7f04d8ae'
+      - name: 'Run :: Decoding Secrets 4590c50d-3bb2-476f-9055-53c766962c49'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
