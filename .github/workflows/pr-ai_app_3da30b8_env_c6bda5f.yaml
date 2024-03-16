@@ -1,8 +1,12 @@
 name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
+  pull_request:
+    types:
+      - opened
+      - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_010422b4-d0a0-405b-9e0d-31ed01c3628b
+    types: pipeline_91aac479-67f6-4738-ae0d-93de2aa1c75f
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -12,7 +16,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 85dafd78-7707-488b-9441-1ac0f043b772'
+      - name: 'Run :: Decoding Secrets 94d6003b-a862-40eb-98c1-ada11c76b935'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -39,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 5cb92541-8ba8-4b9c-bc05-b2f32405e954'
+      - name: 'Run :: Decoding Secrets 1769f012-e9e5-40a1-abe5-9d68d81aef94'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -91,7 +95,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets 03bdcc25-9b7b-4f8e-9282-58f1dbf57c3b'
+      - name: 'Run :: Decoding Secrets 4436ae28-4932-4e86-b6af-5b7e4315b05e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -185,7 +189,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 6638e8f7-6cb0-4326-baed-6d57bd0e7600'
+      - name: 'Run :: Decoding Secrets 2f3d2195-7465-4bcc-b854-99ee61e6eb2a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -208,7 +212,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 8e72a043-4e0c-48d6-bd78-d6fa1d74b94d'
+      - name: 'Run :: Decoding Secrets 428a0d8a-948d-4872-a455-1a391b20b868'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
