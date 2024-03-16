@@ -2,7 +2,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_a4eed2b2-0e6e-4ab9-986e-327d75abfa5d
+    types: pipeline_0e99d74f-2caf-41a1-be89-4ac9ccff9ea0
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -12,7 +12,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets ce5cda'
+      - name: 'Run :: Decoding Secrets 8a4063'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -52,7 +52,7 @@ jobs:
                     exit 1
                   fi
                 
-      - name: 'Run :: Decoding Secrets 6a2c9d'
+      - name: 'Run :: Decoding Secrets cd92e2'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -83,10 +83,16 @@ jobs:
                   echo "payload: $payload"
 
                   response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/identify-files/')
-                  echo "Response: $response"
 
-                  identifiedFiles=$(echo "$response" | jq -r '.identified_files')
+                  status_code=$?
+                  if [ $status_code -eq 0 ]; then
+                    echo "SUCCESS :: $response"
+                    identifiedFiles=$(echo "$response" | jq -r '.identified_files')
                   echo "identified-files=$identifiedFiles" >> $GITHUB_OUTPUT
+                  else
+                    echo "FAILED :: $response"
+                    exit 1
+                  fi
                   
       - name: 'Run :: Create new branch'
         run: git checkout -b fix-issue-${{ github.run_id }}
@@ -102,23 +108,30 @@ jobs:
                   echo "payload: $payload"
 
                   response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/correct-errors/')
-                  echo "response: $response"
 
-                  correction_files=$(echo "${response}" | jq -r '.corrected_files')
+                  status_code=$?
+                  if [ $status_code -eq 0 ]; then
+                    echo "SUCCESS :: $response"
+                    correction_files=$(echo "${response}" | jq -r '.corrected_files')
 
-                  # Loop through the JSON object
-                  echo "${correction_files}" | jq -r 'to_entries[] | @base64' | while read -r line; do
-                      # Decode the base64 to get the original JSON string
-                      decoded=$(echo "${line}" | base64 --decode)
-                      # Extract the key (filename) and value (file content) using jq
-                      key=$(echo "${decoded}" | jq -r '.key')
-                      value=$(echo "${decoded}" | jq -r '.value')
-                      # Use the key as the filename and the value as the content, writing to the file
-                      echo "${value}" > "${key}"
-                      echo "Written to ${key}"
-                  done
-
-                  echo "All files have been created."
+                    # Loop through the JSON object
+                    echo "${correction_files}" | jq -r 'to_entries[] | @base64' | while read -r line; do
+                        # Decode the base64 to get the original JSON string
+                        decoded=$(echo "${line}" | base64 --decode)
+                        # Extract the key (filename) and value (file content) using jq
+                        key=$(echo "${decoded}" | jq -r '.key')
+                        value=$(echo "${decoded}" | jq -r '.value')
+                        # Use the key as the filename and the value as the content, writing to the file
+                        echo "${value}" > "${key}"
+                        echo "Written to ${key}"
+                    done
+                  
+                    echo "All files have been created."
+                    echo "identified-files=$identifiedFiles" >> $GITHUB_OUTPUT
+                  else
+                    echo "FAILED :: $response"
+                    exit 1
+                  fi
                 
       - name: 'Run :: Commit changes'
         run: |2-
@@ -146,7 +159,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 85ceb2'
+      - name: 'Run :: Decoding Secrets fbf4ca'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -169,7 +182,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets afd644'
+      - name: 'Run :: Decoding Secrets 4763c8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
