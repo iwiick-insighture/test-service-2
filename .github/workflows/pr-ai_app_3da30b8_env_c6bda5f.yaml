@@ -6,31 +6,17 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_d0054fb7-5e5f-4bc0-84d3-503dd8b4641c
+    types: pipeline_0b51c7d7-1857-4081-8ab3-b61c4f91f826
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
 jobs:
-  undefined:
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Run :: Decoding Secrets 5d6ad486-e98d-43da-afef-cbc96581a24a'
-        run: |2-
-
-                  if [ ! -x "$(command -v jq)" ]; then
-                    echo "jq not found, installing..."
-                    sudo apt-get update
-                    sudo apt-get install -y jq
-                  fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
   _status-pending:
     name: _status Pending
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 7f43e80a-7da3-43af-b6a6-1252ede9656f'
+      - name: 'Run :: Decoding Secrets 4d449a83-4d3c-43c4-9cd7-a44d1fe7a9b4'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -57,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets bb3119d4-99d8-4709-8b83-3ad2698a5213'
+      - name: 'Run :: Decoding Secrets 044228b9-c15a-4154-861d-0a86f4c79512'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -109,7 +95,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets cfaed46a-2a3f-458a-98d2-e5dc8c25645c'
+      - name: 'Run :: Decoding Secrets 728a1a9e-fa54-4b40-a4db-1b1d8a6798e7'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -203,7 +189,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets a6878ebc-67b5-477a-88e5-67023d7c4118'
+      - name: 'Run :: Decoding Secrets 6286fc47-2d66-4158-b1c7-2183e865cf20'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -226,7 +212,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 66f8a34a-6281-43cc-9c93-aa4b04230bac'
+      - name: 'Run :: Decoding Secrets 91498923-c24e-4fc6-b55b-e99ea3fabe79'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
