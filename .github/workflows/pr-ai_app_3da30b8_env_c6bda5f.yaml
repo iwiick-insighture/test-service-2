@@ -2,7 +2,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0e99d74f-2caf-41a1-be89-4ac9ccff9ea0
+    types: pipeline_ad9dda5e-a6d7-4f1c-b8be-c6def6edb802
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -12,7 +12,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 8a4063'
+      - name: 'Run :: Decoding Secrets 1432ec'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -52,7 +52,7 @@ jobs:
                     exit 1
                   fi
                 
-      - name: 'Run :: Decoding Secrets cd92e2'
+      - name: 'Run :: Decoding Secrets 2596fc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -85,6 +85,7 @@ jobs:
                   response=$(curl -X POST -d "$payload"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.API_GATEWAY_BASEURL }}/ai-suggested-solution-service/identify-files/')
 
                   status_code=$?
+                  echo "STATUS CODEEEEEEEEEEEEEEEEEEEEE: $status_code"
                   if [ $status_code -eq 0 ]; then
                     echo "SUCCESS :: $response"
                     identifiedFiles=$(echo "$response" | jq -r '.identified_files')
@@ -159,7 +160,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets fbf4ca'
+      - name: 'Run :: Decoding Secrets e58b8c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -182,7 +183,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 4763c8'
+      - name: 'Run :: Decoding Secrets 0c1f29'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
