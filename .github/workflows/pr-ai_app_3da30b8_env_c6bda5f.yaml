@@ -2,7 +2,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_2dd75d65-d6dd-4fe1-8104-51ef36e693fc
+    types: pipeline_ac80e0b0-dbcd-451b-a327-28c12a1f8ec2
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -12,7 +12,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 1c5c96b8-5ebf-4893-9de0-dbe78176b9f8'
+      - name: 'Run :: Decoding Secrets 81864ab6-a2ba-44c0-8734-95469d3948d8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets d5a17246-5e50-48bb-9350-be97ced85966'
+      - name: 'Run :: Decoding Secrets f994f8f6-1658-40d3-ad8e-3f43fd0f638e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -91,7 +91,7 @@ jobs:
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets 13b40a36-60d3-4e1b-b468-3a487d960049'
+      - name: 'Run :: Decoding Secrets ca6dcc31-009c-438c-966d-287d8e2bf12f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -185,7 +185,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 77a17479-36cc-42a5-a72a-7bc7a9e8940e'
+      - name: 'Run :: Decoding Secrets 39a26375-dde9-42c1-8a15-19ced7ab6b47'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -208,7 +208,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 0f0964a0-2867-444f-85bc-eb3d945783e2'
+      - name: 'Run :: Decoding Secrets 5982b852-89e0-4671-9b13-45d123b746dc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
