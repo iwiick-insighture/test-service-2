@@ -6,7 +6,7 @@ name: pr-ai_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_80e6a5d8-6f15-428b-b997-af5dbf4ea0b6
+    types: pipeline_d0054fb7-5e5f-4bc0-84d3-503dd8b4641c
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_PRAI_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -15,7 +15,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 9a3df054-1ce2-4d06-be26-50f3e919f0f4'
+      - name: 'Run :: Decoding Secrets 5d6ad486-e98d-43da-afef-cbc96581a24a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -30,7 +30,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 85211ec1-b119-4c9d-b7e5-dc0101ea1352'
+      - name: 'Run :: Decoding Secrets 7f43e80a-7da3-43af-b6a6-1252ede9656f'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 90d70692-fb09-4ffa-9688-65e75121a120'
+      - name: 'Run :: Decoding Secrets bb3119d4-99d8-4709-8b83-3ad2698a5213'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -103,13 +103,13 @@ jobs:
                 fi
               
   fix-code-with-ai:
-    name: Fix Code With Ai
+    name: Fix Code With AI
     runs-on: ubuntu-latest
     permissions: write-all
     env:
       LOGS: ${{ github.event.inputs.logs }}
     steps:
-      - name: 'Run :: Decoding Secrets 01e2eb34-43c5-422a-9f06-4792401cc1de'
+      - name: 'Run :: Decoding Secrets cfaed46a-2a3f-458a-98d2-e5dc8c25645c'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -203,7 +203,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 5d49710f-e1ac-4be0-871b-9ee8650a80ab'
+      - name: 'Run :: Decoding Secrets a6878ebc-67b5-477a-88e5-67023d7c4118'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -226,7 +226,7 @@ jobs:
       - fix-code-with-ai
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 71840d8f-f8e7-4867-ba9d-9cc080e62186'
+      - name: 'Run :: Decoding Secrets 66f8a34a-6281-43cc-9c93-aa4b04230bac'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
