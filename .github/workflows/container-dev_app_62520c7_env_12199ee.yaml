@@ -3,6 +3,8 @@ name: container-dev_app_62520c7_env_12199ee Pipeline (Skyu Generated)
   push:
     branches:
       - master
+    tags:
+      - v*
     paths: []
   workflow_dispatch: {}
   repository_dispatch:
