@@ -7,8 +7,9 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_739d8492-2372-4ea6-80f8-aa2f94903a6d
+    types: pipeline_00079841-bb2a-486f-b45f-54bf7adcb0ec
 env:
+  ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
   IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
   DOCKER_FILE_PATH: Dockerfile
@@ -24,7 +25,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets fa9f17'
+      - name: 'Run :: Decoding Secrets a47663'
         run: |2-
 
                   echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
@@ -40,7 +41,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 6f9dbc'
+      - name: 'Run :: Decoding Secrets 7792e8'
         run: |2-
 
                   echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
@@ -68,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets efd435'
+      - name: 'Run :: Decoding Secrets c34ae0'
         run: |2-
 
                   echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
@@ -136,7 +137,7 @@ jobs:
               git fetch --all
               git checkout ${{ github.event.client_payload.commitId }} || true
               
-      - name: 'Run :: Decoding Secrets 781231'
+      - name: 'Run :: Decoding Secrets 1a5458'
         run: |2-
 
                   echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
@@ -147,7 +148,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 40028bf1-fa4e-44c8-86ea-e396d39df907'
+      - name: 'Run :: Configure AWS credentials 68b637f5-f954-40bc-9c53-668be644e0ef'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -260,7 +261,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 4866fa'
+      - name: 'Run :: Decoding Secrets 2886f1'
         run: |2-
 
                   echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
@@ -284,7 +285,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 018ab8'
+      - name: 'Run :: Decoding Secrets b06e56'
         run: |2-
 
                   echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
@@ -310,7 +311,7 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' &&
       github.event.client_payload.releaseData == null
     steps:
-      - name: 'Run :: Decoding Secrets 4f0132'
+      - name: 'Run :: Decoding Secrets 2128e2'
         run: |2-
 
                   echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
