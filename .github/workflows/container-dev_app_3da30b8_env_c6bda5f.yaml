@@ -298,7 +298,7 @@ jobs:
     steps:
       - name: 'Run :: Decoding Secrets c45cff'
         run: |2-
-                echo "HEREEEEEEEE: ${{ needs.build-and-push.outputs.stepsCanProceed }}"
+                echo "HEREEEEEEEE: ${{needs.build-and-push.outputs.stepsCanProceed}}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
