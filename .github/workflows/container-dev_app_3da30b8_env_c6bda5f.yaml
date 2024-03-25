@@ -7,7 +7,7 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5e1f82f4-77c0-478e-9ef9-a11e134505ca
+    types: pipeline_9cb2107f-5233-43cb-b11b-af5ab386490a
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 521e1e'
+      - name: 'Run :: Decoding Secrets 9cefc8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -32,7 +32,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 440a16'
+      - name: 'Run :: Decoding Secrets 4dc51e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 41c666'
+      - name: 'Run :: Decoding Secrets 1a1e67'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -126,7 +126,7 @@ jobs:
               git fetch --all
               git checkout ${{ github.event.client_payload.commitId }} || true
               
-      - name: 'Run :: Decoding Secrets c2fe80'
+      - name: 'Run :: Decoding Secrets 54aee0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -136,7 +136,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 3d23d460-3d93-4128-9d18-d24089bdb71f'
+      - name: 'Run :: Configure AWS credentials c3425c09-e79e-44a2-9fd7-8e130b70d35b'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -249,7 +249,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 346e44'
+      - name: 'Run :: Decoding Secrets c7aa5a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -272,7 +272,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets e6fcd8'
+      - name: 'Run :: Decoding Secrets 65aacc'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -294,11 +294,12 @@ jobs:
     needs:
       - build-and-push
     if: >-
+      needs.build-and-push.outputs.stepsCanProceed == 'true' &&
       github.event.client_payload.releaseData == null
     steps:
-      - name: 'Run :: Decoding Secrets 8919c2'
+      - name: 'Run :: Decoding Secrets c45cff'
         run: |2-
-              echo "HEREEEEEEEEEEEEE: ${{ needs.build-and-push.outputs.stepsCanProceed }}"
+
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
