@@ -7,7 +7,7 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ce0924b0-bea5-4424-8299-45cefb71b3d6
+    types: pipeline_4a6c5a24-b8d4-49fc-b6cb-c4077642ae3b
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 4c6188'
+      - name: 'Run :: Decoding Secrets 6478a9'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -32,7 +32,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 3d1324'
+      - name: 'Run :: Decoding Secrets fa4ee8'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 449c7b'
+      - name: 'Run :: Decoding Secrets 03a8f0'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -109,13 +109,13 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
-      stepsCanProceed: '[${{ env.STEPS_CAN_PROCEED }} == ''true'']'
+      stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
     steps:
       - name: Start
         run: |2-
 
               echo " Starting GitHub Action!" && 
-              echo "STEPS_CAN_PROCEED='true'" >> $GITHUB_ENV
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v4
@@ -126,7 +126,7 @@ jobs:
               git fetch --all
               git checkout ${{ github.event.client_payload.commitId }} || true
               
-      - name: 'Run :: Decoding Secrets 256982'
+      - name: 'Run :: Decoding Secrets 91a93b'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -136,7 +136,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials d516188e-af8d-4e4d-85bf-81d3482e3702'
+      - name: 'Run :: Configure AWS credentials bce692bc-2fec-428d-8e1a-ec74bb9b5f36'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -152,10 +152,10 @@ jobs:
               if docker pull ${{ env.IMAGE_NAME }}:${{env.COMMIT_ID}} >/dev/null 2>&1; 
               then
                 echo "Image exists in registry."
-                echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
+                echo "STEPS_CAN_PROCEED=false" >> $GITHUB_ENV
               else
                 echo "Image does not exist in registry."
-                echo "STEPS_CAN_PROCEED='true'" >> $GITHUB_ENV
+                echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               fi
               
       - name: 'Run :: Build With Docker'
@@ -249,7 +249,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 586117'
+      - name: 'Run :: Decoding Secrets 7c567e'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -272,7 +272,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 6c726c'
+      - name: 'Run :: Decoding Secrets e0e91a'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -294,10 +294,10 @@ jobs:
     needs:
       - build-and-push
     if: >-
-      needs.build-and-push.outputs.stepsCanProceed &&
+      needs.build-and-push.outputs.stepsCanProceed == 'true' &&
       github.event.client_payload.releaseData == null
     steps:
-      - name: 'Run :: Decoding Secrets 944d90'
+      - name: 'Run :: Decoding Secrets 090989'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
