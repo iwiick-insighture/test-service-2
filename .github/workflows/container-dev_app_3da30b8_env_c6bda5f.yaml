@@ -7,7 +7,7 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9cb2107f-5233-43cb-b11b-af5ab386490a
+    types: pipeline_53ed6aa7-2fe1-45cb-ac2a-e58728668890
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -17,7 +17,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 9cefc8'
+      - name: 'Run :: Decoding Secrets 3f09dd'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -32,7 +32,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 4dc51e'
+      - name: 'Run :: Decoding Secrets 0d5fa5'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets 1a1e67'
+      - name: 'Run :: Decoding Secrets da6956'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -109,13 +109,13 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
-      stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
+      stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }} == 'true'
     steps:
       - name: Start
         run: |2-
 
               echo " Starting GitHub Action!" && 
-              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              echo "STEPS_CAN_PROCEED='true'" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v4
@@ -126,7 +126,7 @@ jobs:
               git fetch --all
               git checkout ${{ github.event.client_payload.commitId }} || true
               
-      - name: 'Run :: Decoding Secrets 54aee0'
+      - name: 'Run :: Decoding Secrets 4c4735'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -136,7 +136,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials c3425c09-e79e-44a2-9fd7-8e130b70d35b'
+      - name: 'Run :: Configure AWS credentials 04bf4340-0939-4644-9097-7f6637ffeec2'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -152,10 +152,10 @@ jobs:
               if docker pull ${{ env.IMAGE_NAME }}:${{env.COMMIT_ID}} >/dev/null 2>&1; 
               then
                 echo "Image exists in registry."
-                echo "STEPS_CAN_PROCEED=false" >> $GITHUB_ENV
+                echo "STEPS_CAN_PROCEED='false'" >> $GITHUB_ENV
               else
                 echo "Image does not exist in registry."
-                echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+                echo "STEPS_CAN_PROCEED='true'" >> $GITHUB_ENV
               fi
               
       - name: 'Run :: Build With Docker'
@@ -249,7 +249,7 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets c7aa5a'
+      - name: 'Run :: Decoding Secrets 3b3bd5'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -272,7 +272,7 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 65aacc'
+      - name: 'Run :: Decoding Secrets 734366'
         run: |2-
 
                   if [ ! -x "$(command -v jq)" ]; then
@@ -294,11 +294,12 @@ jobs:
     needs:
       - build-and-push
     if: >-
+      needs.build-and-push.outputs.stepsCanProceed &&
       github.event.client_payload.releaseData == null
     steps:
-      - name: 'Run :: Decoding Secrets c45cff'
+      - name: 'Run :: Decoding Secrets cd596c'
         run: |2-
-                echo "HEREEEEEEEE: ${{needs.build-and-push.outputs.stepsCanProceed}}"
+
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
