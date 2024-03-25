@@ -294,12 +294,11 @@ jobs:
     needs:
       - build-and-push
     if: >-
-      needs.build-and-push.outputs.stepsCanProceed == 'true' &&
       github.event.client_payload.releaseData == null
     steps:
       - name: 'Run :: Decoding Secrets 8919c2'
         run: |2-
-
+              echo "HEREEEEEEEEEEEEE: ${{ needs.build-and-push.outputs.stepsCanProceed }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
