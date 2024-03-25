@@ -7,9 +7,9 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e37df38d-7614-4001-93ff-f13c6056d5b4
+    types: pipeline_4a583b82-c986-401d-9ed0-88edbb72106b
 env:
-  COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
+  ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
   DOCKER_FILE_PATH: Dockerfile
   DOCKER_BUILD_CONTEXT: .
@@ -24,10 +24,9 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 55af2f'
+      - name: 'Run :: Decoding Secrets 91a09f'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
@@ -40,10 +39,9 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 4de3f2'
+      - name: 'Run :: Decoding Secrets b7fb4e'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
@@ -68,10 +66,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets fb66da'
+      - name: 'Run :: Decoding Secrets 23db3f'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
@@ -136,10 +133,9 @@ jobs:
               git fetch --all
               git checkout ${{ github.event.client_payload.commitId }} || true
               
-      - name: 'Run :: Decoding Secrets 8e420a'
+      - name: 'Run :: Decoding Secrets 907d35'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
@@ -147,7 +143,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials f755f250-3fe0-4827-a2d8-e7d2cf6aecd1'
+      - name: 'Run :: Configure AWS credentials 537bf8e0-ee0b-4da1-88e8-e2dc1cbba2aa'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -260,10 +256,9 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 7e4550'
+      - name: 'Run :: Decoding Secrets 9ec215'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
@@ -284,10 +279,9 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets 30ae6a'
+      - name: 'Run :: Decoding Secrets 7e56df'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
@@ -310,10 +304,9 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' &&
       github.event.client_payload.releaseData == null
     steps:
-      - name: 'Run :: Decoding Secrets 52f8e4'
+      - name: 'Run :: Decoding Secrets ac8806'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
