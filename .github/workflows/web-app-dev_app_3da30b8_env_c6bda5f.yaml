@@ -7,7 +7,7 @@ name: web-app-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_2d1b1cc3-c95a-44c7-bbbe-cf915af58b74
+    types: pipeline_14aca72f-bf46-4b50-bdd2-d11d06278672
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_WEBAPPDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
@@ -135,7 +135,7 @@ jobs:
                   fi
                   echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials e8e71598-c064-4ade-830d-c09f1f61f4b3'
+      - name: 'Run :: Configure AWS credentials'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
