@@ -7,9 +7,8 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_00079841-bb2a-486f-b45f-54bf7adcb0ec
+    types: pipeline_3eeef1e3-635f-49ed-9219-aa9f4c4bc0ff
 env:
-  ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha}}
   IMAGE_NAME: 272133924862.dkr.ecr.us-east-1.amazonaws.com/iwiick
   DOCKER_FILE_PATH: Dockerfile
@@ -25,32 +24,32 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets a47663'
+      - name: 'Run :: Decoding Secrets 5c867a'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
+                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
                     sudo apt-get install -y jq
                   fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                  echo "${{ ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
   _status-pending:
     name: _status Pending
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - name: 'Run :: Decoding Secrets 7792e8'
+      - name: 'Run :: Decoding Secrets 09fa15'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
+                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
                     sudo apt-get install -y jq
                   fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                  echo "${{ ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: Pipeline Started
         run: |2-
@@ -69,16 +68,16 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
     steps:
-      - name: 'Run :: Decoding Secrets c34ae0'
+      - name: 'Run :: Decoding Secrets cc3217'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
+                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
                     sudo apt-get install -y jq
                   fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                  echo "${{ ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: Pipeline Release
         run: |2-
@@ -137,18 +136,18 @@ jobs:
               git fetch --all
               git checkout ${{ github.event.client_payload.commitId }} || true
               
-      - name: 'Run :: Decoding Secrets 1a5458'
+      - name: 'Run :: Decoding Secrets 28d89f'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
+                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
                     sudo apt-get install -y jq
                   fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                  echo "${{ ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: 'Run :: Configure AWS credentials 68b637f5-f954-40bc-9c53-668be644e0ef'
+      - name: 'Run :: Configure AWS credentials 17d20332-35d2-4c6a-bff1-a4ddc2fd1ece'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ env.roleARN }}
@@ -261,16 +260,16 @@ jobs:
       - build-and-push
     if: ${{ !(failure() || cancelled()) }}
     steps:
-      - name: 'Run :: Decoding Secrets 2886f1'
+      - name: 'Run :: Decoding Secrets 675fe6'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
+                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
                     sudo apt-get install -y jq
                   fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                  echo "${{ ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: Pipeline Success
         run: |2-
@@ -285,16 +284,16 @@ jobs:
       - build-and-push
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: 'Run :: Decoding Secrets b06e56'
+      - name: 'Run :: Decoding Secrets 7aa484'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
+                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
                     sudo apt-get install -y jq
                   fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                  echo "${{ ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: Pipeline Failed
         run: |2-
@@ -311,16 +310,16 @@ jobs:
       needs.build-and-push.outputs.stepsCanProceed == 'true' &&
       github.event.client_payload.releaseData == null
     steps:
-      - name: 'Run :: Decoding Secrets 2128e2'
+      - name: 'Run :: Decoding Secrets d29f73'
         run: |2-
 
-                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ env.ENCODED_PIPELINE_SECRET }}"
+                  echo "HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEE: ${{ ENCODED_PIPELINE_SECRET }}"
                   if [ ! -x "$(command -v jq)" ]; then
                     echo "jq not found, installing..."
                     sudo apt-get update
                     sudo apt-get install -y jq
                   fi
-                  echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                  echo "${{ ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: 'Run :: Deploy and Notify Resource Service'
         run: |2-
