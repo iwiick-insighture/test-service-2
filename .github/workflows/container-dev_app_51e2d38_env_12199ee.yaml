@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Testing Context'
-        run: echo "${{ github }}" | jq -R
+        run:  echo '${{ toJson(github) }}' | jq .
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
