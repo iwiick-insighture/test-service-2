@@ -17,6 +17,8 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
+      - name: 'Testing Context'
+        run: echo "${{ github }}"
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
