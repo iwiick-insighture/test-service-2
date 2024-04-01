@@ -126,7 +126,7 @@ jobs:
         run: |2-
 
               git fetch --all
-              git pull —all
+              git pull origin master
               git checkout ${{ github.event.client_payload.commitId }} || true
 
       - name: 'TESTTTTTTTTTTTTTTTT'
