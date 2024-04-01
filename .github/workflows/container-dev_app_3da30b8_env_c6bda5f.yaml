@@ -127,6 +127,9 @@ jobs:
 
               git fetch --all
               git checkout ${{ github.event.client_payload.commitId }} || true
+
+      - name: 'TESTTTTTTTTTTTTTTTT'
+        run: git log -all
               
       - name: 'Run :: Decoding Secrets'
         run: |2-
