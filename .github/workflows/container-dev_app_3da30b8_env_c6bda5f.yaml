@@ -7,7 +7,7 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_50b965d6-10af-43a9-8f1c-5e62d5af051c
+    types: pipeline_47959888-a63a-49cb-a319-b09028a889a3
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -114,7 +114,6 @@ jobs:
       stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
     needs:
       - _status-pending
-      - _release-info
     steps:
       - name: Start
         run: |2-
