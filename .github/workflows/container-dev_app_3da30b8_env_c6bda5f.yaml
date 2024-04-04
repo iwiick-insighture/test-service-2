@@ -7,7 +7,7 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b6a420cd-89fd-4c94-ada5-e665716ced64
+    types: pipeline_14df7b0d-d30a-473b-a0ec-3c9405a7f307
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -46,8 +46,7 @@ jobs:
       - name: Pipeline Started
         run: |2-
 
-                github_context=$(echo '${{ toJson(github) }}')
-                context=$(echo "$github_context" | jq 'del(.token)')
+                context=$(echo '${{ toJson(github) }}' | jq 'del(.token)')
                 response=$(curl -X PUT -d "context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING')
 
                 if echo "$response" | grep -q '"success":true'; then
