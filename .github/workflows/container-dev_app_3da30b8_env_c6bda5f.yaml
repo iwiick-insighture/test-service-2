@@ -7,7 +7,7 @@ name: container-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e6636ca3-c0df-4a28-81ef-c38b8f03b9f0
+    types: pipeline_3cfb9cc6-2963-4033-81fc-55d44307b4a8
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -46,7 +46,49 @@ jobs:
       - name: Pipeline Started
         run: |2-
 
-                context=${{ env.PIPELINE_RUN_CONTEXT }}
+                context=
+          {
+            "job": "${{ github.job }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "repository": "${{ github.repository }}",
+            "repository_owner": "${{ github.repository_owner }}",
+            "repository_owner_id": "${{ github.repository_owner_id }}",
+            "repositoryUrl": "${{ github.repositoryUrl }}",
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "retention_days": "${{ github.retention_days }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "artifact_cache_size_limit": "${{ github.artifact_cache_size_limit }}",
+            "repository_visibility": "${{ github.repository_visibility }}",
+            "repo-self-hosted-runners-disabled": ${{ github.repo-self-hosted-runners-disabled }},
+            "enterprise-managed-business-id": "${{ github.enterprise-managed-business-id }}",
+            "repository_id": "${{ github.repository_id }}",
+            "actor_id": "${{ github.actor_id }}",
+            "actor": "${{ github.actor }}",
+            "triggering_actor": "${{ github.triggering_actor }}",
+            "workflow": "${{ github.workflow }}",
+            "server_url": "${{ github.server_url }}",
+            "api_url": "${{ github.api_url }}",
+            "graphql_url": "${{ github.graphql_url }}",
+            "ref_name": "${{ github.ref_name }}",
+            "ref_protected": ${{ github.ref_protected }},
+            "ref_type": "${{ github.ref_type }}",
+            "secret_source": "${{ github.secret_source }}",
+            "workflow_ref": "${{ github.workflow_ref }}",
+            "workflow_sha": "${{ github.workflow_sha }}",
+            "workspace": "${{ github.workspace }}",
+            "action": "${{ github.action }}",
+            "event_path": "${{ github.event_path }}",
+            "action_repository": "${{ github.action_repository }}",
+            "action_ref": "${{ github.action_ref }}",
+            "path": "${{ github.path }}",
+            "env": "${{ github.env }}",
+            "step_summary": "${{ github.step_summary }}",
+            "state": "${{ github.state }}",
+            "output": "${{ github.output }}"
+          }
+
                 response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING')
 
                 if echo "$response" | grep -q '"success":true'; then
@@ -268,7 +310,49 @@ jobs:
       - name: Pipeline Success
         run: |2-
 
-              context=${{ env.PIPELINE_RUN_CONTEXT }}
+              context=
+          {
+            "job": "${{ github.job }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "repository": "${{ github.repository }}",
+            "repository_owner": "${{ github.repository_owner }}",
+            "repository_owner_id": "${{ github.repository_owner_id }}",
+            "repositoryUrl": "${{ github.repositoryUrl }}",
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "retention_days": "${{ github.retention_days }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "artifact_cache_size_limit": "${{ github.artifact_cache_size_limit }}",
+            "repository_visibility": "${{ github.repository_visibility }}",
+            "repo-self-hosted-runners-disabled": ${{ github.repo-self-hosted-runners-disabled }},
+            "enterprise-managed-business-id": "${{ github.enterprise-managed-business-id }}",
+            "repository_id": "${{ github.repository_id }}",
+            "actor_id": "${{ github.actor_id }}",
+            "actor": "${{ github.actor }}",
+            "triggering_actor": "${{ github.triggering_actor }}",
+            "workflow": "${{ github.workflow }}",
+            "server_url": "${{ github.server_url }}",
+            "api_url": "${{ github.api_url }}",
+            "graphql_url": "${{ github.graphql_url }}",
+            "ref_name": "${{ github.ref_name }}",
+            "ref_protected": ${{ github.ref_protected }},
+            "ref_type": "${{ github.ref_type }}",
+            "secret_source": "${{ github.secret_source }}",
+            "workflow_ref": "${{ github.workflow_ref }}",
+            "workflow_sha": "${{ github.workflow_sha }}",
+            "workspace": "${{ github.workspace }}",
+            "action": "${{ github.action }}",
+            "event_path": "${{ github.event_path }}",
+            "action_repository": "${{ github.action_repository }}",
+            "action_ref": "${{ github.action_ref }}",
+            "path": "${{ github.path }}",
+            "env": "${{ github.env }}",
+            "step_summary": "${{ github.step_summary }}",
+            "state": "${{ github.state }}",
+            "output": "${{ github.output }}"
+          }
+
               response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS')
               
   _status-failed:
@@ -292,7 +376,49 @@ jobs:
       - name: Pipeline Failed
         run: |2-
 
-              context=${{ env.PIPELINE_RUN_CONTEXT }}
+              context=
+          {
+            "job": "${{ github.job }}",
+            "ref": "${{ github.ref }}",
+            "sha": "${{ github.sha }}",
+            "repository": "${{ github.repository }}",
+            "repository_owner": "${{ github.repository_owner }}",
+            "repository_owner_id": "${{ github.repository_owner_id }}",
+            "repositoryUrl": "${{ github.repositoryUrl }}",
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "retention_days": "${{ github.retention_days }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "artifact_cache_size_limit": "${{ github.artifact_cache_size_limit }}",
+            "repository_visibility": "${{ github.repository_visibility }}",
+            "repo-self-hosted-runners-disabled": ${{ github.repo-self-hosted-runners-disabled }},
+            "enterprise-managed-business-id": "${{ github.enterprise-managed-business-id }}",
+            "repository_id": "${{ github.repository_id }}",
+            "actor_id": "${{ github.actor_id }}",
+            "actor": "${{ github.actor }}",
+            "triggering_actor": "${{ github.triggering_actor }}",
+            "workflow": "${{ github.workflow }}",
+            "server_url": "${{ github.server_url }}",
+            "api_url": "${{ github.api_url }}",
+            "graphql_url": "${{ github.graphql_url }}",
+            "ref_name": "${{ github.ref_name }}",
+            "ref_protected": ${{ github.ref_protected }},
+            "ref_type": "${{ github.ref_type }}",
+            "secret_source": "${{ github.secret_source }}",
+            "workflow_ref": "${{ github.workflow_ref }}",
+            "workflow_sha": "${{ github.workflow_sha }}",
+            "workspace": "${{ github.workspace }}",
+            "action": "${{ github.action }}",
+            "event_path": "${{ github.event_path }}",
+            "action_repository": "${{ github.action_repository }}",
+            "action_ref": "${{ github.action_ref }}",
+            "path": "${{ github.path }}",
+            "env": "${{ github.env }}",
+            "step_summary": "${{ github.step_summary }}",
+            "state": "${{ github.state }}",
+            "output": "${{ github.output }}"
+          }
+
               response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED')
               
   deploy:
