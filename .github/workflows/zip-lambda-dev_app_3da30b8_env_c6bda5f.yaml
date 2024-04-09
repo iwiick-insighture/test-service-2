@@ -7,7 +7,7 @@ name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_99a81a1c-8268-4b4d-aab7-fd8744387c4e
+    types: pipeline_d67a2210-5b0e-4bb8-ab8a-b56f240c860d
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -165,15 +165,15 @@ jobs:
               echo "Zipping the Build Folder"
               zip -rq lambda_function.zip .
 
-              tempS3Bucket=s3://skyutemp/${{ github.run_id }}/
-              if aws s3 ls $tempS3Bucket >/dev/null 2>&1; then
-                echo "Bucket $tempS3Bucket already exists"
+              tempS3Bucket=skyutemp/${{ github.run_id }}/
+              if aws s3 ls s3://$tempS3Bucket >/dev/null 2>&1; then
+                echo "Bucket s3://$tempS3Bucket already exists"
               else
-                echo "Bucket $tempS3Bucket does not exist. Creating..."
-                aws s3 mb $tempS3Bucket
+                echo "Bucket s3://$tempS3Bucket does not exist. Creating..."
+                aws s3 mb s3://$tempS3Bucket
               fi
-              echo "Syncing ZIP file to temporary S3 folder: $tempS3Bucket"
-              aws s3 cp lambda_function.zip $tempS3Bucket
+              echo "Syncing ZIP file to temporary S3 folder: s3://$tempS3Bucket"
+              aws s3 cp lambda_function.zip s3://tempS3Bucket
 
               if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
                 echo "Updating existing Lambda function"
@@ -209,7 +209,7 @@ jobs:
               fi
 
               echo "Cleaning up temporary S3 folder"
-              aws s3 rm --recursive $tempS3Bucket
+              aws s3 rm --recursive s3://$tempS3Bucket
               
   configure-lambda:
     name: Configure Lambda
