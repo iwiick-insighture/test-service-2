@@ -7,7 +7,7 @@ name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_c7f9f3a8-012c-4bb6-9b7b-9a7cf4ac1306
+    types: pipeline_0fc28354-aef5-4f48-9480-85dd9b8f2858
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -166,6 +166,12 @@ jobs:
               zip -rq lambda_function.zip .
 
               tempS3Bucket=s3://_skyutemp/${{ github.run_id }}/
+              if aws s3 ls $tempS3Bucket >/dev/null 2>&1; then
+                echo "Bucket $tempS3Bucket already exists"
+              else
+                echo "Bucket $tempS3Bucket does not exist. Creating..."
+                aws s3 mb $tempS3Bucket
+              fi
               echo "Syncing ZIP file to temporary S3 folder: $tempS3Bucket"
               aws s3 cp lambda_function.zip $tempS3Bucket
 
