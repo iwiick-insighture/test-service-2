@@ -7,7 +7,7 @@ name: docker-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_d6715511-7823-4817-ab5e-e7f0be1942e4
+    types: pipeline_1981ab0c-fd81-41fa-8dbf-6b39c82bb45c
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -328,8 +328,8 @@ jobs:
               fi
               
               echo "Adding Lambda Function URL access Permissions"
-              statement_id="FunctionURLAllowPublicAccess"
-              permission_exists=$(aws lambda get-policy --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --output json | jq '.Policy' | jq '.Statement[] | select(.Sid == "FunctionURLAllowPublicAccess")' 2>&1)
+              statement_id="SkyUFunctionURLAllowPublicAccess"
+              permission_exists=$(aws lambda get-policy --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --output json | jq '.Policy' | jq '.Statement[] | select(.Sid == $statement_id)' 2>&1)
               if [[ $permission_exists == "" ]]; then
                 aws lambda add-permission         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --statement-id $statement_id         --action lambda:InvokeFunctionUrl         --principal "*"         --function-url-auth-type "${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}"
               else
