@@ -7,7 +7,7 @@ name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_891689b0-8470-4dcb-8e86-64bbb4a12180
+    types: pipeline_83d17768-872d-41e1-a3d1-3fe29e0df41f
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -209,7 +209,7 @@ jobs:
               fi
 
               echo "Cleaning up temporary S3 folder"
-              aws s3 rm --recursive s3://$tempS3Bucket
+              aws s3 rm --recursive s3://$tempS3Bucket/${{ github.run_id }}
               
   configure-lambda:
     name: Configure Lambda
