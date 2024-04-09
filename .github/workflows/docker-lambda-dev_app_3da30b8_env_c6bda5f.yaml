@@ -7,7 +7,7 @@ name: docker-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_f11378d9-1a0b-4495-9a6f-26ce7407a0a2
+    types: pipeline_1d1eeb42-5886-43d9-a494-711ebcb4b159
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -318,7 +318,7 @@ jobs:
       - name: 'Run :: Configure Lambda'
         run: |2-
 
-              function_url_exists=$(aws lambda get-function-configuration --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'FunctionUrl' 2>&1)
+              function_url_exists=$(aws lambda get-function-configuration --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'FunctionArn' 2>&1)
               if [[ $function_url_exists == *"ResourceNotFoundException"* ]]; then
                 echo "Creating Lambda Function URL"
                 aws lambda create-function-url-config         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}
@@ -328,13 +328,7 @@ jobs:
               fi
               
               echo "Adding Lambda Function URL access Permissions"
-              statement_id="SkyUFunctionURLAllowPublicAccess"
-              permission_exists=$(aws lambda get-policy --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --output json | jq '.Policy' | jq '.Statement[] | select(.Sid == "$statement_id")' 2>&1)
-              if [[ $permission_exists == "" ]]; then
-                aws lambda add-permission         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --statement-id $statement_id         --action lambda:InvokeFunctionUrl         --principal "*"         --function-url-auth-type "${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}"
-              else
-                echo "Permission already exists. Skipping."
-              fi
+              aws lambda add-permission       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --statement-id SkyUFunctionURLAllowPublicAccess       --action lambda:InvokeFunctionUrl       --principal "*"       --function-url-auth-type "${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}" || true
               
   _status-success:
     name: _status Success
