@@ -7,7 +7,7 @@ name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_04b42a69-1520-4006-9121-17c353683945
+    types: pipeline_7ca4b96e-ff5c-47c4-afdd-8c3988a487a3
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -100,47 +100,11 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-  clean-up-previous-deployments:
-    name: Clean UP Previous Deployments
-    permissions: write-all
-    runs-on: ubuntu-latest
-    needs:
-      - _status-pending
-    steps:
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
-      - name: 'Run :: Configure AWS credentials'
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.roleARN }}
-          role-session-name: skyu-pipeline-assume-role-session
-          aws-region: ${{ env.region }}
-      - name: 'Run :: Cleanup Previous Lambda Data'
-        run: |2-
-
-              # Check if the Lambda function already exists
-              if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
-                echo "Lambda function exists. Deleting the function..."
-                aws lambda delete-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --region ${{ env.region }}
-            
-                echo "Deleting Lambda function URL configs" 
-                aws lambda delete-function-url-config --function-name ${{ env.LAMBDA_FUNCTION_NAME }} || true
-              fi
-              
   build-and-zip-to-lambda:
     name: Build And Zip TO Lambda
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - clean-up-previous-deployments
       - _status-pending
     steps:
       - name: Start
@@ -278,7 +242,6 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - clean-up-previous-deployments
       - build-and-zip-to-lambda
       - configure-lambda
     if: ${{ !(failure() || cancelled()) }}
@@ -304,7 +267,6 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - clean-up-previous-deployments
       - build-and-zip-to-lambda
       - configure-lambda
     if: ${{ failure() || cancelled() }}
