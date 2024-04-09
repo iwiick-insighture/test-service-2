@@ -7,7 +7,7 @@ name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1fbd5e93-3d13-4a90-96ba-d1f9ea56d4ce
+    types: pipeline_891689b0-8470-4dcb-8e86-64bbb4a12180
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -238,15 +238,10 @@ jobs:
       - name: 'Run :: Configure Lambda'
         run: |2-
 
-              function_url_exists=$(aws lambda get-function-configuration --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'FunctionArn' 2>&1)
-              echo "HEREEEEEEEEEEEEEEEEEEEEEEEE: $function_url_exists"
-              if [[ $function_url_exists == *"ResourceNotFoundException"* ]]; then
-                echo "Creating Lambda Function URL"
-                aws lambda create-function-url-config         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}
-              else
-                echo "Updating Lambda Function URL"
-                aws lambda update-function-url-config         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}
-              fi
+              echo "Creating Lambda Function URL"
+                aws lambda create-function-url-config         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }} ||
+              echo "Updating Lambda Function URL"
+              aws lambda update-function-url-config       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}
               
               echo "Adding Lambda Function URL access Permissions"
               aws lambda add-permission       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --statement-id SkyUFunctionURLAllowPublicAccess       --action lambda:InvokeFunctionUrl       --principal "*"       --function-url-auth-type "${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}" || true
