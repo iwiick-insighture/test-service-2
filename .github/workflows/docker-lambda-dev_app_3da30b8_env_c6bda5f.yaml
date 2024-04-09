@@ -7,7 +7,7 @@ name: docker-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1d1eeb42-5886-43d9-a494-711ebcb4b159
+    types: pipeline_74f9e71c-b5c7-4e40-b571-960048be0b10
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -271,18 +271,26 @@ jobs:
                 aws lambda update-function-code         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --image-uri ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }}         --region ${{ env.region }}
 
                 # Waiting for the function to update
+                timeout=300
+                start_time=$(date +%s)
                 while true; do
-                  echo "Checking if update can be applied"
-                  update_status=$(aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'Configuration.LastUpdateStatus' --output text)
-                  if [[ "$update_status" == "Successful" ]]; then
-                    echo "Update successful. Proceeding with configuration update."
-                    break
-                  else
-                    echo "Update in progress. LastUpdateStatus: $update_status"
-                    sleep 10  
-                  fi
+                    echo "Checking if update can be applied"
+                    update_status=$(aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'Configuration.LastUpdateStatus' --output text)
+                    if [[ "$update_status" == "Successful" ]]; then
+                        echo "Update successful. Proceeding with configuration update."
+                        break
+                    else
+                        echo "Update in progress. LastUpdateStatus: $update_status"
+                        sleep 10
+                        
+                        current_time=$(date +%s)
+                        elapsed_time=$((current_time - start_time))
+                        if [ $elapsed_time -ge $timeout ]; then
+                            echo "Timeout reached. Exiting the loop."
+                            break
+                        fi
+                    fi
                 done
-
 
                 echo "Updating Lambda function configuration"
                 aws lambda update-function-configuration         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"         --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}         --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}         --role ${{ env.roleARN }}         --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"         --region ${{ env.region }}
