@@ -7,7 +7,7 @@ name: docker-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_df7456e6-45d0-46d5-9589-a7b87bd6afe0
+    types: pipeline_10378cac-956f-4bb6-ac96-e1317b385e2c
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -273,14 +273,16 @@ jobs:
                 # Waiting for the function to update
                 while true; do
                   echo "Checking if update can be applied"
-                  if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} | grep -q "LastUpdateStatus: Successful"; then
+                  update_status=$(aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'Configuration.LastUpdateStatus' --output text)
+                  if [[ "$update_status" == "Successful" ]]; then
                     echo "Update successful. Proceeding with configuration update."
                     break
                   else
-                    echo "Update in progress. Waiting..."
+                    echo "Update in progress. LastUpdateStatus: $update_status"
                     sleep 10  
                   fi
                 done
+
 
                 echo "Updating Lambda function configuration"
                 aws lambda update-function-configuration         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"         --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}         --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}         --role ${{ env.roleARN }}         --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"         --region ${{ env.region }}
