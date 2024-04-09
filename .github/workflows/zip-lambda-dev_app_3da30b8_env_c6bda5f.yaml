@@ -7,7 +7,7 @@ name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_d67a2210-5b0e-4bb8-ab8a-b56f240c860d
+    types: pipeline_ff93ebb7-5f05-4950-9554-b4313c35624d
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -165,7 +165,7 @@ jobs:
               echo "Zipping the Build Folder"
               zip -rq lambda_function.zip .
 
-              tempS3Bucket=skyutemp/${{ github.run_id }}/
+              tempS3Bucket=skyutemp/${{ github.run_id }}
               if aws s3 ls s3://$tempS3Bucket >/dev/null 2>&1; then
                 echo "Bucket s3://$tempS3Bucket already exists"
               else
@@ -177,7 +177,7 @@ jobs:
 
               if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
                 echo "Updating existing Lambda function"
-                aws lambda update-function-code         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --code S3Bucket=$tempS3Bucket/lambda_function.zip         --region ${{ env.region }}
+                aws lambda update-function-code         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --s3-bucket $tempS3Bucket         --s3-key lambda_function.zip         --region ${{ env.region }}
 
                 # Waiting for the function to update
                 timeout=300
@@ -205,7 +205,7 @@ jobs:
                 aws lambda update-function-configuration         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"         --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}         --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}         --role ${{ env.roleARN }}         --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"         --region ${{ env.region }}
               else
                 echo "Creating new Lambda function"
-                aws lambda create-function         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"         --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}         --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}         --ephemeral-storage "Size=${{ env.LAMBDA_FUNCTION_EPHEMERAL_STORAGE }}"         --runtime nodejs20.x         --role ${{ env.roleARN }}         --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}         --code S3Bucket=$tempS3Bucket/lambda_function.zip         --region ${{ env.region }}         --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
+                aws lambda create-function         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"         --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}         --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}         --ephemeral-storage "Size=${{ env.LAMBDA_FUNCTION_EPHEMERAL_STORAGE }}"         --runtime nodejs20.x         --role ${{ env.roleARN }}         --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}         --code S3Bucket=$tempS3Bucket,S3Key=lambda_function.zip         --region ${{ env.region }}         --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
               fi
 
               echo "Cleaning up temporary S3 folder"
