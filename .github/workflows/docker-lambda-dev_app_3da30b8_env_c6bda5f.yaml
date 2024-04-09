@@ -1,8 +1,13 @@
 name: docker-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
+  push:
+    branches:
+      - master
+    tags:
+      - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6cdf3835-47e6-4aad-a1f5-a9b72d692754
+    types: pipeline_bc38dd5a-40a0-4dc6-b1fe-0b96edc38e95
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
