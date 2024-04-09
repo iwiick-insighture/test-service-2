@@ -1,0 +1,359 @@
+name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
+'on':
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: pipeline_dfdcc9bc-c157-416e-8410-4f768b8dc96a
+env:
+  ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
+  COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
+  DEPLOY_STEP_SHOULD_DEPLOY: 'false'
+jobs:
+  code-scan:
+    name: Code Scan
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+  _status-pending:
+    name: _status Pending
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Pipeline Started
+        run: |2-
+
+              context=$(echo '${{ toJson(github) }}' | jq 'del(.token)')
+              response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING')
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
+              else
+                echo "FAILED :: $response"
+              fi
+              
+  _release-info:
+    name: _release Info
+    permissions: write-all
+    runs-on: ubuntu-latest
+    if: ${{ github.event.client_payload.releaseData }}
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Pipeline Release
+        run: |2-
+
+              echo "Pipeline Release Information"
+              echo "////////////////////////////"
+              echo "releaseId         : ${{ github.event.client_payload.releaseData.releaseId }}"
+              echo "pipelineId        : ${{ github.event.client_payload.releaseData.pipelineId }}"
+              echo "pipelineRunId     : ${{ github.run_id }}"
+              echo "applicationId     : ${{ github.event.client_payload.releaseData.appId }}"
+              echo "versionId         : ${{ env.DEPLOYMENT_APP_VERSION_ID }}"
+              echo "credentialId      : ${{ env.PIPELINE_CREDENTIAL_ID }}"
+              echo "userName          : ${{ github.repository_owner }}"
+              echo "repositoryName    : ${{ github.repository }}"
+              echo "commitId          : ${{ env.COMMIT_ID }}"
+              echo "commitHash        : ${{ env.COMMIT_ID }}"
+              echo "commitAvatar      : https://github.com/${{ github.event.head_commit.author.name }}.png"
+              echo "commitTime        : ${{ github.event.head_commit.timestamp }}"
+              echo "commitMessage     : ${{ github.event.client_payload.commitMessage }}"
+              echo "commitUser        : ${{ github.event.head_commit.author.name }}"
+              echo "shouldDeploy      : ${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}"
+              echo "containerName     : ${{ env.DEPLOYMENT_CONTAINER_NAME }}"
+              echo "imageRegistryURL  : ${{ env.IMAGE_NAME }}",
+              # Storing Release Infomation for Deployment
+              response=$(curl -X POST -d "releaseId=${{ github.event.client_payload.releaseData.releaseId }}&pipelineId=${{ github.event.client_payload.releaseData.pipelineId }}&pipelineRunId=${{ github.run_id }}&versionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&applicationId=${{ github.event.client_payload.releaseData.appId }}&credentialId=${{ env.PIPELINE_CREDENTIAL_ID }}&userName=${{ github.repository_owner }}&repositoryName=${{ github.repository }}&commitId=${{ env.COMMIT_ID }}&commitData[commitHash]=${{ env.COMMIT_ID }}&commitData[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitData[commitTime]=${{ github.event.head_commit.timestamp }}&commitData[commitMessage]=${{ github.event.client_payload.commitMessage }}&commitData[commitUser]=${{ github.event.head_commit.author.name }}&shouldDeploy=${{ env.DEPLOY_STEP_SHOULD_DEPLOY }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&imageRegistryURL=${{ env.IMAGE_NAME }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.API_GATEWAY_BASEURL }}/pipeline-service/release/pipeline')
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
+              else
+                echo "FAILED :: $response"
+              fi
+              
+  clean-up-previous-deployments:
+    name: Clean UP Previous Deployments
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - _status-pending
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Configure AWS credentials'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Cleanup Previous Lambda Data'
+        run: |2-
+
+              # Check if the Lambda function already exists
+              if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
+                echo "Lambda function exists. Deleting the function..."
+                aws lambda delete-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --region ${{ env.region }}
+            
+                echo "Deleting Lambda function URL configs" 
+                aws lambda delete-function-url-config --function-name ${{ env.LAMBDA_FUNCTION_NAME }} || true
+              fi
+              
+  build-and-zip-to-lambda:
+    name: Build And Zip TO Lambda
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - clean-up-previous-deployments
+      - _status-pending
+    steps:
+      - name: Start
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 'Run :: Checkout Specific Commit'
+        if: ${{ github.event.client_payload.commitId != null }}
+        run: |2-
+
+              git fetch --all
+              git checkout ${{ github.event.client_payload.commitId }} || true
+              
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Configure AWS credentials'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Set up Node.js'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.BUILD_ENVIRONEMENT_VERSION }}
+      - name: 'Run :: Install App Dependancies'
+        run: >-
+          ${{ env.APP_INSTALL_DEPS_PRE_COMMAND }} && ${{
+          env.APP_INSTALL_DEPS_COMMAND }}
+      - name: 'Run :: Build App'
+        run: ${{ env.APP_BUILD_COMMAND }} && ls
+      - name: 'Run :: Deploy Lambda Function from Zip'
+        run: |2-
+
+              echo "Copying ${{ env.BUILD_LIBRARIES_FOLDER }} into the ${{ env.APP_BUILD_FOLDER }} Folder"
+              cp -r ${{ env.BUILD_LIBRARIES_FOLDER }} ${{ env.APP_BUILD_FOLDER }}/${{ env.BUILD_LIBRARIES_FOLDER }}
+
+              echo "Navigating to the ${{ env.APP_BUILD_FOLDER }} Folder"
+              cd ${{ env.APP_BUILD_FOLDER }}
+
+              echo "Listing Files"
+              ls 
+
+              echo "Zipping the Build Folder"
+              zip -rq lambda_function.zip .
+
+              if aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} >/dev/null 2>&1; then
+                echo "Updating existing Lambda function"
+                aws lambda update-function-code         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}
+
+                # Waiting for the function to update
+                timeout=300
+                start_time=$(date +%s)
+                while true; do
+                  echo "Checking if update can be applied"
+                  update_status=$(aws lambda get-function --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'Configuration.LastUpdateStatus' --output text)
+                  if [[ "$update_status" == "Successful" ]]; then
+                      echo "Update successful. Proceeding with configuration update."
+                      break
+                  else
+                      echo "Update in progress. LastUpdateStatus: $update_status"
+                      sleep 10
+                      
+                      current_time=$(date +%s)
+                      elapsed_time=$((current_time - start_time))
+                      if [ $elapsed_time -ge $timeout ]; then
+                          echo "Timeout reached. Exiting the loop."
+                          break
+                      fi
+                  fi
+                done
+
+                echo "Updating Lambda function configuration"
+                aws lambda update-function-configuration         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"         --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}         --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}         --role ${{ env.roleARN }}         --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"         --region ${{ env.region }}
+              else
+                echo "Creating new Lambda function"
+                aws lambda create-function         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --description "${{ env.LAMBDA_FUNCTION_DESCRIPTION }}"         --timeout ${{ env.LAMBDA_FUNCTION_TIMEOUT }}         --memory-size ${{ env.LAMBDA_FUNCTION_MEMORY_SIZE }}         --ephemeral-storage "Size=${{ env.LAMBDA_FUNCTION_EPHEMERAL_STORAGE }}"         --runtime nodejs20.x         --role ${{ env.roleARN }}         --handler ${{ env.LAMBDA_FUNCTION_HANDLER }}         --zip-file fileb://lambda_function.zip         --region ${{ env.region }}         --environment "Variables={BUILT_WITH=SKYU${{ env.LAMBDA_ENVIRONMENT_VARIABLES }}}"
+              fi
+              
+  configure-lambda:
+    name: Configure Lambda
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-zip-to-lambda
+      - _status-pending
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Configure AWS credentials'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.roleARN }}
+          role-session-name: skyu-pipeline-assume-role-session
+          aws-region: ${{ env.region }}
+      - name: 'Run :: Configure Lambda'
+        run: |2-
+
+              function_url_exists=$(aws lambda get-function-configuration --function-name ${{ env.LAMBDA_FUNCTION_NAME }} --query 'FunctionArn' 2>&1)
+              if [[ $function_url_exists == *"ResourceNotFoundException"* ]]; then
+                echo "Creating Lambda Function URL"
+                aws lambda create-function-url-config         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}
+              else
+                echo "Updating Lambda Function URL"
+                aws lambda update-function-url-config         --function-name ${{ env.LAMBDA_FUNCTION_NAME }}         --auth-type ${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}
+              fi
+              
+              echo "Adding Lambda Function URL access Permissions"
+              aws lambda add-permission       --function-name ${{ env.LAMBDA_FUNCTION_NAME }}       --statement-id SkyUFunctionURLAllowPublicAccess       --action lambda:InvokeFunctionUrl       --principal "*"       --function-url-auth-type "${{ env.LAMBDA_FUNCTION_URL_AUTH_TYPE }}" || true
+              
+  _status-success:
+    name: _status Success
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - clean-up-previous-deployments
+      - build-and-zip-to-lambda
+      - configure-lambda
+    if: ${{ !(failure() || cancelled()) }}
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Pipeline Success
+        run: |2-
+
+              context=$(echo '${{ toJson(github) }}' | jq 'del(.token)')
+              response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS')
+              
+  _status-failed:
+    name: _status Failed
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - clean-up-previous-deployments
+      - build-and-zip-to-lambda
+      - configure-lambda
+    if: ${{ failure() || cancelled() }}
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: Pipeline Failed
+        run: |2-
+
+              context=$(echo '${{ toJson(github) }}' | jq 'del(.token)')
+              response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED')
+              
+  deploy:
+    name: Deploy
+    permissions: write-all
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-zip-to-lambda
+    if: github.event.client_payload.releaseData == null
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Deploy and Notify Resource Service'
+        run: |2-
+              
+              response=$(curl -X PATCH -d "imageRegistryURL=${{ env.IMAGE_NAME }}&appVersionId=${{ env.DEPLOYMENT_APP_VERSION_ID }}&tag=${{ env.COMMIT_ID }}&containerName=${{ env.DEPLOYMENT_CONTAINER_NAME }}&shouldDeploy=${{env.DEPLOY_STEP_SHOULD_DEPLOY}}&pipelineRunId=${{ github.run_id }}&commitDetails[commitHash]=${{ github.sha }}&commitDetails[commitAvatar]=https://github.com/${{ github.event.head_commit.author.name }}.png&commitDetails[commitTime]=${{ github.event.head_commit.timestamp }}&commitDetails[commitMessage]=${{ github.event.head_commit.message || github.event.client_payload.commitMessage }}&commitDetails[commitUser]=${{ github.event.head_commit.author.name }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-application-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.DEPLOYMENT_ENDPOINT }}')
+              
+              status_code=$?
+
+              if [ $status_code -eq 0 ]; then
+                if echo "$response" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $response"
+                else
+                  echo "FAILED :: $response"
+                  exit 1
+                fi
+              else
+                echo "Failed to deploy. HTTP status code: $status_code"
+                exit 1
+              fi
+            
