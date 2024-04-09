@@ -7,7 +7,7 @@ name: zip-lambda-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7ca4b96e-ff5c-47c4-afdd-8c3988a487a3
+    types: pipeline_18a6b0d3-cad3-4e09-a6b4-f6a61b792823
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_ZIPLAMBDADEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -100,8 +100,8 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-  build-and-zip-to-lambda:
-    name: Build And Zip TO Lambda
+  build-and-zip-lambda:
+    name: Build And Zip Lambda
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
@@ -203,7 +203,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - build-and-zip-to-lambda
+      - build-and-zip-lambda
       - _status-pending
     steps:
       - name: 'Run :: Decoding Secrets'
@@ -242,7 +242,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - build-and-zip-to-lambda
+      - build-and-zip-lambda
       - configure-lambda
     if: ${{ !(failure() || cancelled()) }}
     steps:
@@ -267,7 +267,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - build-and-zip-to-lambda
+      - build-and-zip-lambda
       - configure-lambda
     if: ${{ failure() || cancelled() }}
     steps:
@@ -292,7 +292,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - build-and-zip-to-lambda
+      - build-and-zip-lambda
     if: github.event.client_payload.releaseData == null
     steps:
       - name: 'Run :: Decoding Secrets'
