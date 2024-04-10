@@ -7,11 +7,10 @@ name: iwiick-test-custom-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_f09ccaae-7e8d-4c53-88fa-2fae1f72c26b
+    types: pipeline_007f2b09-8130-4863-99c1-84a83eee577d
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKTESTCUSTOMDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
-  cloudCredentialId: myTestValue
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   code-scan:
