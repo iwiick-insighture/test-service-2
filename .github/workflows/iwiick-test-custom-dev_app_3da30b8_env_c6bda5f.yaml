@@ -7,7 +7,7 @@ name: iwiick-test-custom-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0440971d-3a82-49c4-961b-ecb350f38163
+    types: pipeline_8c097e41-7cca-4c23-9226-0f0c7025ad68
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKTESTCUSTOMDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
