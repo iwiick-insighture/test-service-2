@@ -1,0 +1,50 @@
+apiVersion: transformers.customplugin.co/v1
+kind: SkyUAppTransformer
+metadata:
+  name: skyu-deployment
+  annotations:
+    config.kubernetes.io/function: |
+      exec:
+        path: skyu-app-transformer
+spec:
+  applicationContainers:
+    - imageTag: latest
+      cpuRequestMili: 100
+      cpuLimitMili: 150
+      memoryRequestMb: 350
+      memoryLimitMb: 450
+      args: []
+      command: []
+      configMounts: []
+      applicationPorts:
+        - port: 5000
+          targetPort: 5000
+          protocol: TCP
+          apiSpec:
+            gitPath: swagger-specification.yml
+      healthChecks: []
+      name: coffee-catalouge-service-main
+      imagePullPolicy: Always
+      imageRegistry: 272133924862.dkr.ecr.us-east-1.amazonaws.com/coffee-catalouge-service
+      credentialId: credential_138659b9-05db-444a-a093-da7cf80f00de
+  minReplicas: 1
+  maxReplicas: 1
+  terminationGracePeriodSeconds: 60
+  nodeSelector: {}
+  suspend: false
+  ttlSecondsAfterFinished: 0
+  labels:
+    app: coffee-catalouge-service
+    version: v1.0.0
+    applicationId: app_2c7a3d1d-0e08-40fe-a2ad-651c052c1fb6
+    projectId: project_1f4dfeae-6b8b-4241-a59e-5e885be21a8d
+    organizationId: org_83167af8-ae98-451b-972e-dca861896824
+    environmentId: env_3e40ac35-ffef-4b03-8359-89f54d78aa11
+    environmentName: dev
+  horizontalAutoScalingRules: []
+  volumes: []
+  type: Deployment
+  name: coffee-catalouge-service
+  serviceType: ClusterIP
+  version: v1.0.0
+  namespace: swagger-apps-dev
