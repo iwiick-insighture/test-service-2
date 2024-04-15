@@ -8,7 +8,7 @@ metadata:
         path: skyu-app-transformer
 spec:
   applicationContainers:
-    - imageTag: latest
+    - imageTag: 28a4e20cf497eacb3d4c788aec7ce3e030a847a6
       cpuRequestMili: 100
       cpuLimitMili: 150
       memoryRequestMb: 350
@@ -27,6 +27,12 @@ spec:
       imagePullPolicy: Always
       imageRegistry: 272133924862.dkr.ecr.us-east-1.amazonaws.com/coffee-catalouge-service
       credentialId: credential_138659b9-05db-444a-a093-da7cf80f00de
+      commitDetails:
+        commitHash: 28a4e20cf497eacb3d4c788aec7ce3e030a847a6
+        commitAvatar: https://github.com/skyu-v2-dev[bot].png
+        commitTime: '2024-04-15T06:08:56Z'
+        commitMessage: SkyU container Template Workflows Created
+        commitUser: skyu-v2-dev[bot]
   minReplicas: 1
   maxReplicas: 1
   terminationGracePeriodSeconds: 60
