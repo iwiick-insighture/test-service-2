@@ -1,8 +1,13 @@
 name: ssr-web-app-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
 'on':
+  push:
+    branches:
+      - master
+    tags:
+      - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5263362c-f692-4b87-af27-586dcd907a0b
+    types: pipeline_ef1f75e0-5ce2-4c9f-b58b-fb5ffe7f4a4e
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_SSRWEBAPPDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
