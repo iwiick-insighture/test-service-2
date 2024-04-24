@@ -7,7 +7,7 @@ name: generic-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_f9be9883-e834-4d18-bc98-4304b4ae8af6
+    types: pipeline_f266b98e-65e9-4abb-8137-864995cb0224
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_GENERICDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -15,6 +15,7 @@ env:
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   code-scan:
+    isRawJob: true
     name: Code Scan
     runs-on: ubuntu-latest
     permissions: write-all
