@@ -7,7 +7,7 @@ name: generic-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5a5f980a-efc8-4f6d-abda-93cab54cdbcb
+    types: pipeline_e01741d1-6cac-4351-9840-f619cd8b82bf
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_GENERICDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -54,6 +54,8 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
   _release-info:
     name: _release Info
     permissions: write-all
