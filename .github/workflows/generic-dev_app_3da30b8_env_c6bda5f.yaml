@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: 'Run :: Checkout repository for Code Scannnnnn'
+      - name: 'Run :: Checkout repository for Code Scan'
         uses: actions/checkout@v4
       - name: 'Run :: Decoding Secrets'
         run: |2-
@@ -168,6 +168,25 @@ jobs:
         name: Step 1
       - run: echo "STEP 2 RUNNING"
         name: step2
+  custom-job-new:
+    name: Custom Job New
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - run: echo "STEP 1 RUNNING"
+        name: Step 1
+      - run: echo "STEP 2 RUNNING"
+        name: step2
   _status-success:
     name: _status Success
     permissions: write-all
@@ -178,6 +197,7 @@ jobs:
       - code-scan
       - first-job
       - custom-job
+      - custom-job-new
       - deploy
     if: ${{ !(failure() || cancelled()) }}
     steps:
@@ -207,6 +227,7 @@ jobs:
       - code-scan
       - first-job
       - custom-job
+      - custom-job-new
       - deploy
     if: ${{ failure() || cancelled() }}
     steps:
