@@ -7,7 +7,7 @@ name: generic-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_43c1514a-9167-4c20-9dc1-eff11887874c
+    types: pipeline_211401af-fa3d-4dae-949d-66871a0e4ced
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_GENERICDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -46,7 +46,7 @@ jobs:
                 
       - name: Pipeline Started
         env:
-          CONTEXT_JSON: ${{ toJson(github) }} | jq del(.token)
+          CONTEXT_JSON: ${{ toJson(github) | jq del(.token) }}
         run: |2-
 
               response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=${{ env.CONTEXT_JSON }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING')
