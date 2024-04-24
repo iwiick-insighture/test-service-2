@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
       - name: 'Run :: Decoding Secrets'
         run: |2-
-
+                echo "HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
                 if [ ! -x "$(command -v jq)" ]; then
                   echo "jq not found, installing..."
                   sudo apt-get update
