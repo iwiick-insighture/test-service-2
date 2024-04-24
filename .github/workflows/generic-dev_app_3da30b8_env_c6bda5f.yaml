@@ -7,7 +7,7 @@ name: generic-dev_app_3da30b8_env_c6bda5f Pipeline (Skyu Generated)
       - v*
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_27804407-1e73-478e-9369-6d35fb13063b
+    types: pipeline_18784889-7435-45e0-9de0-6e0eab80c3ad
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_GENERICDEV_APP_3DA30B8_ENV_C6BDA5F}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
