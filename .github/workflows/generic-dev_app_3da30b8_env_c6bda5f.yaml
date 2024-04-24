@@ -57,6 +57,8 @@ jobs:
   _status-pending:
     name: _status Pending
     permissions: write-all
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Run :: Decoding Secrets'
