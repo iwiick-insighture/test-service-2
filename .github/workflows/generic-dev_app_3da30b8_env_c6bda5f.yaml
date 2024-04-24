@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: 'Run :: Checkout repository for Code Scan'
+      - name: 'Run :: Checkout repository for Code Scannnnnn'
         uses: actions/checkout@v4
       - name: 'Run :: Decoding Secrets'
         run: |2-
