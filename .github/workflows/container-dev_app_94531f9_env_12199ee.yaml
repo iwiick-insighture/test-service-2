@@ -13,9 +13,11 @@ env:
 jobs:
   code-scan:
     name: Code Scan
-    permissions: write-all
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
+      - name: 'Run :: Checkout repository for Code Scan'
+        uses: actions/checkout@v4
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
@@ -26,15 +28,39 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
+      - name: 'Run :: Install Semgrep, Scan and Print'
+        run: >-
+          docker run -i -v "${PWD}:/src" semgrep/semgrep semgrep /src --json
+          --quiet > semgrep_results.json
+      - name: 'Run :: Upload Code Scan Report'
+        run: |2-
+
+                  SARIF_FILE="semgrep_results.json"
+                  if [ -n "$SARIF_FILE" ]; then
+                    cat "$SARIF_FILE" > ${{ env.COMMIT_ID }}-code-scan-report.sarif
+                    echo "Uploading CodeQL Results to S3 :: ${{ env.COMMIT_ID }}-code-scan-report.sarif"
+           
+                    response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-code-scan-report.sarif' -F 'provider=aws' -F 'resourceType=code-scan-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/code-scan-reports/'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  '${{ env.S3_UPLOAD_ENDPOINT }}')
+
+                    if echo "$response" | grep -q '"success":true'; then
+                      echo "SUCCESS :: $response"
+                    else
+                      echo "FAILED :: $response"
+                    fi
+
+                  else
+                      echo "SARIF file not found."
+                  fi
   _status-pending:
     name: _status Pending
     permissions: write-all
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
     steps:
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
-                echo "Hello"
                 if [ ! -x "$(command -v jq)" ]; then
                   echo "jq not found, installing..."
                   sudo apt-get update
@@ -45,7 +71,7 @@ jobs:
       - name: Pipeline Started
         run: |2-
 
-              context=$(echo '${{ toJson(github) }}' | jq 'del(.token)')
+              context=$(echo '${{ env.CONTEXT_JSON }}' | jq -c . | base64)
               response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING')
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
@@ -103,8 +129,6 @@ jobs:
     name: Build And Push
     permissions: write-all
     runs-on: ubuntu-latest
-    outputs:
-      stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
     needs:
       - _status-pending
     steps:
@@ -240,12 +264,18 @@ jobs:
       - name: 'Run :: Build, tag, and push image'
         run: docker push ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }}
         if: ${{ env.STEPS_CAN_PROCEED == 'true' }}
+    outputs:
+      stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
   _status-success:
     name: _status Success
     permissions: write-all
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
     needs:
+      - code-scan
       - build-and-push
+      - deploy
     if: ${{ !(failure() || cancelled()) }}
     steps:
       - name: 'Run :: Decoding Secrets'
@@ -261,15 +291,19 @@ jobs:
       - name: Pipeline Success
         run: |2-
 
-              context=$(echo '${{ toJson(github) }}' | jq 'del(.token)')
+              context=$(echo '${{ env.CONTEXT_JSON }}' | jq -c . | base64)
               response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS')
               
   _status-failed:
     name: _status Failed
     permissions: write-all
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
     needs:
+      - code-scan
       - build-and-push
+      - deploy
     if: ${{ failure() || cancelled() }}
     steps:
       - name: 'Run :: Decoding Secrets'
@@ -285,7 +319,7 @@ jobs:
       - name: Pipeline Failed
         run: |2-
 
-              context=$(echo '${{ toJson(github) }}' | jq 'del(.token)')
+              context=$(echo '${{ env.CONTEXT_JSON }}' | jq -c . | base64)
               response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  '${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED')
               
   deploy:
