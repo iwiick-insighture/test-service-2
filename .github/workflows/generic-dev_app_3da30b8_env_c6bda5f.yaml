@@ -145,8 +145,8 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: Step 1
-        run: echo "STEP 1 RUNNING"
+      - run: echo "STEP 1 RUNNING"
+        name: Step 1
   custom-job:
     name: Custom Job
     permissions: write-all
@@ -164,10 +164,10 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: Step 1
-        run: echo "STEP 1 RUNNING"
-      - name: step2
-        run: echo "STEP 2 RUNNING"
+      - run: echo "STEP 1 RUNNING"
+        name: Step 1
+      - run: echo "STEP 2 RUNNING"
+        name: step2
   _status-success:
     name: _status Success
     permissions: write-all
