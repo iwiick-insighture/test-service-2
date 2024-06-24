@@ -1,1 +1,6 @@
-test
+name: My External Pipeline
+'on':
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
