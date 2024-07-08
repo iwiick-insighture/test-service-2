@@ -3,13 +3,9 @@ name: container-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
   push:
     branches:
       - master
-    tags:
-      - v*
-    paths-ignore:
-      - .github/workflows/**
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_226c1461-332b-447a-8072-49f40b416907
+    types: pipeline_7aebd170-484b-492f-b08c-86370c31d992
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
