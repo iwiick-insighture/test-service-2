@@ -2,7 +2,7 @@ name: web-app-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0eb1674b-b1c0-4db3-9212-a11176fe627e
+    types: pipeline_50ebcabf-cdb0-4f3d-a66b-9b980b80d537
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_WEBAPPDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
