@@ -2,7 +2,7 @@ name: infra-default_infra_12345 Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e77863e7-df52-4a6f-80ca-b6ada8fc7e6c
+    types: pipeline_79774890-7d81-42c2-b901-8711856025d0
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_INFRADEFAULT_INFRA_12345}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -37,6 +37,8 @@ jobs:
               
   apply:
     name: Apply
+    defaults:
+      working-directory: infrastructure/t12/**
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
@@ -165,8 +167,6 @@ jobs:
           "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
           $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": $(terragrunt
           output --json)}'
-    defaults:
-      working-directory: infrastructure/t12/**
   _status-success:
     name: _status Success
     permissions: write-all
