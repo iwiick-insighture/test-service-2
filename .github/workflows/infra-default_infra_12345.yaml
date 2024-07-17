@@ -10,7 +10,7 @@ name: infra-default_infra_12345 Pipeline (Skyu Generated)
       - closed
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7f81e94c-600d-4e21-9fcf-6ad3a11f15ea
+    types: pipeline_64548e72-7200-4c64-b21b-261c81afb5db
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_INFRADEFAULT_INFRA_12345}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -46,7 +46,8 @@ jobs:
   apply:
     name: Apply
     defaults:
-      working-directory: infrastructure/t12/**
+      run:
+        working-directory: infrastructure/vccccccx
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
