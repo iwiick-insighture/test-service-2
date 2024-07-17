@@ -1,18 +1,15 @@
 name: infra-default_infra_12345 Pipeline (Skyu Generated)
 'on':
-  push:
+  pull_request:
     branches:
       - master
-    paths-ignore:
-      - .github/workflows/**
-  pull_request:
     types:
       - opened
       - synchronize
       - closed
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_282884e3-3be9-4cf3-a946-bc8aea8822db
+    types: pipeline_b1de4a09-9f9c-4cb5-a508-51225d880a13
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_INFRADEFAULT_INFRA_12345}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -45,11 +42,8 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-  apply:
-    name: Apply
-    defaults:
-      run:
-        working-directory: infrastructure/vccccccx
+  Plan:
+    name: Plan
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
@@ -65,119 +59,9 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-      - name: Launch Template Starts Status [LAUNCH_TEMPLATE] [STARTED]
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Launch-Template&status=Started'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::985504043303:role/SkyU-EKS-DEV-eks
-          aws-region: us-east-1
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
-      - name: Download Terragrunt
-        run: >-
-          wget
-          https://github.com/gruntwork-io/terragrunt/releases/download/v0.50.6/terragrunt_linux_amd64
-          && mv terragrunt_linux_amd64 terragrunt && chmod u+x terragrunt && mv
-          terragrunt /usr/local/bin/terragrunt
       - name: Terragrunt Version Check
+        working-directory: infrastructure/migrate-098090
         run: terragrunt version
-      - name: Push Terragrunt Status [INIT] [IN_PROGRESS]
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Launch-Template&status=Started'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: Terragrunt Init
-        run: terragrunt init --terragrunt-non-interactive
-      - name: Push Terragrunt Status [INIT] [FAILED]
-        if: failure()
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Init&status=Failed'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: Push Terragrunt Status [INIT] [SUCCESS]
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Init&status=Success'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: '[SLEEP]'
-        run: sleep 3
-      - name: Push Terragrunt Status [PLAN] [IN_PROGRESS]
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Plan&status=InProgress'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: Terragrunt Plan
-        run: terragrunt plan --terragrunt-non-interactive
-      - name: Push Terragrunt Status [PLAN] [FAILED]
-        if: failure()
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Plan&status=Failed'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: Push Terragrunt Status [PLAN] [SUCCESS]
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Plan&status=Success'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: '[SLEEP]'
-        run: sleep 3
-      - name: Push Terragrunt Status [APPLY] [IN_PROGRESS]
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Apply&status=InProgress'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: Terragrunt Apply
-        run: terragrunt apply --terragrunt-non-interactive -auto-approve
-      - name: Push Terragrunt Status [APPLY] [FAILED]
-        if: failure()
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Apply&status=Failed'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": {}}'
-      - name: Push Terragrunt Status [APPLY] [SUCCESS]
-        run: >-
-          curl --location --request POST
-          'https://api.skyu.io/infrastructure-service/infrastructure/infra_75fc26c5-26dc-4546-bd51-040ddf42d91b?stepName=Terragrunt-Apply&status=Success'
-          --header "x-auth-by: sa" --header "x-organization-id:
-          $ORGANIZATION_ID" --header "x-project-id: $PROJECT_ID" --header
-          "x-credential-id: $CREDENTIAL_ID" --header "Authorization: Bearer
-          $SERVICE_ACCOUNT_TOKEN" --data '{"terragruntoutputs": $(terragrunt
-          output --json)}'
   _status-success:
     name: _status Success
     permissions: write-all
@@ -185,7 +69,7 @@ jobs:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
     needs:
-      - apply
+      - Plan
     if: ${{ !(failure() || cancelled()) }}
     steps:
       - name: 'Run :: Decoding Secrets'
@@ -211,7 +95,7 @@ jobs:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
     needs:
-      - apply
+      - Plan
     if: ${{ failure() || cancelled() }}
     steps:
       - name: 'Run :: Decoding Secrets'
