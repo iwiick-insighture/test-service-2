@@ -1,15 +1,8 @@
 name: helm-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
 'on':
-  push:
-    branches:
-      - master
-    tags:
-      - v*
-    paths-ignore:
-      - .github/workflows/**
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9de84c58-c00d-4839-b0af-c77bf23e8b39
+    types: pipeline_221f2bb2-9334-483d-ae32-343a53d10622
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_HELMDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
