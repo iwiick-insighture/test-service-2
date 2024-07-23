@@ -2,7 +2,7 @@ name: docker-helm-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
 'on':
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_128a9649-d685-4a53-b622-7e709e262127
+    types: pipeline_63fad669-420f-46c9-9574-ffd6be6fc9b9
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERHELMDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -178,6 +178,16 @@ jobs:
                 echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               fi
               
+      - name: 'Run :: Validate Helm Update Values'
+        run: |2-
+
+              if [ -z "${{ github.event.client_payload.helmUpdateValues }}" ]; then
+                echo "Helm Update Values do not exist.";
+                exit 1;
+              else
+                echo "Helm Update Values: ${{ github.event.client_payload.helmUpdateValues }}";
+              fi
+              
       - name: 'Run :: Build With Docker'
         run: >-
           docker build -t ${{ env.IMAGE_NAME }}:${{ env.COMMIT_ID }} -f
@@ -284,7 +294,7 @@ jobs:
       - name: 'Run :: Update Helm'
         run: |2-
 
-              echo "Helm Update Values: ${{ github.event.client_payload.helmUpdateValues }}"
+              
               response=$(curl -X POST -d "helmUpdateValues=${{ github.event.client_payload.helmUpdateValues }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.API_GATEWAY_BASEURL }}/resource-service/applications/update-helm-values")
 
               if echo "$response" | grep -q '"success":true'; then
