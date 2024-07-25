@@ -13,7 +13,7 @@ name: docker-helm-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERHELMDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
-  RULES_ENV_VARS: '[{\"ruleKey\":\"imageTag\",\"ruleValue\":\"test\"}]'
+  RULES_ENV_VARS: '[{\"ruleKey\":\"imageTag\",\"ruleValue\":\"$COMMIT_ID\"}]'
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   code-scan:
