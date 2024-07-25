@@ -9,7 +9,7 @@ name: docker-helm-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
       - .github/workflows/**
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b4c1e809-fda3-4992-ab0c-dbbf33c40176
+    types: pipeline_76e14b40-ea0e-40ee-9806-2e4b646882c1
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERHELMDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
