@@ -9,11 +9,11 @@ name: docker-helm-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
       - .github/workflows/**
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_1e11780c-26ab-48d9-b03a-6e4e301561d5
+    types: pipeline_27a1a2ed-d60d-4589-94b9-eb3b3292b1e8
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_DOCKERHELMDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
-  RULES_ENV_VARS: '[{"ruleKey":"imageTag","ruleValue":"${ COMMIT_ID }"}]'
+  RULES_ENV_VARS: '[{\"ruleKey\":\"imageTag\",\"ruleValue\":\"${ COMMIT_ID }\"}]'
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   code-scan:
