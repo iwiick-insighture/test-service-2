@@ -14,6 +14,7 @@ name: container-dev_app_162c9a6_env_31ddbbd Pipeline (Skyu Generated)
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_162C9A6_ENV_31DDBBD}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
+  HI: HI
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   code-scan:
