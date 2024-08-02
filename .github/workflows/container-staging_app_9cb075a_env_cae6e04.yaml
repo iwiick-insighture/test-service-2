@@ -15,6 +15,7 @@ name: container-staging_app_9cb075a_env_cae6e04 Pipeline (Skyu Generated)
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERSTAGING_APP_9CB075A_ENV_CAE6E04}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
+  HI: Hi
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
 jobs:
   code-scan:
