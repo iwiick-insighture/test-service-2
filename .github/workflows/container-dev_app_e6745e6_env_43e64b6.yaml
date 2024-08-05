@@ -12,7 +12,7 @@ name: container-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_7808e5b7-9ff9-445e-9fdc-e4391692e45b
+    types: pipeline_b33a7d2d-4216-41c0-8550-d41069cf8166
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
