@@ -12,7 +12,7 @@ name: container-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_27d53c7a-d330-49e2-8622-816c713e7dbe
+    types: pipeline_265db0ac-e43a-41f5-9b64-450e29a9feaa
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -86,8 +86,8 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-  _test:
-    name: _test
+  _status_testing:
+    name: _status_testing
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
@@ -104,7 +104,11 @@ jobs:
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: Pipeline Testing
-        run: echo "Run your Tests here"
+        run: |2-
+
+              # NOTE: Do not remove this job even if you don't have tests at the moment.
+              echo "Hello Tests from SkyU"
+              
   _release-info:
     name: _release Info
     permissions: write-all
@@ -156,7 +160,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
-      - _test
+      - _status_testing
     steps:
       - name: Start
         run: |2-
