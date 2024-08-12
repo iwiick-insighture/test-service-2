@@ -12,7 +12,7 @@ name: container-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5b134d09-4ea6-43ef-813d-4922745950f5
+    types: pipeline_3fddf433-8d11-4004-8349-6207eb553fa5
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -59,7 +59,7 @@ jobs:
                       echo "SARIF file not found."
                   fi
   _status-pending:
-    name: _status Pending
+    name: ' Status Pending'
     permissions: write-all
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
@@ -89,7 +89,7 @@ jobs:
               fi
               
   _status_testing:
-    name: _status_testing
+    name: ' Status Testing'
     permissions: write-all
     runs-on: ubuntu-latest
     needs:
@@ -112,7 +112,7 @@ jobs:
               echo "Hello Tests from SkyU"
               
   _release-info:
-    name: _release Info
+    name: ' Release Info'
     permissions: write-all
     runs-on: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
@@ -325,7 +325,7 @@ jobs:
     outputs:
       stepsCanProceed: ${{ env.STEPS_CAN_PROCEED }}
   _status-success:
-    name: _status Success
+    name: ' Status Success'
     permissions: write-all
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
@@ -355,7 +355,7 @@ jobs:
               response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
               
   _status-failed:
-    name: _status Failed
+    name: ' Status Failed'
     permissions: write-all
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
