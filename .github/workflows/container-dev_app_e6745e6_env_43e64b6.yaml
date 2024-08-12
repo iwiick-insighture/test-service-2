@@ -12,7 +12,7 @@ name: container-dev_app_e6745e6_env_43e64b6 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_8edd8698-0ecd-46ff-b26b-decce2b36eea
+    types: pipeline_784cc8d8-ebf1-497a-85a4-18a8551c4f8e
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_CONTAINERDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -76,10 +76,12 @@ jobs:
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: Pipeline Started
+        env:
+          RUN_ID: ${{ github.run_id }}
         run: |2-
 
               context=$(echo "$CONTEXT_JSON" | jq -c . | base64)
-              response=$(curl -X PUT -d "runId=${{ github.run_id }}&context=$context"  -H 'Authorization: $SERVICE_ACC_ACCESS_TOKEN' -H 'x-organization-id: $PIPELINE_ORGANIZATION_ID' -H 'x-project-id: $PIPELINE_PROJECT_ID' -H 'x-environment-id: $PIPELINE_ENVIRONMENT_ID' -H 'x-trace-id: $PIPELINE_TRACE_ID' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "$PIPELINE_SERVICE_EP/$PIPELINE_ID/PENDING?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
+              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
               else
