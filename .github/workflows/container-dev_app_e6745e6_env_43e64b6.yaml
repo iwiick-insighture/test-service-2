@@ -314,8 +314,8 @@ jobs:
                 echo "SAFE to continue Pipeline"
               fi
               
-      - run: echo " Hello "
-        name: My Custom
+      - name: My Custom
+        run: echo " Hello "
       - name: 'Run :: Create Repository'
         run: >-
           aws ecr create-repository --repository-name ${{ env.REPOSITORY_NAME }}
