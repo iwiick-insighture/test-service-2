@@ -114,6 +114,8 @@ jobs:
               # NOTE: Do not remove this job even if you don't have tests at the moment.
               echo "Hello Tests from SkyU"
               
+      - name: New Step
+        run: echo "This works"
   _release-info:
     name: ' Release Info'
     permissions: write-all
@@ -335,6 +337,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - code-scan
+      - _status_testing
       - build-and-push
       - deploy
     if: ${{ !(failure() || cancelled()) }}
@@ -365,6 +368,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - code-scan
+      - _status_testing
       - build-and-push
       - deploy
     if: ${{ failure() || cancelled() }}
