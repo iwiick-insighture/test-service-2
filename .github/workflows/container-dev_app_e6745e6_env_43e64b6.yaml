@@ -27,6 +27,6 @@ jobs:
     permissions: write-all
     steps:
       - name: 'Test Docker compose'
-        run: docker-compose --version
+        run: docker compose --version
   
             
