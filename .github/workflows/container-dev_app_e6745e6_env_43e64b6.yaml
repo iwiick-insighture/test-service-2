@@ -114,6 +114,8 @@ jobs:
               # NOTE: Do not remove this job even if you don't have tests at the moment.
               echo "Hello Tests from SkyU"
               
+      - name: Newwwww
+        run: echo "HELLOOOOOOOOOOOOOO"
   _release-info:
     name: ' Release Info'
     permissions: write-all
