@@ -94,6 +94,12 @@ jobs:
               else
                 echo "Skipping checkout..."
               fi
+      - name: 'Run :: Get Current Commit SHA'
+        run: |-
+          CURRENT_SHA=$(git rev-parse HEAD)
+          echo "Current commit SHA is: $CURRENT_SHA"
+          echo "CURRENT_SHA=$CURRENT_SHA" >> $GITHUB_ENV
+          
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
