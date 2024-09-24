@@ -9,7 +9,7 @@ name: infra_skyu-infra_infra_12345 Pipeline (Skyu Generated)
       - closed
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4ae32f9c-8257-4585-9ce9-8c4249910850
+    types: pipeline_41fc416b-3fe1-46e9-b762-f9ed215720aa
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_INFRA_SKYUINFRA_INFRA_12345}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
