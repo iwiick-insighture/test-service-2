@@ -14,7 +14,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4daf5548-8636-4c36-8e9d-4573c0e06025
+    types: pipeline_c7fbd384-9ac9-4e36-8bf7-2ec07484878b
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEVDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -77,10 +77,9 @@ jobs:
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
-        run: |2-
-
-               echo "Cloning Bitbucket Repo" 
-              
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
@@ -146,10 +145,9 @@ jobs:
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
-        run: |2-
-
-               echo "Cloning Bitbucket Repo" 
-              
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
@@ -207,10 +205,9 @@ jobs:
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
-        run: |2-
-
-               echo "Cloning Bitbucket Repo" 
-              
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
@@ -303,10 +300,9 @@ jobs:
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
-        run: |2-
-
-               echo "Cloning Bitbucket Repo" 
-              
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
@@ -474,10 +470,9 @@ jobs:
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
-        run: |2-
-
-               echo "Cloning Bitbucket Repo" 
-              
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
@@ -544,10 +539,9 @@ jobs:
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
-        run: |2-
-
-               echo "Cloning Bitbucket Repo" 
-              
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
@@ -611,10 +605,9 @@ jobs:
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
       - name: 'Run :: Checkout repository'
-        run: |2-
-
-               echo "Cloning Bitbucket Repo" 
-              
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: 'Run :: Checkout Specific Commit'
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
