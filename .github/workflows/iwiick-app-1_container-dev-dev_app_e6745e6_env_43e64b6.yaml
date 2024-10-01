@@ -14,7 +14,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_80b3eae8-4b51-4958-acb4-d519e69dd63c
+    types: pipeline_b0c26bbb-2aad-44fc-9f70-bf2b8a12ed34
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEVDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -80,13 +80,13 @@ jobs:
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout repository'
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout Specific Commit'
         env:
@@ -156,13 +156,13 @@ jobs:
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout repository'
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout Specific Commit'
         env:
@@ -224,13 +224,13 @@ jobs:
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout repository'
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout Specific Commit'
         env:
@@ -327,13 +327,13 @@ jobs:
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout repository'
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout Specific Commit'
         env:
@@ -505,13 +505,13 @@ jobs:
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout repository'
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout Specific Commit'
         env:
@@ -582,13 +582,13 @@ jobs:
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout repository'
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout Specific Commit'
         env:
@@ -656,13 +656,13 @@ jobs:
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout repository'
         run: |2-
 
                echo "Cloning Bitbucket Repo"
-               git clone ${{ env.GIT_URL}}
+               git clone ${{ env.CLONE_DATA}}
               
       - name: 'Run :: Checkout Specific Commit'
         env:
