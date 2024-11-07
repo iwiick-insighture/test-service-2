@@ -14,7 +14,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_972c62b2-e91e-4c24-8c94-2a3ff9e2a318
+    types: pipeline_4df3d3fe-e8d2-4767-a5a9-975fb1594f8f
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEVDEV_APP_E6745E6_ENV_43E64B6}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -546,8 +546,6 @@ jobs:
 
               context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
               response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
-
-              response=$(curl -X POST -d "labels=[object Object]&message=Pipeline Success.&messageTitle=Pipeline ${{ env.PIPELINE_ID }} completed successfully&status=resolved"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&authBy=sa&token=${{ env.SERVICE_ACC_ACCESS_TOKEN }}")
               
   _status-failed:
     name: ' Status Failed'
@@ -618,7 +616,7 @@ jobs:
               context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
               response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
 
-              response=$(curl -X POST -d "labels=[object Object]&message=Pipeline Failed.&messageTitle=Pipeline ${{ env.PIPELINE_ID }} Failed&status=firing"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&authBy=sa&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}")
+              response=$(curl -X POST -d "labels=[object Object]&message=Pipeline Failed.&messageTitle=Pipeline ${{ env.PIPELINE_ID }} Failed&status=firing"  -H 'Content-Type: application/json'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&authBy=sa&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}")
 
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
