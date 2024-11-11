@@ -14,7 +14,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ca3d1808-f4af-42e6-b67b-d7490195ed0d
+    types: pipeline_1e79292a-36c9-4d99-b0c2-db361789bace
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEVDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -616,8 +616,10 @@ jobs:
               context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
               response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
 
+              response=$(curl -X POST -d "curl=curl -X POST -d "labels[alertname]=pipelineFailed&labels[pipelineId]=${{ env.PIPELINE_ID }}&message=Pipeline Failed&messageTitle=Pipeline ${{ env.PIPELINE_ID }} Failed&status=firing"  -H 'Content-Type: application/json'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}&authBy=sa""  -H 'Content-Type: application/json'  "https://webhook.site/bc5bb459-275a-4474-8ea7-bb714341c025")
+
               # Triggering SkyU Alerts
-              response=$(curl -X POST -d "labels[alertname]=pipelineFailed&labels[pipelineId]=${{ env.PIPELINE_ID }}&message=Pipeline Failed&messageTitle=Pipeline ${{ env.PIPELINE_ID }} Failed&status=firing"  -H 'Content-Type: application/json'  "https://webhook.site/bc5bb459-275a-4474-8ea7-bb714341c025")
+              response=$(curl -X POST -d "labels[alertname]=pipelineFailed&labels[pipelineId]=${{ env.PIPELINE_ID }}&message=Pipeline Failed&messageTitle=Pipeline ${{ env.PIPELINE_ID }} Failed&status=firing"  -H 'Content-Type: application/json'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}&authBy=sa")
 
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
