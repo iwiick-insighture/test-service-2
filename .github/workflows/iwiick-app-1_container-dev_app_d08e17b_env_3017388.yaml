@@ -23,7 +23,7 @@ env:
 jobs:
   code-scan:
     name: Code Scan
-    runs-on: ubuntu-latest
+    runs-on: hello
     permissions: write-all
     steps:
       - name: 'Run :: Checkout repository for Code Scan'
