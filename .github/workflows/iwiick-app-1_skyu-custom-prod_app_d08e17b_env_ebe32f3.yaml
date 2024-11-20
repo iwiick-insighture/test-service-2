@@ -12,7 +12,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_a83d690b-d09d-47d6-8089-e1a9b8024aee
+    types: pipeline_de555d30-aac0-42f3-98ee-3a8748114c81
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_SKYUCUSTOMPROD_APP_D08E17B_ENV_EBE32F3}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
