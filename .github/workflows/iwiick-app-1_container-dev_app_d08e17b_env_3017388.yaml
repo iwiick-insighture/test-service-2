@@ -3,6 +3,7 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
   push:
     branches:
       - master
+      - main
     paths-ignore:
       - .github/workflows/**
       - .trivyignore
