@@ -3,6 +3,8 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
   push:
     branches:
       - master
+    tags:
+      - v*
     paths-ignore:
       - .github/workflows/**
       - .trivyignore
@@ -10,7 +12,7 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e5c3141c-c1f9-4394-b194-16b5519d7542
+    types: pipeline_9be446ed-83b7-4e95-bbe9-cdfc9bee21de
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -451,6 +453,20 @@ jobs:
                 echo "SUCCESS :: $response"
               else
                 echo "FAILED :: $response"
+              fi
+              
+              if [ -f ".trivyignore" ]; then
+                # Uploading trivyignore file
+                trivyignoreResponse=$(curl -X POST -F 'file=@.trivyignore' -F 'provider=aws' -F 'resourceType=trivy-ignore' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy-ignore-file/${{ env.COMMIT_ID }}/' -F 'pipelineRunId=$RUN_ID'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
+
+                if echo "$trivyignoreResponse" | grep -q '"success":true'; then
+                  echo "SUCCESS :: $trivyignoreResponse"
+                else
+                  echo "FAILED :: $trivyignoreResponse"
+                fi
+
+              else
+                echo ".trivyignore file not found. Skipping the upload."
               fi
               
         if: ${{ env.ARE_TRIVY_RESULTS_EVALUATED == 'true' }}
