@@ -77,6 +77,6 @@ jobs:
         run: echo "This is step 1"
       - name: step 2
         run: echo "This is step 2"
-      - name: step 3
-        run: echo "This is step 3"
-        id: pipeline_step_e023b030-1bd2-43d9-9148-3840421c3efc
+      - id: pipeline_step_1251c026-0790-4279-8962-ccbe9df8930e
+        run: echo "This is step 1"
+        name: Step 1
