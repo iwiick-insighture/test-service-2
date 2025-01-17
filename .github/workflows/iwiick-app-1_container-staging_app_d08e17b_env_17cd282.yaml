@@ -12,7 +12,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_a779a18e-d5ae-43c2-b9cc-3bf2dfc0204f
+    types: pipeline_405af8f2-b49e-4632-8097-94320b5b4b04
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERSTAGING_APP_D08E17B_ENV_17CD282}}
