@@ -1,10 +1,10 @@
-name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generated)
+name: >-
+  iwiick-app-1_container-staging_app_d08e17b_env_17cd282 Pipeline (Skyu
+  Generated)
 'on':
   push:
     branches:
-      - master
-    tags:
-      - v*
+      - staging
     paths-ignore:
       - .github/workflows/**
       - .trivyignore
@@ -12,9 +12,10 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_68c4fd31-8ee0-4086-b778-55088377fd47
+    types: pipeline_a779a18e-d5ae-43c2-b9cc-3bf2dfc0204f
 env:
-  ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEV_APP_D08E17B_ENV_3017388}}
+  ENCODED_PIPELINE_SECRET: >-
+    ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERSTAGING_APP_D08E17B_ENV_17CD282}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
   BRANCH_NAME: >-
     ${{github.event.client_payload.branchName || github.event.branch ||
