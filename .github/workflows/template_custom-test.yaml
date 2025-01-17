@@ -12,7 +12,7 @@ name: template_custom-test Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_3b4bec49-f579-46aa-8617-846e694084aa
+    types: pipeline_4cdfec59-a7cd-4bc0-ac27-f0e494ae4791
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_TEMPLATE_CUSTOMTEST}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
