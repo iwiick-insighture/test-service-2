@@ -12,7 +12,7 @@ name: skyu-custom Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_88df23b5-dcfb-4f0f-9682-9b91f8df6443
+    types: pipeline_03585f97-92b1-4367-8a37-1c83a2e23ab8
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_SKYUCUSTOM}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
