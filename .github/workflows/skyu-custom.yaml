@@ -202,6 +202,9 @@ jobs:
       - name: iwiick step 2
         run: echo "Hello World"
         id: pipeline_step_c4164168-6b7c-4d30-967c-c1069fb548ec
+      - name: hello-step
+        run: echo "Hellooooooooooooooooo"
+        id: pipeline_step_62cfeceb-55d5-42c5-8321-3ee011fe9be3
   _status-success:
     name: ' Status Success'
     permissions: write-all
