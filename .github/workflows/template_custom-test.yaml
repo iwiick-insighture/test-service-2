@@ -12,7 +12,7 @@ name: template_custom-test Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_a00a0f67-777a-4bff-ba52-07787b308e7d
+    types: pipeline_4778779b-f58f-45c3-8612-955156d56888
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_TEMPLATE_CUSTOMTEST}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -209,9 +209,9 @@ jobs:
         run: echo "This is step 1"
       - name: step 2
         run: echo "This is step 2"
-      - id: pipeline_step_1251c026-0790-4279-8962-ccbe9df8930e
+      - name: Step 1
         run: echo "This is working bro"
-        name: Step 1
+        id: pipeline_step_1251c026-0790-4279-8962-ccbe9df8930e
   _status-success:
     name: ' Status Success'
     permissions: write-all
