@@ -211,7 +211,7 @@ jobs:
     needs:
       - _status_testing
       - _status_testing
-      - Custom Job
+      - custom-job
     if: ${{ !(failure() || cancelled()) }}
     steps:
       - name: 'Run :: Start'
@@ -279,7 +279,7 @@ jobs:
     needs:
       - _status_testing
       - _status_testing
-      - Custom Job
+      - custom-job
     if: ${{ failure() || cancelled() }}
     steps:
       - name: 'Run :: Start'
