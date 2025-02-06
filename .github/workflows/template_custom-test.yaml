@@ -12,7 +12,7 @@ name: template_custom-test Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4ee11250-544e-45a2-a2d0-704747dbaca2
+    types: pipeline_dd62dee0-f9b6-482f-9e7c-2187d1402907
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_TEMPLATE_CUSTOMTEST}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -22,8 +22,6 @@ env:
 jobs:
   _status-pending:
     name: _status-pending
-    env:
-      CONTEXT_JSON: ${{ toJson(github) }}
     steps:
       - name: 'Run :: Start'
         run: |2-
@@ -88,6 +86,8 @@ jobs:
               
     needs: []
     permissions: write-all
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
   _status_testing:
     name: _status_testing
@@ -214,8 +214,6 @@ jobs:
     runs-on: ubuntu-latest
   _status-success:
     name: _status-success
-    env:
-      CONTEXT_JSON: ${{ toJson(github) }}
     steps:
       - name: 'Run :: Start'
         run: |2-
@@ -277,13 +275,13 @@ jobs:
       - _status_testing
       - _status_testing
       - my-job
-    if: ${{ !(failure() || cancelled()) }}
     permissions: write-all
+    if: ${{ !(failure() || cancelled()) }}
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
   _status-failed:
     name: _status-failed
-    env:
-      CONTEXT_JSON: ${{ toJson(github) }}
     steps:
       - name: 'Run :: Start'
         run: |2-
@@ -354,6 +352,8 @@ jobs:
       - _status_testing
       - _status_testing
       - my-job
-    if: ${{ failure() || cancelled() }}
     permissions: write-all
+    if: ${{ failure() || cancelled() }}
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
