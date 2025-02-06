@@ -12,7 +12,7 @@ name: template_custom-test Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_dd62dee0-f9b6-482f-9e7c-2187d1402907
+    types: pipeline_1465d0c8-72bd-4370-879a-48676f0b923e
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_TEMPLATE_CUSTOMTEST}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -211,6 +211,7 @@ jobs:
     needs:
       - _status_testing
     permissions: write-all
+    timeout-minutes: 60
     runs-on: ubuntu-latest
   _status-success:
     name: _status-success
