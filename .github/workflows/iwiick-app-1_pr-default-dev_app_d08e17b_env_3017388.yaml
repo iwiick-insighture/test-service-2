@@ -6,7 +6,7 @@ name: iwiick-app-1_pr-default-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generat
       - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4347fc6a-7fcc-4234-a3ca-394b3512ee33
+    types: pipeline_80774f83-d7b4-417e-b55f-cbf48ba3f858
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_PRDEFAULTDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -141,7 +141,7 @@ jobs:
         run: |2-
 
               context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
-              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
+              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/PENDING?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
               if echo "$response" | grep -q '"success":true'; then
                 echo "SUCCESS :: $response"
               else
@@ -621,7 +621,7 @@ jobs:
         run: |2-
 
               context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
-              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
+              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
               
     needs:
       - code-scan
@@ -692,7 +692,7 @@ jobs:
         run: |2-
 
               context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
-              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
+              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
 
               # Triggering SkyU Alerts
               response=$(curl -X POST -d "labels[alertname]=pipelineFailed&labels[pipelineId]=${{ env.PIPELINE_ID }}&labels[system]=skyu&message=Pipeline Failed&messageTitle=Pipeline ${{ env.PIPELINE_ID }} Failed&status=firing"  -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}&authBy=sa")
