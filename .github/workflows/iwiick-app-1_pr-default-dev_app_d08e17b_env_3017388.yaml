@@ -6,7 +6,7 @@ name: iwiick-app-1_pr-default-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generat
       - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_e09234b5-14e7-4ae5-808c-a67860c79513
+    types: pipeline_49e69b29-6b1d-4e53-b043-4c0d86bc4762
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_PRDEFAULTDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
