@@ -12,7 +12,7 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_183a385c-23f3-4aed-8d1a-91b59008f91f
+    types: pipeline_a94f2b10-823a-4111-9d9b-cc3a3febe8e5
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -556,8 +556,6 @@ jobs:
     needs:
       - code-scan
       - _status_testing
-      - code-scan
-      - _status_testing
       - build-and-push
       - deploy
     permissions: write-all
@@ -634,8 +632,6 @@ jobs:
               fi
               
     needs:
-      - code-scan
-      - _status_testing
       - code-scan
       - _status_testing
       - build-and-push
@@ -724,7 +720,6 @@ jobs:
             
     needs:
       - build-and-push
-      - _status_testing
     permissions: write-all
     if: >-
       needs.build-and-push.outputs.stepsCanProceed == 'true' &&
