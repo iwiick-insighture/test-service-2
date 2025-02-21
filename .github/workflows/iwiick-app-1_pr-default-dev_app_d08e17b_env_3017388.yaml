@@ -6,7 +6,7 @@ name: iwiick-app-1_pr-default-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generat
       - synchronize
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_cb23f2ee-0255-493f-b5fd-023aeca4ac59
+    types: pipeline_c7d0f5a1-84e0-4a93-88cd-4348fd9c1067
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_PRDEFAULTDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -411,7 +411,8 @@ jobs:
                         const reviewsResponseText = await reviewsResponse.text();
                         const parsedReviewsResponse = JSON.parse(reviewsResponseText);
                         const { status , result } = parsedReviewsResponse;
-                        if(status === "failed") {
+                        if(!status || status === "failed" || status === "not-found") {
+                          console.log("Error while polling.", parsedReviewsResponse);
                           throw new Error("Error occurred while polling.");
                         } else if(status != "completed") {
                           console.log("Task Processing...");
@@ -422,11 +423,18 @@ jobs:
                           reviews = JSON.parse(result)?.reviews;
                         }
                       } catch(error) {
-                        console.log("Error occurred while checking the poll results:",error)
-                        throw error;
+                        console.log("Error occurred while checking the poll results:", error);
                       }
                     }
-                    await pollResults();
+                 
+                    if(taskId) {
+                      console.log('Task Id found. Starting the polling process...');
+                      await pollResults();
+                    } else {
+                      console.log('Task Id not found. Response:', taskIdBody); 
+                      console.log('Skipping the polling process...');  
+                    }
+
                     const prData = await github.rest.pulls.get({
                       owner: context.repo.owner,
                       repo: context.repo.repo,
@@ -435,37 +443,41 @@ jobs:
                     const successReviews = [];
                     const failedReviews = [];        
                     const commitId = prData.data.head.sha;
-                    for (const review of reviews) {
-                      try {
-                        const commentPayload = {
-                          owner: context.repo.owner,
-                          repo: context.repo.repo,
-                          pull_number: context.issue.number,
-                          body: review.body,
-                          path: review.path,
-                          commit_id: commitId,
-                          side: review.side,
-                          start_side: review.start_side
-                        }; 
-                        if (review.start_line && review.start_line !== review.line) {
-                          commentPayload.start_line = review.start_line;
-                          commentPayload.line = review.line;
-                        } else {
-                          commentPayload.line = review.line;
+                    if(reviews && reviews?.length > 0) {           
+                      for (const review of reviews) {
+                        try {
+                          const commentPayload = {
+                            owner: context.repo.owner,
+                            repo: context.repo.repo,
+                            pull_number: context.issue.number,
+                            body: review.body,
+                            path: review.path,
+                            commit_id: commitId,
+                            side: review.side,
+                            start_side: review.start_side
+                          }; 
+                          if (review.start_line && review.start_line !== review.line) {
+                            commentPayload.start_line = review.start_line;
+                            commentPayload.line = review.line;
+                          } else {
+                            commentPayload.line = review.line;
+                          }
+                          await github.rest.pulls.createReviewComment(commentPayload);
+                          console.log('Comment posted successfully.');
+                          successReviews.push(review);
+                        } catch(err) {
+                          console.error('Failed to post comment:', err);
+                          failedReviews.push({
+                            review,
+                            error: err?.response?.data
+                          });
                         }
-                        await github.rest.pulls.createReviewComment(commentPayload);
-                        console.log('Comment posted successfully.');
-                        successReviews.push(review);
-                      } catch(err) {
-                        console.error('Failed to post comment:', err);
-                        failedReviews.push({
-                          review,
-                          error: err?.response?.data
-                        });
                       }
-                    }
-                    console.log('Successfully added reviews:', successReviews);
-                    console.log('Failed reviews:', failedReviews);          
+                      console.log('Successfully added reviews:', successReviews);
+                      console.log('Failed reviews:', failedReviews);   
+                    } else {
+                      console.log("No reviews found...");
+                    }        
                   } catch(error) {
                     console.error("Error occurred while ai pr review process:", error);
                     throw error;
