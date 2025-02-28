@@ -12,7 +12,7 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_a3de6fc7-7dab-414d-9bb6-398e943d2633
+    types: pipeline_8d1e3b31-be54-4d0b-bbac-9513266e7163
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -82,9 +82,7 @@ jobs:
              
                   if jq -e '.Results | map(select(.Vulnerabilities)) | length > 0' trivy_results.min.json >/dev/null; then
                     echo "Vulnerabilities detected!"
-                    # Add a summary of the vulnerabilities
-                    echo "Vulnerabilities Summary:"
-                    jq '.Results[] | {Target: .Target, Vulnerabilities: .Vulnerabilities | length}' trivy_results.min.json
+                    jq '.Results[] | {Target: .Target, Vulnerabilities: .Vulnerabilities[] | {ID: .VulnerabilityID, Severity: .Severity, Description: .Description}}' trivy_results.min.json
                     exit 1
                   fi
                   
