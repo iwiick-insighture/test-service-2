@@ -70,11 +70,16 @@ jobs:
         run: >-
           docker run -i -v "${PWD}:/src" semgrep/semgrep semgrep /src --json
           --quiet > semgrep_results.json
-      - name: 'Run :: Upload Code Scan Report'
+      - name: 'Run :: Trivy Filesystem Scan'
+        run: >-
+          docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src --format json
+          --quiet > trivy_results.json
+      - name: 'Run :: Upload Code Scan Reports'
         env:
           RUN_ID: ${{ github.run_id }}
         run: |2-
 
+                  echo "Uploading Code Scan Report" 
                   SARIF_FILE="semgrep_results.json"
                   if [ -n "$SARIF_FILE" ]; then
                     cat "$SARIF_FILE" > ${{ env.COMMIT_ID }}-code-scan-report.sarif
@@ -91,6 +96,25 @@ jobs:
                   else
                       echo "SARIF file not found."
                   fi
+
+                  echo "Uploading Code Vulnerability Report" 
+                  SARIF_FILE="trivy_results.json"
+                  if [ -n "$SARIF_FILE" ]; then
+                    cat "$SARIF_FILE" > ${{ env.COMMIT_ID }}-code-vulnerability-report.sarif
+                    echo "Uploading CodeQL Results to S3 :: ${{ env.COMMIT_ID }}-code-vulnerability-report.sarif"
+           
+                    response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-code-vulnerability-report.sarif' -F 'provider=aws' -F 'resourceType=code-vulnerability-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/code-vulnerability-reports/' -F 'pipelineRunId=${{ env.RUN_ID }}'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
+
+                    if echo "$response" | grep -q '"success":true'; then
+                      echo "SUCCESS :: $response"
+                    else
+                      echo "FAILED :: $response"
+                    fi
+
+                  else
+                      echo "SARIF file not found."
+                  fi
+                  
   _status-pending:
     name: _status-pending
     steps:
