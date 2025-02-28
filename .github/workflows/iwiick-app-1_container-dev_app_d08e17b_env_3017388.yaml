@@ -12,7 +12,7 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_3437c21f-4232-41d7-970a-16f74450173d
+    types: pipeline_0192cb33-a424-4530-acd7-ff656de0282d
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -71,9 +71,46 @@ jobs:
           docker run -i -v "${PWD}:/src" semgrep/semgrep semgrep /src --json
           --quiet > semgrep_results.json
       - name: 'Run :: Trivy Filesystem Scan'
-        run: >-
-          docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src --format json
-          --quiet > trivy_results.json
+        run: |2-
+
+                  docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src --severity /src --format json --quiet > trivy_results.json
+                  # Minifying Json
+                  jq -c '.' trivy_results.json > trivy_results.min.json
+                  
+      - name: 'Run :: Evaluate Trivy Results'
+        run: |2-
+
+                  trivy_result=$(cat "trivy_results.min.json")
+              
+                  # Set the desired severity level
+                  desiredSeverity="/src"
+                  IFS=',' read -ra severities <<< "$desiredSeverity"  # Split the severity string
+              
+                  # Print the tags array for debugging
+                  jq '.runs[0].tool.driver.rules[].properties.tags' "trivy_results.json"
+              
+                  VULNERABILITY_COUNT=0
+              
+                  for severity in "${severities[@]}"; do
+                    count=$(jq --arg severity "$severity" '.runs[0].tool.driver.rules | map(select(.properties.tags and (.properties.tags | map(tostring) | index($severity) // empty))) | length' "trivy_results.json")
+                    echo "Number of $severity vulnerabilities: $count"
+                    VULNERABILITY_COUNT=$((VULNERABILITY_COUNT + count))
+                  done
+              
+                  echo "Total Number of vulnerabilities: $VULNERABILITY_COUNT"
+              
+                  if [ "$VULNERABILITY_COUNT" -gt 0 ]; then
+                    echo "Stopping Pipeline due to vulnerabilities"
+                    exit 1
+                  fi
+                  
+      - name: 'Run :: Trivy Filesystem Scan (Including Trivy Ignores)'
+        run: |2-
+
+                  docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src --severity /src --format json --quiet --list-all-pkgs > trivy_results.json
+                  # Minifying Json
+                  jq -c '.' trivy_results.json > trivy_results.min.json
+                  
       - name: 'Run :: Upload Code Scan Reports'
         env:
           RUN_ID: ${{ github.run_id }}
@@ -85,7 +122,7 @@ jobs:
                     cat "$SARIF_FILE" > ${{ env.COMMIT_ID }}-code-scan-report.sarif
                     echo "Uploading CodeQL Results to S3 :: ${{ env.COMMIT_ID }}-code-scan-report.sarif"
            
-                    response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-code-scan-report.sarif' -F 'provider=aws' -F 'resourceType=code-scan-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/code-scan-reports/' -F 'pipelineRunId=${{ env.RUN_ID }}'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
+                    response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-code-scan-report.sarif' -F 'provider=aws' -F 'resourceType=code-scan-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/code-scan-reports/' -F 'pipelineRunId=${{ env.RUN_ID }}'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
 
                     if echo "$response" | grep -q '"success":true'; then
                       echo "SUCCESS :: $response"
@@ -103,7 +140,7 @@ jobs:
                     cat "$SARIF_FILE" > ${{ env.COMMIT_ID }}-code-vulnerability-report.sarif
                     echo "Uploading CodeQL Results to S3 :: ${{ env.COMMIT_ID }}-code-vulnerability-report.sarif"
            
-                    response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-code-vulnerability-report.sarif' -F 'provider=aws' -F 'resourceType=code-vulnerability-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/code-vulnerability-reports/' -F 'pipelineRunId=${{ env.RUN_ID }}'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
+                    response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-code-vulnerability-report.sarif' -F 'provider=aws' -F 'resourceType=code-vulnerability-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/code-vulnerability-reports/' -F 'pipelineRunId=${{ env.RUN_ID }}'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-auth-by: sa' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
 
                     if echo "$response" | grep -q '"success":true'; then
                       echo "SUCCESS :: $response"
@@ -113,6 +150,20 @@ jobs:
 
                   else
                       echo "SARIF file not found."
+                  fi
+                  
+                  echo "Uploading Trivy Ignore File" 
+                  if [ -n ".trivyignore" ]; then
+                    response=$(curl -X POST -F 'file=@.trivyignore' -F 'provider=aws' -F 'resourceType=trivy-ignore' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy-ignore-file/${{ env.COMMIT_ID }}/' -F 'pipelineRunId=$RUN_ID'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
+
+                    if echo "$response" | grep -q '"success":true'; then
+                      echo "SUCCESS :: $response"
+                    else
+                      echo "FAILED :: $response"
+                    fi
+
+                  else
+                      echo ".trivyignore file not found"
                   fi
                   
   _status-pending:
@@ -470,7 +521,7 @@ jobs:
               # Minifying Json
               jq -c '.' ${{ env.COMMIT_ID }}-image-vulnerability-report.json > ${{ env.COMMIT_ID }}-image-vulnerability-report.min.json
 
-              # Uploading Minified Trivy Resuls
+              # Uploading Minified Trivy Results
               response=$(curl -X POST -F 'file=@${{ env.COMMIT_ID }}-image-vulnerability-report.min.json' -F 'provider=aws' -F 'resourceType=image-vulnerability-report' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/image-vulnerability-reports/' -F 'pipelineRunId=$RUN_ID'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
 
               if echo "$response" | grep -q '"success":true'; then
@@ -706,6 +757,7 @@ jobs:
             
     needs:
       - build-and-push
+      - _status_testing
     permissions: write-all
     if: >-
       needs.build-and-push.outputs.stepsCanProceed == 'true' &&
