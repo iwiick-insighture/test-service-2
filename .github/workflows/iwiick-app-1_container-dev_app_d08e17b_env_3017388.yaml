@@ -12,7 +12,7 @@ name: iwiick-app-1_container-dev_app_d08e17b_env_3017388 Pipeline (Skyu Generate
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_0192cb33-a424-4530-acd7-ff656de0282d
+    types: pipeline_f0881a19-cd60-4ea2-ad70-8155a50fead0
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERDEV_APP_D08E17B_ENV_3017388}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -73,7 +73,7 @@ jobs:
       - name: 'Run :: Trivy Filesystem Scan'
         run: |2-
 
-                  docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src --severity /src --format json --quiet > trivy_results.json
+                  docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src /src --severity --format json --quiet > trivy_results.json
                   # Minifying Json
                   jq -c '.' trivy_results.json > trivy_results.min.json
                   
@@ -107,7 +107,7 @@ jobs:
       - name: 'Run :: Trivy Filesystem Scan (Including Trivy Ignores)'
         run: |2-
 
-                  docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src --severity /src --format json --quiet --list-all-pkgs > trivy_results.json
+                  docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src /src --severity --format json --quiet --list-all-pkgs > trivy_results.json
                   # Minifying Json
                   jq -c '.' trivy_results.json > trivy_results.min.json
                   
@@ -230,7 +230,8 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-    needs: []
+    needs:
+      - code-scan
     permissions: write-all
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
