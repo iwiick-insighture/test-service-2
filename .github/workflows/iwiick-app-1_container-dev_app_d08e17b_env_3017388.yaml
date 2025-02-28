@@ -82,6 +82,9 @@ jobs:
              
                   if jq -e '.Results | map(select(.Vulnerabilities)) | length > 0' trivy_results.min.json >/dev/null; then
                     echo "Vulnerabilities detected!"
+                    # Add a summary of the vulnerabilities
+                    echo "Vulnerabilities Summary:"
+                    jq '.Results[] | {Target: .Target, Vulnerabilities: .Vulnerabilities | length}' trivy_results.min.json
                     exit 1
                   fi
                   
