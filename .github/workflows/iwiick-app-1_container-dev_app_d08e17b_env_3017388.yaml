@@ -76,6 +76,7 @@ jobs:
                   docker run --rm -v "${PWD}:/src" aquasec/trivy fs /src --severity HIGH --format json --quiet > trivy_results.json
                   # Minifying Json
                   jq -c '.' trivy_results.json > trivy_results.min.json
+                  cat trivy_results.min.json
                   
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
