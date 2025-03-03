@@ -10,7 +10,7 @@ name: iwiick-app-1_container-prod_app_d08e17b_env_ebe32f3 Pipeline (Skyu Generat
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_461ad0d6-b928-4db0-a559-bb0c335d2f54
+    types: pipeline_8265fc40-29f1-4b97-ab24-813e628ee04f
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERPROD_APP_D08E17B_ENV_EBE32F3}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
