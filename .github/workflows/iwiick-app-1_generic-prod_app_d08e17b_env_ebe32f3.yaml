@@ -10,7 +10,7 @@ name: iwiick-app-1_generic-prod_app_d08e17b_env_ebe32f3 Pipeline (Skyu Generated
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b9cd3d1f-72d7-4cad-860b-0084c7103c25
+    types: pipeline_49d8197f-a808-4c67-989a-5293acd1dcb6
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP1_GENERICPROD_APP_D08E17B_ENV_EBE32F3}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -133,7 +133,7 @@ jobs:
                   fi
                   
                   echo "Uploading Trivy Ignore File" 
-                  if [ -n ".trivyignore" ]; then
+                  if [ -f ".trivyignore" ]; then
                     response=$(curl -X POST -F 'file=@.trivyignore' -F 'provider=aws' -F 'resourceType=trivy-ignore' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy-ignore-file/${{ env.COMMIT_ID }}/' -F 'pipelineRunId=$RUN_ID'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
 
                     if echo "$response" | grep -q '"success":true'; then
@@ -210,8 +210,7 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-    needs:
-      - code-scan
+    needs: []
     permissions: write-all
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
