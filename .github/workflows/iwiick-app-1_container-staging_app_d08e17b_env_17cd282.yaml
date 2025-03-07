@@ -12,7 +12,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_4970c07e-4569-4234-9ebe-f518f1481f4f
+    types: pipeline_474fa16a-e898-4c08-838b-ed1083ce9a1f
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_IWIICKAPP1_CONTAINERSTAGING_APP_D08E17B_ENV_17CD282}}
@@ -136,7 +136,7 @@ jobs:
                   fi
                   
                   echo "Uploading Trivy Ignore File" 
-                  if [ -n ".trivyignore" ]; then
+                  if [ -f ".trivyignore" ]; then
                     response=$(curl -X POST -F 'file=@.trivyignore' -F 'provider=aws' -F 'resourceType=trivy-ignore' -F 'cloudStoragePath=/${{ env.PIPELINE_APPLICATION_ID }}/trivy-ignore-file/${{ env.COMMIT_ID }}/' -F 'pipelineRunId=$RUN_ID'  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-resource-id: ${{ env.PIPELINE_APPLICATION_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: multipart/form-data'  "${{ env.S3_UPLOAD_ENDPOINT }}")
 
                     if echo "$response" | grep -q '"success":true'; then
@@ -213,8 +213,7 @@ jobs:
                 echo "FAILED :: $response"
               fi
               
-    needs:
-      - code-scan
+    needs: []
     permissions: write-all
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
