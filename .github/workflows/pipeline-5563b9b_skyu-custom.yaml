@@ -19,7 +19,6 @@ env:
   BRANCH_NAME: >-
     ${{github.event.client_payload.branchName || github.event.branch ||
     github.ref_name}}
-  Hello: VALUEEEEEEE
 jobs:
   _status-pending:
     name: _status-pending
@@ -155,8 +154,8 @@ jobs:
       - _status-pending
     permissions: write-all
     runs-on: ubuntu-latest
-  my-job:
-    name: my-job
+  test-job:
+    name: test-job
     steps:
       - name: 'Run :: Start'
         run: |2-
@@ -210,13 +209,11 @@ jobs:
         run: echo "This is step 1"
       - name: step 2
         run: echo "This is step 2"
-      - name: Reusable Step
-        run: echo "This is a Resuable Step"
-        id: pipeline_step_e023b030-1bd2-43d9-9148-3840421c3efc
+      - name: step 3
+        run: echo "This is step 3"
     needs:
       - _status_testing
     permissions: write-all
-    timeout-minutes: 60
     runs-on: ubuntu-latest
   _status-success:
     name: _status-success
@@ -279,7 +276,7 @@ jobs:
               
     needs:
       - _status_testing
-      - my-job
+      - test-job
     permissions: write-all
     if: ${{ !(failure() || cancelled()) }}
     env:
@@ -317,7 +314,7 @@ jobs:
               
     needs:
       - _status_testing
-      - my-job
+      - test-job
     permissions: write-all
     if: ${{ failure() || cancelled() }}
     env:
