@@ -211,8 +211,6 @@ jobs:
         run: echo "This is step 2"
       - name: step 3
         run: echo "This is step 3"
-      - name: step 4
-        run: echo "This is step 3"
     needs:
       - _status_testing
     permissions: write-all
