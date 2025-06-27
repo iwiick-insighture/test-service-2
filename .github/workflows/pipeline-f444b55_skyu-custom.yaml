@@ -195,8 +195,10 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: Custom Step
+      - name: Custom Step 1
         run: echo "Hello from SkyU"
+      - name: Custom Step 2
+        run: echo "Hello from SkyU twooooo"
     needs:
       - _status_testing
     permissions: write-all
