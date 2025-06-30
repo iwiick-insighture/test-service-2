@@ -207,10 +207,19 @@ jobs:
                 
       - name: Step 1
         run: echo "This is step 1"
+        missingConfig:
+          - jobName: test-job
+            metaData: []
+            stepName: Step 1
+            attribute: testCred
+            isEditable: true
+            isRequired: true
       - name: step 2
         run: echo "This is step 2"
+        missingConfig: []
       - name: step 3
         run: echo "This is step 3"
+        missingConfig: []
       - name: step 4
         run: echo "This is step 4"
     needs:
