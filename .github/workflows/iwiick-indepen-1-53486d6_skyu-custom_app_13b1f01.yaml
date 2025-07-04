@@ -398,8 +398,8 @@ jobs:
     permissions: write-all
     if: ${{ github.event.client_payload.releaseData }}
     runs-on: ubuntu-latest
-  custom-job:
-    name: custom-job
+  custom-job-2:
+    name: custom-job-2
     steps:
       - name: 'Run :: Start'
         run: |2-
@@ -449,7 +449,7 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: Custom Step
+      - name: Custom Step 2
         run: echo "Hello from SkyU"
     needs:
       - _status_testing
@@ -517,7 +517,7 @@ jobs:
     needs:
       - code-scan
       - _status_testing
-      - custom-job
+      - custom-job-2
     permissions: write-all
     if: ${{ !(failure() || cancelled()) }}
     env:
@@ -556,7 +556,7 @@ jobs:
     needs:
       - code-scan
       - _status_testing
-      - custom-job
+      - custom-job-2
     permissions: write-all
     if: ${{ failure() || cancelled() }}
     env:
