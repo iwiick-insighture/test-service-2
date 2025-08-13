@@ -12,7 +12,7 @@ name: iwiick-app-2-2d8033e_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b53cd2a9-0382-4206-b975-831068581389
+    types: pipeline_5ae27cb2-66b4-4b50-adb0-707df5de5e83
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP22D8033E_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -20,6 +20,7 @@ env:
     ${{github.event.client_payload.branchName || github.event.branch ||
     github.ref_name}}
   DEPLOY_STEP_SHOULD_DEPLOY: 'true'
+  TestEnvVar: TestEnvValue
 jobs:
   code-scan:
     name: Code Scan
