@@ -12,7 +12,7 @@ name: iwiick-app-2-2d8033e_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_5bd3f3c5-83da-4ff6-9e37-64ffa692f072
+    types: pipeline_785dba7c-fa60-425d-bc23-aeb641687206
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP22D8033E_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
