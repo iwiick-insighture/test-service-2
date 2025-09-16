@@ -460,7 +460,7 @@ jobs:
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
       - name: Step 1
-        run: echo "This is step 1"
+        run: echo "This is step 1 ${{ github.event.client_payload.iwiick }}"
       - name: step 2
         run: echo "This is step 2"
       - name: Reusable Step
