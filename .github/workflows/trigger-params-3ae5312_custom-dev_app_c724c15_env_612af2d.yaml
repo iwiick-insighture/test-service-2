@@ -1,10 +1,10 @@
 name: >-
-  trigger-params-3ae5312_custom-prod_app_c724c15_env_6d6f721 Pipeline (Skyu
+  trigger-params-3ae5312_custom-dev_app_c724c15_env_612af2d Pipeline (Skyu
   Generated)
 'on':
   push:
-    tags:
-      - v*
+    branches:
+      - master
     paths-ignore:
       - .github/workflows/**
       - .trivyignore
@@ -12,10 +12,10 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_570bb728-d179-4570-a676-819111f8ec95
+    types: pipeline_2c735622-eb1c-4c4e-98cc-32b77ad7d6e0
 env:
   ENCODED_PIPELINE_SECRET: >-
-    ${{secrets.TESTSERVICE2_TRIGGERPARAMS3AE5312_CUSTOMPROD_APP_C724C15_ENV_6D6F721}}
+    ${{secrets.TESTSERVICE2_TRIGGERPARAMS3AE5312_CUSTOMDEV_APP_C724C15_ENV_612AF2D}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
   BRANCH_NAME: >-
     ${{github.event.client_payload.branchName || github.event.branch ||

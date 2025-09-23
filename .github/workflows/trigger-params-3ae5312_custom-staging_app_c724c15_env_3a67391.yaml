@@ -13,7 +13,7 @@ name: >-
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_9a5e85c6-44f3-404c-8bcc-ace6a6792a8f
+    types: pipeline_f584889e-cb53-4ee8-b867-3023935f4a5a
 env:
   ENCODED_PIPELINE_SECRET: >-
     ${{secrets.TESTSERVICE2_TRIGGERPARAMS3AE5312_CUSTOMSTAGING_APP_C724C15_ENV_3A67391}}
@@ -660,7 +660,7 @@ jobs:
               fi
             
     needs:
-      - Custom Job
+      - custom-job
     permissions: write-all
     if: github.event.client_payload.releaseData == null
     runs-on: ubuntu-latest
