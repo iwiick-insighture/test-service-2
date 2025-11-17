@@ -697,6 +697,12 @@ jobs:
               echo "CANCELLED_JOB=$CANCELLED_JOB" >> "$GITHUB_ENV"
               echo "CANCELLED_STEP=$CANCELLED_STEP" >> "$GITHUB_ENV"
               echo "CANCEL_REASON=$CANCEL_REASON" >> "$GITHUB_ENV"
+
+              echo "FAILED_JOB - $FAILED_JOB"
+              echo "FAILED_STEP - $FAILED_STEP"
+              echo "CANCELLED_JOB - $CANCELLED_JOB"
+              echo "CANCELLED_STEP - $CANCELLED_STEP"
+              echo "CANCEL_REASON - $CANCEL_REASON"
               
               echo "Done."
               
