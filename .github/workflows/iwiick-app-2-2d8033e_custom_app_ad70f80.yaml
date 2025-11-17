@@ -674,19 +674,28 @@ jobs:
               FAILED_MESSAGE=""
                 
               if [ "$WF_CONCLUSION" = "cancelled" ]; then
+                # Workflow cancelled
                 if [ -n "$CANCELLED_JOB" ] && [ -n "$CANCELLED_STEP" ]; then
-                  FAILED_MESSAGE="Workflow was cancelled while executing '$CANCELLED_STEP' step from '$CANCELLED_JOB' job"
+                    FAILED_MESSAGE="Workflow was cancelled while executing '$CANCELLED_STEP' step from '$CANCELLED_JOB' job"
                 else
-                  FAILED_MESSAGE="Workflow was cancelled"
+                    FAILED_MESSAGE="Workflow was cancelled"
+                fi
+
               else
+                # Workflow failed
                 if [ -n "$FAILED_JOB" ] && [ -n "$FAILED_STEP" ]; then
-                  FAILED_MESSAGE="Workflow failed while executing '$FAILED_STEP' step from '$FAILED_JOB' job"
+                    FAILED_MESSAGE="Workflow failed while executing '$FAILED_STEP' step from '$FAILED_JOB' job"
+                else
+                    FAILED_MESSAGE="Workflow failed"
+                fi
               fi
 
+
+              # ALERT TITLE BUILD
               if [ -n "${{ env.APPLICATION_NAME }}" ]; then
-                ALERT_TITLE="${{ env.APPLICATION_NAME }} Pipeline Failed"
+                  ALERT_TITLE="${{ env.APPLICATION_NAME }} Pipeline Failed"
               else
-                ALERT_TITLE="Pipeline ${{ env.PIPELINE_ID }} Failed"
+                  ALERT_TITLE="Pipeline ${{ env.PIPELINE_ID }} Failed"
               fi
 
               # Triggering SkyU Alerts
