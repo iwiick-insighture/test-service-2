@@ -648,15 +648,15 @@ jobs:
         run: |2-
 
               echo "Collecting workflow status..."
-                      
+
               RUN_ID="${{ github.run_id }}"
               REPO="${{ github.repository }}"
               TOKEN="${{ secrets.GITHUB_TOKEN }}"
-                      
+
               JOB_DATA=$(curl -s \
                 -H "Authorization: Bearer $TOKEN" \
                 "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs")
-                      
+
               # ---------------------------
               # FAILED job/step detection
               # ---------------------------
@@ -677,15 +677,15 @@ jobs:
                 .jobs[].steps[] | select(.conclusion == "cancelled") | .name' | head -n 1)
               
               
-              # ---------------------------
-              # FALLBACK: Workflow cancelled early (no steps ran)
-              # Example: concurrency cancel, manual cancel at start
-              # ---------------------------
-              WORKFLOW_CONCLUSION="${{ github.event.workflow_run.conclusion }}"
-              if [ -z "$CANCELLED_JOB" ] && [ -z "$FAILED_JOB" ]; then
-                if [ "${{ cancelled() }}" == "true" ]; then
-                  CANCEL_REASON="Workflow was cancelled before jobs executed"
-                fi
+              # ---------------------------------------------------
+              # FALLBACK: Workflow cancelled before any job ran
+              # ---------------------------------------------------
+              WF_CONCLUSION="${{ github.event.workflow_run.conclusion }}"
+              CANCEL_REASON=""
+              
+              if [ "$WF_CONCLUSION" = "cancelled" ] && \
+                 [ -z "$FAILED_JOB" ] && [ -z "$CANCELLED_JOB" ]; then
+                  CANCEL_REASON="Workflow was cancelled before any jobs executed"
               fi
               
               
