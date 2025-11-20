@@ -12,7 +12,7 @@ name: iwiick-app-2-2d8033e_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_79fb2c8f-d1be-47fa-beca-9d3321829aa7
+    types: pipeline_c4d12d18-666f-4fd6-ab9a-7af2fe0c31ba
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP22D8033E_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -224,9 +224,6 @@ jobs:
               
     needs: []
     permissions: write-all
-    runsOn: ubuntu-latest
-    addDefaultSteps: true
-    overrideCheckoutSteps: false
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
@@ -290,9 +287,6 @@ jobs:
     needs:
       - _status-pending
     permissions: write-all
-    runsOn: ubuntu-latest
-    addDefaultSteps: true
-    overrideCheckoutSteps: true
     runs-on: ubuntu-latest
   _release-info:
     name: _release-info
@@ -412,10 +406,7 @@ jobs:
               
     needs: []
     permissions: write-all
-    runsOn: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
-    addDefaultSteps: true
-    overrideCheckoutSteps: false
     runs-on: ubuntu-latest
   test-job:
     name: test-job
@@ -478,9 +469,6 @@ jobs:
     needs:
       - _status_testing
     permissions: write-all
-    runsOn: ubuntu-latest
-    addDefaultSteps: true
-    overrideCheckoutSteps: true
     timeout-minutes: 60
     runs-on: ubuntu-latest
   _status-success:
@@ -548,10 +536,7 @@ jobs:
       - test-job
       - deploy
     permissions: write-all
-    runsOn: ubuntu-latest
     if: ${{ !(failure() || cancelled()) }}
-    addDefaultSteps: true
-    overrideCheckoutSteps: false
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
@@ -641,10 +626,7 @@ jobs:
       - test-job
       - deploy
     permissions: write-all
-    runsOn: ubuntu-latest
     if: ${{ failure() || cancelled() }}
-    addDefaultSteps: false
-    overrideCheckoutSteps: false
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
@@ -735,8 +717,5 @@ jobs:
       - test-job
       - _status_testing
     permissions: write-all
-    runsOn: ubuntu-latest
     if: github.event.client_payload.releaseData == null
-    addDefaultSteps: true
-    overrideCheckoutSteps: true
     runs-on: ubuntu-latest
