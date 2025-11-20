@@ -12,7 +12,7 @@ name: iwiick-app-2-2d8033e_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_95b2335f-07df-4ce5-af66-fc91184c538e
+    types: pipeline_a0e4f06d-8f77-4c79-86b6-71c2e91bce85
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP22D8033E_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -224,6 +224,7 @@ jobs:
               
     needs: []
     permissions: write-all
+    overrideCheckoutSteps: true
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
@@ -287,6 +288,7 @@ jobs:
     needs:
       - _status-pending
     permissions: write-all
+    overrideCheckoutSteps: true
     runs-on: ubuntu-latest
   _release-info:
     name: _release-info
@@ -407,6 +409,7 @@ jobs:
     needs: []
     permissions: write-all
     if: ${{ github.event.client_payload.releaseData }}
+    overrideCheckoutSteps: true
     runs-on: ubuntu-latest
   test-job:
     name: test-job
@@ -469,6 +472,7 @@ jobs:
     needs:
       - _status_testing
     permissions: write-all
+    overrideCheckoutSteps: true
     timeout-minutes: 60
     runs-on: ubuntu-latest
   _status-success:
@@ -537,6 +541,7 @@ jobs:
       - deploy
     permissions: write-all
     if: ${{ !(failure() || cancelled()) }}
+    overrideCheckoutSteps: true
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
@@ -627,6 +632,7 @@ jobs:
       - deploy
     permissions: write-all
     if: ${{ failure() || cancelled() }}
+    overrideCheckoutSteps: true
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
@@ -718,4 +724,5 @@ jobs:
       - _status_testing
     permissions: write-all
     if: github.event.client_payload.releaseData == null
+    overrideCheckoutSteps: true
     runs-on: ubuntu-latest
