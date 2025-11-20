@@ -229,23 +229,22 @@ jobs:
   _status_testing:
     name: _status_testing
     steps:
-      - name: 'Run :: Start'
-        run: |2-
+      - run: |2-
 
               echo " Starting GitHub Action!" && 
               echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
               
+        name: 'Run :: Start'
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: 'Run :: Checkout Specific Commit'
+      - if: >-
+          ${{ github.event.client_payload.commitId != null ||
+          github.event.client_payload.branchName != null }}
         env:
           COMMIT_ID: ${{ github.event.client_payload.commitId }}
           BRANCH_NAME: ${{ github.event.client_payload.branchName }}
-        if: >-
-          ${{ github.event.client_payload.commitId != null ||
-          github.event.client_payload.branchName != null }}
         run: |2-
 
               echo "Starting the checkout process..."
@@ -267,8 +266,8 @@ jobs:
                 echo "Skipping checkout..."
               fi
             
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
+        name: 'Run :: Checkout Specific Commit'
+      - run: |2-
 
                 if [ ! -x "$(command -v jq)" ]; then
                   echo "jq not found, installing..."
@@ -277,6 +276,7 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
+        name: 'Run :: Decoding Secrets'
       - name: 'Run :: Pipeline Testing'
         run: |2-
 
