@@ -12,7 +12,7 @@ name: iwiick-app-2-2d8033e_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b4837dca-6655-4fae-9365-4101b98ee52e
+    types: pipeline_79fb2c8f-d1be-47fa-beca-9d3321829aa7
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP22D8033E_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -224,6 +224,9 @@ jobs:
               
     needs: []
     permissions: write-all
+    runsOn: ubuntu-latest
+    addDefaultSteps: true
+    overrideCheckoutSteps: false
     env:
       CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
@@ -287,6 +290,9 @@ jobs:
     needs:
       - _status-pending
     permissions: write-all
+    runsOn: ubuntu-latest
+    addDefaultSteps: true
+    overrideCheckoutSteps: true
     runs-on: ubuntu-latest
   _release-info:
     name: _release-info
@@ -406,7 +412,10 @@ jobs:
               
     needs: []
     permissions: write-all
+    runsOn: ubuntu-latest
     if: ${{ github.event.client_payload.releaseData }}
+    addDefaultSteps: true
+    overrideCheckoutSteps: false
     runs-on: ubuntu-latest
   test-job:
     name: test-job
@@ -469,7 +478,175 @@ jobs:
     needs:
       - _status_testing
     permissions: write-all
+    runsOn: ubuntu-latest
+    addDefaultSteps: true
+    overrideCheckoutSteps: true
     timeout-minutes: 60
+    runs-on: ubuntu-latest
+  _status-success:
+    name: _status-success
+    steps:
+      - name: 'Run :: Start'
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 'Run :: Checkout Specific Commit'
+        env:
+          COMMIT_ID: ${{ github.event.client_payload.commitId }}
+          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
+        if: >-
+          ${{ github.event.client_payload.commitId != null ||
+          github.event.client_payload.branchName != null }}
+        run: |2-
+
+              echo "Starting the checkout process..."
+              git fetch --all
+              if [ -n "$COMMIT_ID" ]; then
+                echo "Commit ID provided: $COMMIT_ID"
+                git checkout $COMMIT_ID || true
+                echo "Checked out to commit ID: $COMMIT_ID"
+              elif [ -n "$BRANCH_NAME" ]; then
+                echo "Branch name provided: $BRANCH_NAME"
+                git checkout $BRANCH_NAME || true
+                echo "Checked out to branch: $BRANCH_NAME"
+
+                #Updating the commit Id
+                ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
+                echo "Changing CommitId: $ACTUAL_COMMIT_ID"
+                echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
+              else
+                echo "Skipping checkout..."
+              fi
+            
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Pipeline Success'
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |2-
+
+              context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
+              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
+              
+    needs:
+      - code-scan
+      - _status_testing
+      - test-job
+      - deploy
+    permissions: write-all
+    runsOn: ubuntu-latest
+    if: ${{ !(failure() || cancelled()) }}
+    addDefaultSteps: true
+    overrideCheckoutSteps: false
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
+    runs-on: ubuntu-latest
+  _status-failed:
+    name: _status-failed
+    steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
+      - name: 'Run :: Pipeline Failed'
+        env:
+          RUN_ID: ${{ github.run_id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          WF_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |2-
+
+              context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
+              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
+
+              echo "Collecting workflow status..."
+                
+              JOB_DATA=$(curl -s       -H "Authorization: Bearer $GH_TOKEN"       "https://api.github.com/repos/$REPOSITORY/actions/runs/$RUN_ID/jobs")
+                
+              # FAILED job and step
+              FAILED_JOB=$(echo "$JOB_DATA" | jq -r '
+                .jobs[] | select(.conclusion=="failure") | .name' | head -n 1)
+                
+              FAILED_STEP=$(echo "$JOB_DATA" | jq -r '
+                .jobs[].steps[] | select(.conclusion=="failure") | .name' | head -n 1)
+                
+              # CANCELLED job and step
+              CANCELLED_JOB=$(echo "$JOB_DATA" | jq -r '
+                .jobs[] | select(.conclusion=="cancelled") | .name' | head -n 1)
+                
+              CANCELLED_STEP=$(echo "$JOB_DATA" | jq -r '
+                .jobs[].steps[] | select(.conclusion=="cancelled") | .name' | head -n 1)
+                
+              FAILED_MESSAGE=""
+                
+              if [ "$WF_CONCLUSION" = "cancelled" ]; then
+                # Workflow cancelled
+                if [ -n "$CANCELLED_JOB" ] && [ -n "$CANCELLED_STEP" ]; then
+                    FAILED_MESSAGE="Workflow was cancelled while executing '$CANCELLED_STEP' step from '$CANCELLED_JOB' job"
+                else
+                    FAILED_MESSAGE="Workflow was cancelled"
+                fi
+
+              else
+                # Workflow failed
+                if [ -n "$FAILED_JOB" ] && [ -n "$FAILED_STEP" ]; then
+                    FAILED_MESSAGE="Workflow failed while executing '$FAILED_STEP' step from '$FAILED_JOB' job"
+                else
+                    FAILED_MESSAGE="Workflow failed"
+                fi
+              fi
+
+              # ALERT TITLE BUILD
+              if [ -n "${{ env.APPLICATION_NAME }}" ]; then
+                  ALERT_TITLE="${{ env.APPLICATION_NAME }} Pipeline Failed"
+              else
+                  ALERT_TITLE="Pipeline ${{ env.PIPELINE_ID }} Failed"
+              fi
+
+              # Triggering SkyU Alerts
+              echo "ALERT TITLE :: $ALERT_TITLE"
+              echo "ALERT MESSAGE :: $FAILED_MESSAGE"
+
+              response=$(curl -X POST -d "labels[alertname]=pipelineFailed&labels[repository]=$REPOSITORY&labels[applicationName]=${{ env.APPLICATION_NAME }}&labels[applicationId]=${{ env.PIPELINE_APPLICATION_ID }}&labels[envLabel]=${{ env.PIPELINE_ENVIRONMENT_LABEL }}&labels[pipelineId]=${{ env.PIPELINE_ID }}&labels[system]=skyu&messageTitle=$ALERT_TITLE&message=$FAILED_MESSAGE&status=firing"  -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}&authBy=sa")
+
+              if echo "$response" | grep -q '"success":true'; then
+                echo "SUCCESS :: $response"
+              else
+                echo "FAILED :: $response"
+              fi
+              
+    needs:
+      - code-scan
+      - _status_testing
+      - test-job
+      - deploy
+    permissions: write-all
+    runsOn: ubuntu-latest
+    if: ${{ failure() || cancelled() }}
+    addDefaultSteps: false
+    overrideCheckoutSteps: false
+    env:
+      CONTEXT_JSON: ${{ toJson(github) }}
     runs-on: ubuntu-latest
   deploy:
     name: deploy
@@ -558,165 +735,8 @@ jobs:
       - test-job
       - _status_testing
     permissions: write-all
+    runsOn: ubuntu-latest
     if: github.event.client_payload.releaseData == null
-    runs-on: ubuntu-latest
-  _status-success:
-    name: _status-success
-    steps:
-      - name: 'Run :: Start'
-        run: |2-
-
-              echo " Starting GitHub Action!" && 
-              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
-              
-      - name: 'Run :: Checkout repository'
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: 'Run :: Checkout Specific Commit'
-        env:
-          COMMIT_ID: ${{ github.event.client_payload.commitId }}
-          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
-        if: >-
-          ${{ github.event.client_payload.commitId != null ||
-          github.event.client_payload.branchName != null }}
-        run: |2-
-
-              echo "Starting the checkout process..."
-              git fetch --all
-              if [ -n "$COMMIT_ID" ]; then
-                echo "Commit ID provided: $COMMIT_ID"
-                git checkout $COMMIT_ID || true
-                echo "Checked out to commit ID: $COMMIT_ID"
-              elif [ -n "$BRANCH_NAME" ]; then
-                echo "Branch name provided: $BRANCH_NAME"
-                git checkout $BRANCH_NAME || true
-                echo "Checked out to branch: $BRANCH_NAME"
-
-                #Updating the commit Id
-                ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
-                echo "Changing CommitId: $ACTUAL_COMMIT_ID"
-                echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
-              else
-                echo "Skipping checkout..."
-              fi
-            
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
-      - name: 'Run :: Pipeline Success'
-        env:
-          RUN_ID: ${{ github.run_id }}
-        run: |2-
-
-              context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
-              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/SUCCESS?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
-              
-    needs:
-      - code-scan
-      - _status_testing
-      - test-job
-      - deploy
-    permissions: write-all
-    if: ${{ !(failure() || cancelled()) }}
-    env:
-      CONTEXT_JSON: ${{ toJson(github) }}
-    runs-on: ubuntu-latest
-  _status-failed:
-    name: _status-failed
-    steps:
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
-      - name: 'Run :: Pipeline Failed'
-        env:
-          RUN_ID: ${{ github.run_id }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY: ${{ github.repository }}
-          WF_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-        run: |2-
-
-              context=$(echo "$CONTEXT_JSON" | jq --arg sha "$COMMIT_ID" '.sha = $sha' | jq -c . | base64)
-              response=$(curl -X PUT -d "runId=$RUN_ID&context=$context&appId=${{ github.event.client_payload.externalRepo.appId }}"  -H 'Authorization: ${{ env.SERVICE_ACC_ACCESS_TOKEN }}' -H 'x-organization-id: ${{ env.PIPELINE_ORGANIZATION_ID }}' -H 'x-project-id: ${{ env.PIPELINE_PROJECT_ID }}' -H 'x-environment-id: ${{ env.PIPELINE_ENVIRONMENT_ID }}' -H 'x-trace-id: ${{ env.PIPELINE_TRACE_ID }}' -H 'x-auth-by: sa' -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.PIPELINE_SERVICE_EP }}/${{ env.PIPELINE_ID }}/FAILED?releaseId=${{ github.event.client_payload.releaseData.releaseId }}")
-
-              echo "Collecting workflow status..."
-                
-              JOB_DATA=$(curl -s       -H "Authorization: Bearer $GH_TOKEN"       "https://api.github.com/repos/$REPOSITORY/actions/runs/$RUN_ID/jobs")
-                
-              # FAILED job and step
-              FAILED_JOB=$(echo "$JOB_DATA" | jq -r '
-                .jobs[] | select(.conclusion=="failure") | .name' | head -n 1)
-                
-              FAILED_STEP=$(echo "$JOB_DATA" | jq -r '
-                .jobs[].steps[] | select(.conclusion=="failure") | .name' | head -n 1)
-                
-              # CANCELLED job and step
-              CANCELLED_JOB=$(echo "$JOB_DATA" | jq -r '
-                .jobs[] | select(.conclusion=="cancelled") | .name' | head -n 1)
-                
-              CANCELLED_STEP=$(echo "$JOB_DATA" | jq -r '
-                .jobs[].steps[] | select(.conclusion=="cancelled") | .name' | head -n 1)
-                
-              FAILED_MESSAGE=""
-                
-              if [ "$WF_CONCLUSION" = "cancelled" ]; then
-                # Workflow cancelled
-                if [ -n "$CANCELLED_JOB" ] && [ -n "$CANCELLED_STEP" ]; then
-                    FAILED_MESSAGE="Workflow was cancelled while executing '$CANCELLED_STEP' step from '$CANCELLED_JOB' job"
-                else
-                    FAILED_MESSAGE="Workflow was cancelled"
-                fi
-
-              else
-                # Workflow failed
-                if [ -n "$FAILED_JOB" ] && [ -n "$FAILED_STEP" ]; then
-                    FAILED_MESSAGE="Workflow failed while executing '$FAILED_STEP' step from '$FAILED_JOB' job"
-                else
-                    FAILED_MESSAGE="Workflow failed"
-                fi
-              fi
-
-
-              # ALERT TITLE BUILD
-              if [ -n "${{ env.APPLICATION_NAME }}" ]; then
-                  ALERT_TITLE="${{ env.APPLICATION_NAME }} Pipeline Failed"
-              else
-                  ALERT_TITLE="Pipeline ${{ env.PIPELINE_ID }} Failed"
-              fi
-
-              # Triggering SkyU Alerts
-              echo "ALERT TITLE :: $ALERT_TITLE"
-              echo "ALERT MESSAGE :: $FAILED_MESSAGE"
-
-              response=$(curl -X POST -d "labels[alertname]=pipelineFailed&labels[repository]=$REPOSITORY&labels[applicationName]=${{ env.APPLICATION_NAME }}&labels[applicationId]=${{ env.PIPELINE_APPLICATION_ID }}&labels[envLabel]=${{ env.PIPELINE_ENVIRONMENT_LABEL }}&labels[pipelineId]=${{ env.PIPELINE_ID }}&labels[system]=skyu&messageTitle=$ALERT_TITLE&message=$FAILED_MESSAGE&status=firing"  -H 'Content-Type: application/x-www-form-urlencoded'  "${{ env.FIRE_SKYU_ALERT_EP }}?organizationId=${{ env.PIPELINE_ORGANIZATION_ID }}&projectId=${{ env.PIPELINE_PROJECT_ID }}&environmentId=${{ env.PIPELINE_ENVIRONMENT_ID }}&token=${{ env.SERVICE_ACC_ACCESS_TOKEN_STRIPPED }}&authBy=sa")
-
-              if echo "$response" | grep -q '"success":true'; then
-                echo "SUCCESS :: $response"
-              else
-                echo "FAILED :: $response"
-              fi
-              
-    needs:
-      - code-scan
-      - _status_testing
-      - test-job
-      - deploy
-    permissions: write-all
-    if: ${{ failure() || cancelled() }}
-    env:
-      CONTEXT_JSON: ${{ toJson(github) }}
+    addDefaultSteps: true
+    overrideCheckoutSteps: true
     runs-on: ubuntu-latest
