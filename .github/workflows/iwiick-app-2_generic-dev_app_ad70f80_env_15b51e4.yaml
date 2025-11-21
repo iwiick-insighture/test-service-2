@@ -401,6 +401,10 @@ jobs:
   first-job:
     name: first-job
     steps:
+      - name: My Custom Step
+        run: >-
+          echo " This works yall!. $\{\{secrets.DOCKER_IMAGE_NAME\}\} and
+          $\{\{env.RANDOM_ENV_VALUE\}\}"
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
@@ -411,10 +415,6 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
-      - name: My Custom Step
-        run: >-
-          echo " This works yall!. $\{\{secrets.DOCKER_IMAGE_NAME\}\} and
-          $\{\{env.RANDOM_ENV_VALUE\}\}"
     needs:
       - _status_testing
     permissions: write-all
