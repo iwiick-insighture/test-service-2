@@ -12,7 +12,7 @@ name: iwiick-app-2-a781bc5_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_6b4773b2-d5dd-4109-bd77-23130b23f2c3
+    types: pipeline_cdc5d4ab-ae95-4b6d-8f11-7671c082fae2
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP2A781BC5_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -80,12 +80,41 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
              
-                  if jq -e '.Results | map(select(.Vulnerabilities)) | length > 0' trivy_results.min.json >/dev/null; then
-                    echo "Vulnerabilities detected!"
-                    jq '.Results[] | select(.Vulnerabilities?) | {Target: .Target, Vulnerabilities: .Vulnerabilities[] | {ID: .VulnerabilityID, Severity: .Severity, Description: .Description}}' trivy_results.min.json
+                  SEVERITY="NONE"
+
+                  # If severity is NONE or empty, skip detection
+                  if [ -z "$SEVERITY" ] || [ "$SEVERITY" = "NONE" ]; then
+                    echo "No severity threshold set. Skipping vulnerability evaluation."
+                    exit 0
+                  fi
+
+                  # Detect vulnerabilities matching the chosen severity
+                  if jq -e '
+                    .Results
+                    | map(select(.Vulnerabilities))
+                    | .[].Vulnerabilities
+                    | map(select(.Severity == "'"$SEVERITY"'"))
+                    | length > 0
+                  ' trivy_results.min.json >/dev/null; then
+
+                    echo "Vulnerabilities detected for severity: $SEVERITY"
+
+                    jq '
+                      .Results[]
+                      | select(.Vulnerabilities?)
+                      | {
+                          Target: .Target,
+                          Vulnerabilities: (
+                            .Vulnerabilities[]
+                            | select(.Severity == "'"$SEVERITY"'")
+                            | {ID: .VulnerabilityID, Severity: .Severity, Description: .Description}
+                          )
+                        }
+                    ' trivy_results.min.json
+
                     echo "IS_TRIVY_VULNERABILITIES_DETECTED=true" >> $GITHUB_ENV
                   fi
-                  
+                
       - name: 'Run :: Trivy Filesystem Scan (Including Trivy Ignores)'
         run: |2-
 
@@ -149,14 +178,23 @@ jobs:
                   fi
                   trivyVulnFound=${{ env.IS_TRIVY_VULNERABILITIES_DETECTED }}
                   if [ -n "$trivyVulnFound" ] && [ "NONE" != "NONE" ]; then
-                    echo "Trivy vulnerabilities were detected."
-                    echo "The job failed after uploading the code scan reports."
+                    echo "Trivy vulnerabilities were detected!"
                     exit 1
                   fi
                   
   _status-pending:
     name: _status-pending
     steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
       - name: 'Run :: Start'
         run: |2-
 
@@ -195,16 +233,6 @@ jobs:
                 echo "Skipping checkout..."
               fi
             
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v4
         with:
@@ -230,6 +258,16 @@ jobs:
   _status_testing:
     name: _status_testing
     steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
       - name: 'Run :: Start'
         run: |2-
 
@@ -268,16 +306,6 @@ jobs:
                 echo "Skipping checkout..."
               fi
             
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
       - name: 'Run :: Pipeline Testing'
         run: |2-
 
@@ -291,6 +319,16 @@ jobs:
   _release-info:
     name: _release-info
     steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
       - name: 'Run :: Start'
         run: |2-
 
@@ -329,16 +367,6 @@ jobs:
                 echo "Skipping checkout..."
               fi
             
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
       - name: 'Run :: Pipeline Release'
         env:
           RELEASE_ID: ${{ github.event.client_payload.releaseData.releaseId }}
@@ -411,44 +439,11 @@ jobs:
   test-job:
     name: test-job
     steps:
-      - name: 'Run :: Start'
-        run: |2-
-
-              echo " Starting GitHub Action!" && 
-              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
-              
-      - name: 'Run :: Checkout repository'
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: 'Run :: Checkout Specific Commit'
-        env:
-          COMMIT_ID: ${{ github.event.client_payload.commitId }}
-          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
-        if: >-
-          ${{ github.event.client_payload.commitId != null ||
-          github.event.client_payload.branchName != null }}
-        run: |2-
-
-              echo "Starting the checkout process..."
-              git fetch --all
-              if [ -n "$COMMIT_ID" ]; then
-                echo "Commit ID provided: $COMMIT_ID"
-                git checkout $COMMIT_ID || true
-                echo "Checked out to commit ID: $COMMIT_ID"
-              elif [ -n "$BRANCH_NAME" ]; then
-                echo "Branch name provided: $BRANCH_NAME"
-                git checkout $BRANCH_NAME || true
-                echo "Checked out to branch: $BRANCH_NAME"
-
-                #Updating the commit Id
-                ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
-                echo "Changing CommitId: $ACTUAL_COMMIT_ID"
-                echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
-              else
-                echo "Skipping checkout..."
-              fi
-            
+      - name: Step 1
+        run: echo "This is step 1"
+      - name: Reusable Step
+        run: echo "This is a Resuable Step"
+        id: pipeline_step_e023b030-1bd2-43d9-9148-3840421c3efc
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
@@ -461,19 +456,6 @@ jobs:
                 
       - name: step 2
         run: echo "This is step 2"
-      - name: Step 1
-        run: echo "This is step 1"
-      - name: Reusable Step
-        run: echo "This is a Resuable Step"
-        id: pipeline_step_e023b030-1bd2-43d9-9148-3840421c3efc
-    needs:
-      - _status_testing
-    permissions: write-all
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-  _status-success:
-    name: _status-success
-    steps:
       - name: 'Run :: Start'
         run: |2-
 
@@ -512,6 +494,14 @@ jobs:
                 echo "Skipping checkout..."
               fi
             
+    needs:
+      - _status_testing
+    permissions: write-all
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+  _status-success:
+    name: _status-success
+    steps:
       - name: 'Run :: Decoding Secrets'
         run: |2-
 
@@ -522,6 +512,44 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
+      - name: 'Run :: Start'
+        run: |2-
+
+              echo " Starting GitHub Action!" && 
+              echo "STEPS_CAN_PROCEED=true" >> $GITHUB_ENV
+              
+      - name: 'Run :: Checkout repository'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 'Run :: Checkout Specific Commit'
+        env:
+          COMMIT_ID: ${{ github.event.client_payload.commitId }}
+          BRANCH_NAME: ${{ github.event.client_payload.branchName }}
+        if: >-
+          ${{ github.event.client_payload.commitId != null ||
+          github.event.client_payload.branchName != null }}
+        run: |2-
+
+              echo "Starting the checkout process..."
+              git fetch --all
+              if [ -n "$COMMIT_ID" ]; then
+                echo "Commit ID provided: $COMMIT_ID"
+                git checkout $COMMIT_ID || true
+                echo "Checked out to commit ID: $COMMIT_ID"
+              elif [ -n "$BRANCH_NAME" ]; then
+                echo "Branch name provided: $BRANCH_NAME"
+                git checkout $BRANCH_NAME || true
+                echo "Checked out to branch: $BRANCH_NAME"
+
+                #Updating the commit Id
+                ACTUAL_COMMIT_ID=$(git rev-parse HEAD)
+                echo "Changing CommitId: $ACTUAL_COMMIT_ID"
+                echo "COMMIT_ID=$ACTUAL_COMMIT_ID" >> $GITHUB_ENV
+              else
+                echo "Skipping checkout..."
+              fi
+            
       - name: 'Run :: Pipeline Success'
         env:
           RUN_ID: ${{ github.run_id }}
@@ -633,6 +661,16 @@ jobs:
   deploy:
     name: deploy
     steps:
+      - name: 'Run :: Decoding Secrets'
+        run: |2-
+
+                if [ ! -x "$(command -v jq)" ]; then
+                  echo "jq not found, installing..."
+                  sudo apt-get update
+                  sudo apt-get install -y jq
+                fi
+                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
+                
       - name: 'Run :: Start'
         run: |2-
 
@@ -671,16 +709,6 @@ jobs:
                 echo "Skipping checkout..."
               fi
             
-      - name: 'Run :: Decoding Secrets'
-        run: |2-
-
-                if [ ! -x "$(command -v jq)" ]; then
-                  echo "jq not found, installing..."
-                  sudo apt-get update
-                  sudo apt-get install -y jq
-                fi
-                echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
-                
       - name: 'Run :: Deploy and Notify Resource Service'
         env:
           RUN_ID: ${{ github.run_id }}
