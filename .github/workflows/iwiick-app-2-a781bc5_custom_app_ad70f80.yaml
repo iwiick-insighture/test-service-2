@@ -12,7 +12,7 @@ name: iwiick-app-2-a781bc5_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_b38626d3-edf7-4945-9bbf-7eafb96c710b
+    types: pipeline_ba8f5b51-3d53-4a13-9620-a749b7041a2a
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP2A781BC5_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -80,22 +80,43 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
              
-                  SEVERITY="MEDIUM"
+                  SEVERITY="NONE"
 
                   echo "Evaluating Trivy results. Selected severity: '$SEVERITY'"
 
-                  echo "Full Trivy vulnerability report:"
-                  jq '.Results[] | select(.Vulnerabilities?) | { 
-                        Target: .Target, 
-                        Vulnerabilities: (.Vulnerabilities[] | {ID: .VulnerabilityID, Severity: .Severity, Description: .Description}) 
-                      }' trivy_results.min.json
-
-                  if [ -z "$SEVERITY" ] || [ "$SEVERITY" = "NONE" ]; then
-                    echo "No severity threshold set. Not evaluating for specific severity."
+                  if [ "$SEVERITY" = "NONE" ]; then
+                    echo "Severity is NONE. No vulnerabilities will be printed or evaluated."
                     exit 0
                   fi
 
-                  # Check if vulnerabilities exist for the selected severity
+                  if [ -z "$SEVERITY" ]; then
+                    echo "Severity empty. Printing ALL vulnerabilities."
+
+                    jq '
+                      .Results[]
+                      | select(.Vulnerabilities?)
+                      | {
+                          Target: .Target,
+                          Vulnerabilities: (
+                            .Vulnerabilities[]
+                            | {ID: .VulnerabilityID, Severity: .Severity, Description: .Description}
+                          )
+                        }
+                    ' trivy_results.min.json
+
+                    # If any vulnerabilities exist at all
+                    if jq -e '
+                      .Results
+                      | map(select(.Vulnerabilities))
+                      | length > 0
+                    ' trivy_results.min.json >/dev/null; then
+                      echo "IS_TRIVY_VULNERABILITIES_DETECTED=true" >> $GITHUB_ENV
+                    fi
+
+                    exit 0
+                  fi
+
+                  # First: check if any vulnerabilities match this severity
                   if jq -e '
                     .Results
                     | map(select(.Vulnerabilities))
@@ -103,11 +124,11 @@ jobs:
                     | map(select(.Severity == "'"$SEVERITY"'"))
                     | length > 0
                   ' trivy_results.min.json >/dev/null; then
-                    
-                    echo "Matched vulnerabilities found for severity: $SEVERITY"
+
+                    echo "Vulnerabilities detected for severity: $SEVERITY"
                     echo "IS_TRIVY_VULNERABILITIES_DETECTED=true" >> $GITHUB_ENV
 
-                    # Print matched vulnerabilities
+                    # Print ONLY matching severity (console only)
                     jq '
                       .Results[]
                       | select(.Vulnerabilities?)
