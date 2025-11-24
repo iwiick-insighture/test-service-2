@@ -80,7 +80,7 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
              
-                  SEVERITY="NONE"
+                  SEVERITY="MEDIUM"
 
                   echo "Evaluating Trivy results. Selected severity: '$SEVERITY'"
 
