@@ -12,7 +12,7 @@ name: iwiick-app-2-a781bc5_custom_app_ad70f80 Pipeline (Skyu Generated)
       - README.md
   workflow_dispatch: {}
   repository_dispatch:
-    types: pipeline_ba8f5b51-3d53-4a13-9620-a749b7041a2a
+    types: pipeline_097f4a18-6006-4755-836b-1a643dcec1e2
 env:
   ENCODED_PIPELINE_SECRET: ${{secrets.TESTSERVICE2_IWIICKAPP2A781BC5_CUSTOM_APP_AD70F80}}
   COMMIT_ID: ${{github.event.client_payload.commitId || github.sha || github.run_id}}
@@ -80,7 +80,7 @@ jobs:
       - name: 'Run :: Evaluate Trivy Results'
         run: |2-
              
-                  SEVERITY=""
+                  SEVERITY="NONE"
 
                   echo "Evaluating Trivy results. Selected severity: '$SEVERITY'"
 
