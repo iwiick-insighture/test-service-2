@@ -469,6 +469,11 @@ jobs:
   test-job:
     name: test-job
     steps:
+      - name: Step 1
+        run: echo "This is step 1"
+      - name: Reusable Step
+        run: echo "This is a Resuable Step"
+        id: pipeline_step_e023b030-1bd2-43d9-9148-3840421c3efc
       - name: 'Run :: Start'
         run: |2-
 
@@ -485,6 +490,8 @@ jobs:
                 fi
                 echo "${{ env.ENCODED_PIPELINE_SECRET }}" | base64 --decode | jq -r 'to_entries[] | "\(.key)=\(.value)"' | while read line; do echo "$line" >> $GITHUB_ENV; echo "::add-mask::${line#*=}"; done
                 
+      - name: step 2
+        run: echo "This is step 2"
       - name: 'Run :: Checkout repository'
         uses: actions/checkout@v4
         with:
@@ -517,13 +524,6 @@ jobs:
                 echo "Skipping checkout..."
               fi
             
-      - name: Step 1
-        run: echo "This is step 1"
-      - name: step 2
-        run: echo "This is step 2"
-      - name: Reusable Step
-        run: echo "This is a Resuable Step"
-        id: pipeline_step_e023b030-1bd2-43d9-9148-3840421c3efc
     needs:
       - _status_testing
     permissions: write-all
